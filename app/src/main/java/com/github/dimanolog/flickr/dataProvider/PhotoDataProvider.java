@@ -4,10 +4,14 @@ import android.net.Uri;
 
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
-import com.github.dimanolog.flickr.model.Photo;
+import com.github.dimanolog.flickr.model.IPhoto;
+import com.github.dimanolog.flickr.parsers.photo.PhotoParserFactory;
+import com.github.dimanolog.flickr.util.IOUtils;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,19 +32,22 @@ public class PhotoDataProvider {
             .appendQueryParameter("format", "json")
             .appendQueryParameter("nojsoncallback", "1")
             .appendQueryParameter("extras", "url_s")
+            .appendQueryParameter("extras", "date_upload")
             .build();
 
-    List<Photo> mPhotoList=new ArrayList<>();
+    List<IPhoto> mPhotoList;
 
     private void getPhotosHttp(){
         IHttpClient httpClient=new HttpClient();
         httpClient.request(ENDPOINT.toString(), new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) {
-                
+            public void onResponse(InputStream inputStream) throws IOException, JSONException {
+               String jsonString = IOUtils.toString(inputStream);
+               mPhotoList= new PhotoParserFactory()
+                        .getGsonParser()
+                        .parseArray(jsonString);
             }
         });
-
     }
 
 

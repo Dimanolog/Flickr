@@ -1,5 +1,6 @@
 package com.github.dimanolog.flickr.parsers.photo;
 
+import com.github.dimanolog.flickr.model.IPhoto;
 import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 
 /**
@@ -8,11 +9,11 @@ import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 
 public class PhotoParserFactory {
 
-    public IParser getJsonParser() {
+    public IParser<IPhoto> getJsonParser() {
         return new JsonPhotoParser();
     }
-
-    public IParser getGsonParser() {
+    
+    public IParser<IPhoto> getGsonParser() {
         return new GsonPhotoParser();
     }
 }
