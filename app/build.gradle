@@ -13,9 +13,32 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_CHECK_VERSION_URL", "\"https://releasecalculator.appspot.com\""
         }
+
+        debug {
+            minifyEnabled true
+            applicationIdSuffix ".debug"
+            debuggable true
+            buildConfigField "String", "BASE_CHECK_VERSION_URL", "\"http://10.0.2.2:8080\""
+        }
+    }
+    flavorDimensions "store"
+
+    productFlavors {
+
+        GooglePlay {
+            dimension "store"
+            buildConfigField "String", "SHARE_URL", "\"http://flickrforgooglestore.com\""
+        }
+
+        Amazon {
+            dimension "store"
+            buildConfigField "String", "SHARE_URL", "\"http://flickrforamazon.com\""
+        }
+
     }
 }
 
@@ -24,7 +47,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile ('com.android.support.test.espresso:espresso-contrib:2.2.2'){
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
         exclude module: 'support-annotations'
         exclude module: 'support-v4'
         exclude module: 'support-v13'
@@ -36,8 +59,8 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
 
 
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     testCompile 'junit:junit:4.12'

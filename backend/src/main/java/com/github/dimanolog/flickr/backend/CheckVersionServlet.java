@@ -4,18 +4,28 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloWorld
 */
 
-package com.example.dimanolog.myapplication.backend;
+package com.github.dimanolog.flickr.backend;
+
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class MyServlet extends HttpServlet {
+public class CheckVersionServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        resp.setContentType("text/plain");
-        resp.getWriter().println("Please use the form to POST to this url");
+        resp.setContentType("application/json");
+        Version version = new Version();
+        String ver = ResourceBundle.getBundle("backend").getString("flickr.version");
+        String hardUpdate= ResourceBundle.getBundle("backend").getString("flickr.hard.update");
+        version.setVersion(Integer.valueOf(ver));
+        version.sethardUpdate(Boolean.valueOf(hardUpdate));
+        new Gson().toJson(version, resp.getWriter());
     }
 
     @Override

@@ -1,10 +1,10 @@
-package com.github.dimanolog.flickr.dataProvider;
+package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
 
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
-import com.github.dimanolog.flickr.model.IPhoto;
+import com.github.dimanolog.flickr.model.Flickr.IPhoto;
 import com.github.dimanolog.flickr.parsers.photo.PhotoParserFactory;
 import com.github.dimanolog.flickr.util.IOUtils;
 
@@ -15,12 +15,10 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Created by Dimanolog on 15.10.2017.
+ * Created by Dimanolog on 29.10.2017.
  */
 
-public class PhotoDataProvider {
-
-    private static final String TAG = PhotoDataProvider.class.getSimpleName();
+public class FlickrApiClient {
     private static final String FETCH_RECENTS_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
     private static final String API_KEY = "47e8d1e158478d2fd8c02a85d0350293";
@@ -42,13 +40,11 @@ public class PhotoDataProvider {
         httpClient.request(ENDPOINT.toString(), new HttpClient.ResponseListener() {
             @Override
             public void onResponse(InputStream inputStream) throws IOException, JSONException {
-               String jsonString = IOUtils.toString(inputStream);
-               mPhotoList= new PhotoParserFactory()
+                String jsonString = IOUtils.toString(inputStream);
+                mPhotoList= new PhotoParserFactory()
                         .getGsonParser()
                         .parseArray(jsonString);
             }
         });
     }
-
-
 }

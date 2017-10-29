@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
-import com.github.dimanolog.flickr.model.IPhoto;
+import com.github.dimanolog.flickr.model.Flickr.IPhoto;
 import com.github.dimanolog.flickr.parsers.photo.PhotoParserFactory;
 import com.github.dimanolog.flickr.util.IOUtils;
 

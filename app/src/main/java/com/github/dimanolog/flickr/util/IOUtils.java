@@ -26,6 +26,14 @@ public class IOUtils {
         }
     }
 
+    public static BufferedReader InputStreamToBufferedReader(InputStream inputStream) throws IOException{
+        InputStreamReader inputStreamReader = null;
+        BufferedReader reader = null;
+        inputStreamReader = new InputStreamReader(inputStream);
+        reader = new BufferedReader(inputStreamReader);
+        return reader;
+    }
+
 
     public static String toString(InputStream inputStream) throws IOException {
         InputStreamReader inputStreamReader = null;
@@ -33,12 +41,13 @@ public class IOUtils {
         StringBuilder sb = new StringBuilder();
         String line = null;
         try {
-            inputStreamReader = new InputStreamReader(inputStream);
+
             reader = new BufferedReader(inputStreamReader);
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-        } finally {
+        }
+        finally {
             close(inputStream);
             close(inputStreamReader);
             close(reader);

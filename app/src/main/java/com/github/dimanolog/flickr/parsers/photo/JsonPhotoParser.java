@@ -1,7 +1,7 @@
 package com.github.dimanolog.flickr.parsers.photo;
 
-import com.github.dimanolog.flickr.model.IPhoto;
-import com.github.dimanolog.flickr.model.Photo;
+import com.github.dimanolog.flickr.model.Flickr.IPhoto;
+import com.github.dimanolog.flickr.model.Flickr.Photo;
 import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 
 import org.json.JSONArray;

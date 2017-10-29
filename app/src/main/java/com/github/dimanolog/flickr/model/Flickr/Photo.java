@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.model;
+package com.github.dimanolog.flickr.model.Flickr;
 
 import android.net.Uri;
 
