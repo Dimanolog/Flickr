@@ -9,9 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Dimanolog on 14.10.2017.
- */
+
 
 public class HttpClient implements IHttpClient {
 

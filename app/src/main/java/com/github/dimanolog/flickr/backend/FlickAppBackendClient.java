@@ -15,10 +15,6 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by Dimanolog on 29.10.2017.
- */
-
 public class FlickAppBackendClient {
 
     private static final Uri BASE_URL_BACKEND = Uri.parse(BuildConfig.BASE_CHECK_VERSION_URL);

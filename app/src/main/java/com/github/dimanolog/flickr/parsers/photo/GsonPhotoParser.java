@@ -1,7 +1,7 @@
 package com.github.dimanolog.flickr.parsers.photo;
 
-import com.github.dimanolog.flickr.model.Flickr.IPhoto;
-import com.github.dimanolog.flickr.model.Flickr.Photo;
+import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.Photo;
 import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,10 +14,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-/**
- * Created by Dimanolog on 14.10.2017.
- */
 
 public class GsonPhotoParser implements IParser<IPhoto> {
 

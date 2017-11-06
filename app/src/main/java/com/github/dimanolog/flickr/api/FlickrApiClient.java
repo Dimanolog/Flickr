@@ -1,10 +1,9 @@
 package com.github.dimanolog.flickr.api;
 
-import android.net.Uri;
-
+import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
-import com.github.dimanolog.flickr.model.Flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.parsers.photo.PhotoParserFactory;
 import com.github.dimanolog.flickr.util.IOUtils;
 
@@ -14,37 +13,57 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * Created by Dimanolog on 29.10.2017.
- */
 
-public class FlickrApiClient {
-    private static final String FETCH_RECENTS_METHOD = "flickr.photos.getRecent";
+public class FlickrApiClient implements IFlickrApiClient {
+    private static final String GET_RECENT_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
-    private static final String API_KEY = "47e8d1e158478d2fd8c02a85d0350293";
 
-    private static final Uri ENDPOINT = Uri
-            .parse("https://api.flickr.com/services/rest/")
-            .buildUpon()
-            .appendQueryParameter("api_key", API_KEY)
-            .appendQueryParameter("format", "json")
-            .appendQueryParameter("nojsoncallback", "1")
-            .appendQueryParameter("extras", "url_s")
-            .appendQueryParameter("extras", "date_upload")
-            .build();
+    private static final String METHOD = "method";
+    private static final String PAGE = "page";
 
-    List<IPhoto> mPhotoList;
+    private IHttpClient mHttpClient = new HttpClient();
 
-    private void getPhotosHttp(){
-        IHttpClient httpClient=new HttpClient();
-        httpClient.request(ENDPOINT.toString(), new HttpClient.ResponseListener() {
-            @Override
-            public void onResponse(InputStream inputStream) throws IOException, JSONException {
-                String jsonString = IOUtils.toString(inputStream);
-                mPhotoList= new PhotoParserFactory()
-                        .getGsonParser()
-                        .parseArray(jsonString);
-            }
-        });
+
+    public List<IPhoto> getRecent(int page) {
+        String url = ApiConstants.ENDPOINT.buildUpon()
+                .appendQueryParameter(METHOD, GET_RECENT_METHOD)
+                .appendQueryParameter(PAGE, String.valueOf(page))
+                .build()
+                .toString();
+
+        return run(url);
+    }
+
+    public List<IPhoto> searchPhotos(int page, String search) {
+        String url = ApiConstants.ENDPOINT.buildUpon()
+                .appendQueryParameter(METHOD, SEARCH_METHOD)
+                .appendQueryParameter(PAGE, String.valueOf(page))
+                .build()
+                .toString();
+
+        return run(url);
+
+    }
+
+    private List<IPhoto> run(String pUrl){
+        FlickrApiResponseListener listener = new FlickrApiResponseListener();
+        mHttpClient.request(pUrl, listener);
+        return listener.getPhotoList();
+    }
+
+    private static class FlickrApiResponseListener implements HttpClient.ResponseListener {
+        private List<IPhoto> mPhotoList;
+
+        @Override
+        public void onResponse(InputStream inputStream) throws IOException, JSONException {
+            String jsonString = IOUtils.toString(inputStream);
+            mPhotoList = new PhotoParserFactory()
+                    .getGsonParser()
+                    .parseArray(jsonString);
+        }
+
+        public List<IPhoto> getPhotoList() {
+            return mPhotoList;
+        }
     }
 }

@@ -2,7 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.github.dimanolog.flickr">
 
+    <permission
+        android:name="com.bignerdranch.android.photogallery.PRIVATE"
+        android:protectionLevel="signature"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name=
+                         "android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.bignerdranch.android.photogallery.PRIVATE"/>
 
     <application
         android:allowBackup="true"
@@ -18,6 +26,26 @@
 
             </intent-filter>
         </activity>
+
+        <receiver android:name="receviers.StartupReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="receviers.NotificationReceiver"
+            android:exported="false">
+            <intent-filter
+                android:priority="-999">
+                <action
+                    android:name="com.bignerdranch.android.photogallery.SHOW_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".services.PollService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
     </manifest>

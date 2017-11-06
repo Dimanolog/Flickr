@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.model.Flickr;
+package com.github.dimanolog.flickr.model.flickr;
 
 import android.net.Uri;
 
@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-/**
- * Created by Dimanolog on 11.11.2016.
- */
 public class Photo implements IPhoto {
     @SerializedName("title")
     private String mCaption;
