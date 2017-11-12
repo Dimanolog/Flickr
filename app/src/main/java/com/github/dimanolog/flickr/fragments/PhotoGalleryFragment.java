@@ -3,10 +3,9 @@ package com.github.dimanolog.flickr.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
+import com.github.dimanolog.flickr.dataloader.IDataProviderCallbacks;
+import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PhotoGalleryFragment extends VisibleFragment implements LoaderManager.LoaderCallbacks<List<IPhoto>> {
+public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallbacks<List<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();
 
@@ -39,6 +40,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements LoaderManag
     private Integer mCurrentPage = 1;
     private boolean mLoading;
     private boolean mUpdating;
+    private PhotoDataProvider mPhotoDataProvider;
 
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
@@ -49,7 +51,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements LoaderManag
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        getLoaderManager().initLoader(0, null, this);
+        mPhotoDataProvider = PhotoDataProvider.getInstance(getActivity());
+        mPhotoDataProvider.registerCallback(this);
         updateItems();
     }
 
@@ -73,6 +76,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements LoaderManag
                 }
             }
         });
+
         setupOrUpdateAdapter();
         return v;
     }
@@ -151,50 +155,50 @@ public class PhotoGalleryFragment extends VisibleFragment implements LoaderManag
         mUpdating = false;
     }
 
-    private void loading() {
-        if (isAdded()) {
-            mProgressBar.setVisibility(View.VISIBLE);
-            if (!mUpdating) {
-                mPhotoRecyclerView.setVisibility(View.GONE);
-            }
-        }
-    }
-
     private void updateItems() {
-        loading();
+        loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
-
+        if(TextUtils.isEmpty(query)){
+            mPhotoDataProvider.getRecent(mCurrentPage);
+        }
+        else {
+            mPhotoDataProvider.searchPhotos(mCurrentPage,query);
+        }
+        mCurrentPage++;
     }
 
     private void setupOrUpdateAdapter() {
         if (isAdded()) {
-            if (!mUpdating) {
+            if (mUpdating) {
                 mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
-                mPhotoRecyclerView.setVisibility(View.VISIBLE);
-                mUpdating = true;
+
             } else {
                 mPhotoRecyclerView.getAdapter().notifyDataSetChanged();
             }
-
-            mProgressBar.setVisibility(View.GONE);
         }
     }
 
+    void loading(boolean state) {
+        mLoading = state;
+        mProgressBar.setVisibility(state ? View.VISIBLE : View.GONE);
+    }
+
+
     @Override
-    public Loader<List<IPhoto>> onCreateLoader(int id, Bundle args) {
-        return null;
+    public void onStartLoading() {
+        loading(true);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<IPhoto>> loader, List<IPhoto> data) {
-
+    public void onSuccessResult(List<IPhoto> result) {
+        mItems=result;
+        loading(false);
     }
 
     @Override
-    public void onLoaderReset(Loader<List<IPhoto>> loader) {
+    public void onError(Throwable t) {
 
     }
-
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private IPhoto mPhoto;

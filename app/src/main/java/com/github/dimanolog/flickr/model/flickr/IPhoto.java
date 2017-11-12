@@ -4,9 +4,6 @@ import android.net.Uri;
 
 import java.util.Date;
 
-/**
- * Created by Dimanolog on 15.10.2017.
- */
 
 public interface IPhoto {
     String getOwner();
