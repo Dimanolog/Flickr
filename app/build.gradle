@@ -19,7 +19,6 @@ android {
         }
 
         debug {
-            minifyEnabled true
             applicationIdSuffix ".debug"
             debuggable true
             buildConfigField "String", "BASE_CHECK_VERSION_URL", "\"http://10.0.2.2:8080\""
