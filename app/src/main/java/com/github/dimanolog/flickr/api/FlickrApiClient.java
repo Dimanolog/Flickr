@@ -42,7 +42,6 @@ public class FlickrApiClient implements IFlickrApiClient {
                 .toString();
 
         return run(url);
-
     }
 
     private List<IPhoto> run(String pUrl){
