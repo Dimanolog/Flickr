@@ -154,14 +154,14 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         } else {
             mPhotoDataProvider.searchPhotos(mCurrentPage, query);
         }
-        mCurrentPage++;
+
     }
 
     private void setupOrUpdateAdapter() {
         if (isAdded()) {
-            if (mUpdating) {
+            if (!mUpdating) {
                 mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
-
+                mUpdating = true;
             } else {
                 mPhotoRecyclerView.getAdapter().notifyDataSetChanged();
             }
@@ -183,6 +183,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     public void onSuccessResult(List<IPhoto> result) {
         mItems = result;
         loading(false);
+        setupOrUpdateAdapter();
+        mCurrentPage++;
     }
 
     @Override
@@ -198,11 +200,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         PhotoHolder(View itemView) {
             super(itemView);
-
             mInfoTxtVw = itemView.findViewById(R.id.info_text);
             mPhotoImageVw = itemView.findViewById(R.id.photo_image_view);
-
-            itemView.setOnClickListener(this);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
