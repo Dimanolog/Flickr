@@ -53,7 +53,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         setHasOptionsMenu(true);
         mPhotoDataProvider = PhotoDataProvider.getInstance(getActivity());
         mPhotoDataProvider.registerCallback(this);
-        updateItems();
+
     }
 
     @Override
@@ -70,21 +70,13 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 super.onScrolled(recyclerView, dx, dy);
                 if (!recyclerView.canScrollVertically(RecyclerView.VERTICAL)) {
                     if (!mLoading) {
-                        mLoading = true;
                         updateItems();
                     }
                 }
             }
         });
-
-        setupOrUpdateAdapter();
+        updateItems();
         return v;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
     }
 
     @Override
@@ -96,7 +88,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
@@ -158,11 +149,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     private void updateItems() {
         loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
-        if(TextUtils.isEmpty(query)){
+        if (TextUtils.isEmpty(query)) {
             mPhotoDataProvider.getRecent(mCurrentPage);
-        }
-        else {
-            mPhotoDataProvider.searchPhotos(mCurrentPage,query);
+        } else {
+            mPhotoDataProvider.searchPhotos(mCurrentPage, query);
         }
         mCurrentPage++;
     }
@@ -191,7 +181,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(List<IPhoto> result) {
-        mItems=result;
+        mItems = result;
         loading(false);
     }
 

@@ -30,8 +30,9 @@ public class FlickrApiClient implements IFlickrApiClient {
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .build()
                 .toString();
+        String result = startRequest(url);
 
-        return run(url);
+        return parseJson(result);
     }
 
     public List<IPhoto> searchPhotos(int page, String search) {
@@ -40,29 +41,49 @@ public class FlickrApiClient implements IFlickrApiClient {
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .build()
                 .toString();
-
-        return run(url);
+        String result = startRequest(url);
+        return parseJson(result);
     }
 
-    private List<IPhoto> run(String pUrl){
+    private String startRequest(String pUrl) {
         FlickrApiResponseListener listener = new FlickrApiResponseListener();
         mHttpClient.request(pUrl, listener);
-        return listener.getPhotoList();
+        return listener.getResultStr();
+    }
+
+    private List<IPhoto> parseJson(String pJsonString) {
+        try {
+            java.util.List<IPhoto> iPhotos = new PhotoParserFactory()
+                    .getGsonParser()
+                    .parseArray(pJsonString);
+            return iPhotos;
+        } catch (JSONException pE) {
+            throw new RuntimeException(pE);
+        }
     }
 
     private static class FlickrApiResponseListener implements HttpClient.ResponseListener {
-        private List<IPhoto> mPhotoList;
+        private String mResultStr;
+        private Throwable mThrowable;
+        private boolean isError;
 
         @Override
-        public void onResponse(InputStream inputStream) throws IOException, JSONException {
-            String jsonString = IOUtils.toString(inputStream);
-            mPhotoList = new PhotoParserFactory()
-                    .getGsonParser()
-                    .parseArray(jsonString);
+        public void onResponse(InputStream inputStream) throws IOException {
+            mResultStr = IOUtils.toString(inputStream);
         }
 
-        public List<IPhoto> getPhotoList() {
-            return mPhotoList;
+        @Override
+        public void onError(Throwable t) {
+            isError = true;
+            mThrowable = t;
+        }
+
+        public String getResultStr() {
+            return mResultStr;
+        }
+
+        public Throwable getThrowable() {
+            return mThrowable;
         }
     }
 }

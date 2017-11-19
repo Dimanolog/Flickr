@@ -10,8 +10,6 @@ import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -41,8 +39,13 @@ public class FlickAppBackendClient {
             public void run() {
                 new HttpClient().request(url, new HttpClient.ResponseListener() {
                     @Override
-                    public void onResponse(InputStream inputStream) throws IOException, JSONException {
+                    public void onResponse(InputStream inputStream) throws IOException {
                         mVersion = new Gson().fromJson(IOUtils.toString(inputStream), Version.class);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
                     }
                 });
 

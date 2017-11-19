@@ -2,19 +2,19 @@ package com.github.dimanolog.flickr.http;
 
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-
 public class HttpClient implements IHttpClient {
 
     public interface ResponseListener {
-        void onResponse(InputStream inputStream) throws IOException, JSONException;
+        void onResponse(InputStream inputStream) throws IOException;
+
+        void onError(Throwable t);
+
     }
 
     @Override
@@ -26,6 +26,7 @@ public class HttpClient implements IHttpClient {
             con.disconnect();
         } catch (Throwable t) {
             t.printStackTrace();
+            listener.onError(t);
         }
     }
 }

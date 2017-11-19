@@ -86,11 +86,20 @@ public class JsonParseTest {
     public void parseJsonUserPhoto() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException, JSONException {
+            public void onResponse(InputStream inputStream) throws IOException {
                 String jsonString = IOUtils.toString(inputStream);
-                mPhoto = new PhotoParserFactory()
-                        .getJsonParser()
-                        .parseObject(jsonString);
+                try {
+                    mPhoto = new PhotoParserFactory()
+                            .getJsonParser()
+                            .parseObject(jsonString);
+                } catch (JSONException pE) {
+                    pE.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
 
             }
         };
@@ -100,9 +109,7 @@ public class JsonParseTest {
         } catch (IOException e) {
             Log.e(TAG, "Inputstream error", e);
             e.printStackTrace();
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON object error", e);
-            e.printStackTrace();
+
         }
         checkValues();
     }
@@ -111,11 +118,20 @@ public class JsonParseTest {
     public void parseJsonPhotoArray() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException, JSONException {
+            public void onResponse(InputStream inputStream) throws IOException{
                 String jsonString = IOUtils.toString(inputStream);
-                mPhotoList = new PhotoParserFactory()
-                        .getJsonParser()
-                        .parseArray(jsonString);
+                try {
+                    mPhotoList = new PhotoParserFactory()
+                            .getJsonParser()
+                            .parseArray(jsonString);
+                } catch (JSONException pE) {
+                    pE.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
             }
         };
 
@@ -124,10 +140,8 @@ public class JsonParseTest {
         } catch (IOException e) {
             Log.e(TAG, "Inputstream error", e);
             e.printStackTrace();
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONArray parse error", e);
-            e.printStackTrace();
         }
+
         checkListValues();
 
     }
@@ -136,11 +150,20 @@ public class JsonParseTest {
     public void parseGsonUserPhoto() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException, JSONException {
+            public void onResponse(InputStream inputStream) throws IOException {
                 String jsonString = IOUtils.toString(inputStream);
-                mPhoto = new PhotoParserFactory()
-                        .getGsonParser()
-                        .parseObject(jsonString);
+                try {
+                    mPhoto = new PhotoParserFactory()
+                            .getGsonParser()
+                            .parseObject(jsonString);
+                } catch (JSONException pE) {
+                    pE.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
             }
         };
 
@@ -149,10 +172,8 @@ public class JsonParseTest {
         } catch (IOException e) {
             Log.e(TAG, "Inputstream error", e);
             e.printStackTrace();
-        } catch (JSONException e) {
-            Log.e(TAG, "GSON parse error", e);
-            e.printStackTrace();
         }
+
         checkValues();
     }
 
@@ -160,11 +181,20 @@ public class JsonParseTest {
     public void parseGsonPhotoArray() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException, JSONException {
+            public void onResponse(InputStream inputStream) throws IOException {
                 String jsonString = IOUtils.toString(inputStream);
-                mPhotoList = new PhotoParserFactory()
-                        .getGsonParser()
-                        .parseArray(jsonString);
+                try {
+                    mPhotoList = new PhotoParserFactory()
+                            .getGsonParser()
+                            .parseArray(jsonString);
+                } catch (JSONException pE) {
+                    pE.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
             }
         };
 
@@ -172,9 +202,6 @@ public class JsonParseTest {
             listener.onResponse(mArrayInputStream);
         } catch (IOException e) {
             Log.e(TAG, "Inputstream error", e);
-            e.printStackTrace();
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONArray parse error", e);
             e.printStackTrace();
         }
         checkListValues();

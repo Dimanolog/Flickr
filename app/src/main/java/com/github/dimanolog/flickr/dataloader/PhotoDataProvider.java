@@ -86,10 +86,10 @@ public class PhotoDataProvider {
         }
 
         @Override
-        protected void onPostExecute(List<IPhoto> pPhotos) {
-            super.onPostExecute(pPhotos);
-            if (mIDataProviderCallbacks != null && pPhotos != null) {
-                mIPhotoList.addAll(pPhotos);
+        protected void onPostExecute(List<IPhoto> pResult) {
+            super.onPostExecute(pResult);
+            if (mIDataProviderCallbacks != null && pResult != null) {
+                mIPhotoList.addAll(pResult);
                 mIDataProviderCallbacks.onSuccessResult(mIPhotoList);
             }
         }

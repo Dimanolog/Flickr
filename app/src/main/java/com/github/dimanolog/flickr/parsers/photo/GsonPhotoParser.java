@@ -5,10 +5,13 @@ import com.github.dimanolog.flickr.model.flickr.Photo;
 import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -32,13 +35,17 @@ public class GsonPhotoParser implements IParser<IPhoto> {
     }
 
     @Override
-    public IPhoto parseObject(String jsonString) {
-        return mGson.fromJson(jsonString, Photo.class);
+    public IPhoto parseObject(String pJsonString) {
+        return mGson.fromJson(pJsonString, Photo.class);
     }
 
     @Override
-    public List<IPhoto> parseArray(String jsonArray) {
-        IPhoto[] photos = mGson.fromJson(jsonArray, Photo[].class);
+    public List<IPhoto> parseArray(String pJsonString) {
+        JsonParser parser = new JsonParser();
+        JsonObject jsonBody=parser.parse(pJsonString).getAsJsonObject();
+        JsonObject jsonObjPhotos=jsonBody.getAsJsonObject("photos");
+        JsonArray jsonArrayPhoto=jsonObjPhotos.getAsJsonArray("photo");
+        IPhoto[] photos = mGson.fromJson(jsonArrayPhoto, Photo[].class);
         return Arrays.asList(photos);
     }
 }

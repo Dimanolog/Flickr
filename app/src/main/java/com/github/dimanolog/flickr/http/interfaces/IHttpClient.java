@@ -10,6 +10,4 @@ public interface IHttpClient {
 
    public void request(String url, HttpClient.ResponseListener listener);
 
-
-
 }
