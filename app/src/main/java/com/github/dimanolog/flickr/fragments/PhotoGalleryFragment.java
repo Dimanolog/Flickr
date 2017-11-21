@@ -3,6 +3,7 @@ package com.github.dimanolog.flickr.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -62,9 +63,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mProgressBar = v.findViewById(R.id.progressBar);
         mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
+        mPhotoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mPhotoRecyclerView.setHasFixedSize(true);
 
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -75,6 +77,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 }
             }
         });
+
         updateItems();
         return v;
     }
@@ -168,7 +171,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         }
     }
 
-    void loading(boolean state) {
+    private void loading(boolean state) {
         mLoading = state;
         mProgressBar.setVisibility(state ? View.VISIBLE : View.GONE);
     }
@@ -181,7 +184,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(List<IPhoto> result) {
-        mItems = result;
+        mItems.addAll(result);
         loading(false);
         setupOrUpdateAdapter();
         mCurrentPage++;
@@ -194,14 +197,13 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private IPhoto mPhoto;
-
-        private final TextView mInfoTxtVw;
-        private final ImageView mPhotoImageVw;
+        private TextView mInfoTxtVw;
+        private ImageView mPhotoImageVw;
 
         PhotoHolder(View itemView) {
             super(itemView);
-            mInfoTxtVw = itemView.findViewById(R.id.info_text);
-            mPhotoImageVw = itemView.findViewById(R.id.photo_image_view);
+            mInfoTxtVw = itemView.findViewById(R.id.text_view);
+            mPhotoImageVw = itemView.findViewById(R.id.image_view);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
