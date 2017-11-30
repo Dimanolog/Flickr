@@ -202,8 +202,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         PhotoHolder(View itemView) {
             super(itemView);
-            mInfoTxtVw = itemView.findViewById(R.id.text_view);
-            mPhotoImageVw = itemView.findViewById(R.id.image_view);
+            mInfoTxtVw = itemView.findViewById(R.id.info_text);
+            mPhotoImageVw = itemView.findViewById(R.id.photo_image_view);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
