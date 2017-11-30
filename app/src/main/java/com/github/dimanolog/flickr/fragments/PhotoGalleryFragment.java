@@ -208,6 +208,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         void bindPhotoItem(IPhoto photoItem) {
             mPhoto = photoItem;
+            mPhotoImageVw.setOnClickListener(this);
             mInfoTxtVw.setText(mPhoto.getCaption());
             Picasso.with(getActivity())
                     .load(mPhoto.getUrl())
