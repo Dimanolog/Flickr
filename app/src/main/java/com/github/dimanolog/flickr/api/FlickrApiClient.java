@@ -39,6 +39,7 @@ public class FlickrApiClient implements IFlickrApiClient {
         String url = ApiConstants.ENDPOINT.buildUpon()
                 .appendQueryParameter(METHOD, SEARCH_METHOD)
                 .appendQueryParameter(PAGE, String.valueOf(page))
+                .appendQueryParameter("text", search)
                 .build()
                 .toString();
         String result = startRequest(url);

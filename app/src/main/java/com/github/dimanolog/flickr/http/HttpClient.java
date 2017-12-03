@@ -14,7 +14,6 @@ public class HttpClient implements IHttpClient {
         void onResponse(InputStream inputStream) throws IOException;
 
         void onError(Throwable t);
-
     }
 
     @Override
@@ -29,5 +28,10 @@ public class HttpClient implements IHttpClient {
             listener.onError(t);
         }
     }
+
+  /*  public InputStream request(String url, ResponseListener listener) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+        return con.getInputStream();
+    }*/
 }
 

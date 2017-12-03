@@ -27,6 +27,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activities.PhotoPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+
         <receiver android:name="receviers.StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

@@ -3,6 +3,7 @@ package com.github.dimanolog.flickr.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -13,9 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
@@ -33,6 +34,7 @@ import java.util.List;
 public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallbacks<List<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();
+    private static final int WIDTH_COLUMNS = 360;
 
     private RecyclerView mPhotoRecyclerView;
     private ProgressBar mProgressBar;
@@ -63,6 +65,15 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         mProgressBar = v.findViewById(R.id.progressBar);
         mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
 
+        mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int pxl = mPhotoRecyclerView.getWidth();
+                int nmbOfClmns = pxl / WIDTH_COLUMNS;
+                mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), nmbOfClmns));
+            }
+        });
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -150,11 +161,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
         if (TextUtils.isEmpty(query)) {
-            mPhotoDataProvider.getRecent(mCurrentPage);
+            mPhotoDataProvider.getRecent(mCurrentPage, mUpdating);
         } else {
-            mPhotoDataProvider.searchPhotos(mCurrentPage, query);
+            mPhotoDataProvider.searchPhotos(mCurrentPage, query, mUpdating);
         }
-
     }
 
     private void setupOrUpdateAdapter() {
@@ -181,7 +191,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(List<IPhoto> result) {
-        mItems = result;
+        mItems=result;
         loading(false);
         setupOrUpdateAdapter();
         mCurrentPage++;
@@ -194,23 +204,22 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private IPhoto mPhoto;
-
-        private final TextView mInfoTxtVw;
-        private final ImageView mPhotoImageVw;
+        private ImageView mPhotoImageVw;
 
         PhotoHolder(View itemView) {
             super(itemView);
-            mInfoTxtVw = itemView.findViewById(R.id.info_text);
-            mPhotoImageVw = itemView.findViewById(R.id.photo_image_view);
+            mPhotoImageVw = itemView.findViewById(R.id.fragment_photo_gallery_image_view);
+            mPhotoImageVw.setOnClickListener(this);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
             mPhoto = photoItem;
-            mInfoTxtVw.setText(mPhoto.getCaption());
-            Picasso.with(getActivity())
+
+           Picasso.with(getActivity())
                     .load(mPhoto.getUrl())
                     .placeholder(R.drawable.no_photo)
                     .error(R.drawable.no_photo)
+                    .centerCrop()
                     .into(mPhotoImageVw);
         }
 

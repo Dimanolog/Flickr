@@ -16,10 +16,10 @@ public class IOUtils {
 
     private IOUtils(){}
 
-    public static void close(Closeable closeable) {
-        if (closeable != null) {
+    public static void close(Closeable pCloseable) {
+        if (pCloseable != null) {
             try {
-                closeable.close();
+                pCloseable.close();
             } catch (IOException e) {
                Log.e("IOUtils", e.getMessage());
             }
@@ -27,21 +27,24 @@ public class IOUtils {
     }
 
 
+    public static byte[] toByteArray(InputStream pInputStream){
+        BufferedReader reader = null;
 
+    }
 
-    public static String toString(InputStream inputStream) throws IOException {
+    public static String toString(InputStream pInputstream) throws IOException {
         InputStreamReader inputStreamReader = null;
         BufferedReader reader = null;
         StringBuilder sb = new StringBuilder();
         String line = null;
         try {
-            inputStreamReader = new InputStreamReader(inputStream);
+            inputStreamReader = new InputStreamReader(pInputstream);
             reader = new BufferedReader(inputStreamReader);
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
         } finally {
-            close(inputStream);
+            close(pInputstream);
             close(inputStreamReader);
             close(reader);
         }
