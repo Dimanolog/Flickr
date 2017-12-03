@@ -14,12 +14,12 @@ class ImageRequest {
 
 
     ImageRequest(ImageRequestBuilder pBuilder) {
-            mUri=pBuilder.mUri;
-            mPlaceholderResId=pBuilder.mPlaceholderResID;
-            mTargetImageView= pBuilder.mTargetImageView;
-            mTargetHeight=pBuilder.mTargetHeight;
-            mTargetWidth=pBuilder.mTargetWidth;
-            mCallback=pBuilder.mCallback;
+        mUri = pBuilder.mUri;
+        mPlaceholderResId = pBuilder.mPlaceholderResID;
+        mTargetImageView = pBuilder.mTargetImageView;
+        mTargetHeight = pBuilder.mTargetHeight;
+        mTargetWidth = pBuilder.mTargetWidth;
+        mCallback = pBuilder.mCallback;
     }
 
     public Uri getUri() {
@@ -47,6 +47,7 @@ class ImageRequest {
     }
 
     static public final class ImageRequestBuilder {
+        private final VanGogh mVanGogh;
         private Uri mUri;
         private ImageView mTargetImageView;
         private int mTargetHeight;
@@ -54,12 +55,14 @@ class ImageRequest {
         private int mPlaceholderResID;
         private VanGoghCallback mCallback;
 
-        ImageRequestBuilder(Uri pUri) {
+        ImageRequestBuilder(Uri pUri, VanGogh pVanGogh) {
             mUri = pUri;
+            mVanGogh = pVanGogh;
         }
 
-        ImageRequestBuilder(String pUrl) {
+        ImageRequestBuilder(String pUrl, VanGogh pVanGogh) {
             mUri = Uri.parse(pUrl);
+            mVanGogh = pVanGogh;
         }
 
         public ImageRequestBuilder resize(int pHeight, int pWidth) {
@@ -70,16 +73,22 @@ class ImageRequest {
         }
 
         public ImageRequestBuilder placeHolder(int pResID) {
-                mPlaceholderResID=pResID;
-                return this;
-        }
-        public  void into(ImageView pTarget){
-            mTargetImageView =pTarget;
-
+            mPlaceholderResID = pResID;
+            return this;
         }
 
-        public void into(VanGoghCallback pCallback){
-            mCallback=pCallback;
+        public void into(ImageView pTarget) {
+            mTargetImageView = pTarget;
+            startImageRequest();
+        }
+
+        public void into(VanGoghCallback pCallback) {
+            mCallback = pCallback;
+            startImageRequest();
+        }
+
+        private void startImageRequest() {
+            mVanGogh.queueThumbnail(new ImageRequest(this));
         }
     }
 }

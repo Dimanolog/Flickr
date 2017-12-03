@@ -22,10 +22,10 @@ import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
 import com.github.dimanolog.flickr.dataloader.IDataProviderCallbacks;
 import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
+import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,11 +215,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         void bindPhotoItem(IPhoto photoItem) {
             mPhoto = photoItem;
 
-           Picasso.with(getActivity())
+           VanGogh.with(getActivity())
                     .load(mPhoto.getUrl())
-                    .placeholder(R.drawable.no_photo)
-                    .error(R.drawable.no_photo)
-                    .centerCrop()
                     .into(mPhotoImageVw);
         }
 
