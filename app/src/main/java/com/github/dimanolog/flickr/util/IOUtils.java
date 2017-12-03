@@ -3,6 +3,7 @@ package com.github.dimanolog.flickr.util;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,22 +15,38 @@ import java.io.InputStreamReader;
 
 public class IOUtils {
 
-    private IOUtils(){}
+    private IOUtils() {
+    }
 
     public static void close(Closeable pCloseable) {
         if (pCloseable != null) {
             try {
                 pCloseable.close();
             } catch (IOException e) {
-               Log.e("IOUtils", e.getMessage());
+                Log.e("IOUtils", e.getMessage());
             }
         }
     }
 
+    public static byte[] toByteArray(InputStream pInputstream) {
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        byte[] bytes = null;
+        try {
+            byteArrayOutputStream = new ByteArrayOutputStream(pInputstream.available());
 
-    public static byte[] toByteArray(InputStream pInputStream){
-        BufferedReader reader = null;
-
+            byte[] chunk = new byte[1 << 16];
+            int bytesRead;
+            while ((bytesRead = pInputstream.read(chunk)) > 0) {
+                byteArrayOutputStream.write(chunk, 0, bytesRead);
+            }
+            bytes = byteArrayOutputStream.toByteArray();
+        } catch (IOException pE) {
+            pE.printStackTrace();
+        } finally {
+            close(pInputstream);
+            close(byteArrayOutputStream);
+        }
+        return bytes;
     }
 
     public static String toString(InputStream pInputstream) throws IOException {

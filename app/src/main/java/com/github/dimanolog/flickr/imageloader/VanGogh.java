@@ -66,19 +66,6 @@ public class VanGogh extends HandlerThread {
             }
 
 
-
-          new HttpClient().request(url, new HttpClient.ResponseListener() {
-              @Override
-              public void onResponse(InputStream inputStream) throws IOException {
-
-              }
-
-              @Override
-              public void onError(Throwable t) {
-
-              }
-          });
-
             byte[] bitmapBytes;
 
             final Bitmap bitmap = BitmapFactory
