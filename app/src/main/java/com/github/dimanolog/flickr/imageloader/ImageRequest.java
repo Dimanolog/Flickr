@@ -54,17 +54,12 @@ class ImageRequest {
         private int mPlaceholderResID;
         private VanGoghCallback mCallback;
 
-        ImageRequestBuilder() {
-        }
-
-        public ImageRequestBuilder load(String pUrl) {
-            mUri = Uri.parse(pUrl);
-            return this;
-        }
-
-        public ImageRequestBuilder load(Uri pUri) {
+        ImageRequestBuilder(Uri pUri) {
             mUri = pUri;
-            return this;
+        }
+
+        ImageRequestBuilder(String pUrl) {
+            mUri = Uri.parse(pUrl);
         }
 
         public ImageRequestBuilder resize(int pHeight, int pWidth) {
@@ -80,6 +75,7 @@ class ImageRequest {
         }
         public  void into(ImageView pTarget){
             mTargetImageView =pTarget;
+
         }
 
         public void into(VanGoghCallback pCallback){

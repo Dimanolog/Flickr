@@ -9,6 +9,8 @@ import java.net.URL;
 
 
 public class HttpClient implements IHttpClient {
+    private static final int READ_TIMEOUT = 5000;
+    private static final int CONNECT_TIMEOUT = 5000;
 
     public interface ResponseListener {
         void onResponse(InputStream inputStream) throws IOException;
@@ -17,21 +19,28 @@ public class HttpClient implements IHttpClient {
     }
 
     @Override
-    public void request(String url, ResponseListener listener) {
+    public void request(String pUrl, ResponseListener pListener) {
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL(pUrl).openConnection();
+            tuneConnection(con);
             InputStream is = con.getInputStream();
-            listener.onResponse(is);
+            pListener.onResponse(is);
             con.disconnect();
         } catch (Throwable t) {
             t.printStackTrace();
-            listener.onError(t);
+            pListener.onError(t);
         }
     }
 
-  /*  public InputStream request(String url, ResponseListener listener) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-        return con.getInputStream();
-    }*/
+    public InputStream request(String pUrl) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) (new URL(pUrl)).openConnection();
+        tuneConnection(connection);
+        return connection.getInputStream();
+    }
+
+    private void tuneConnection(HttpURLConnection pConnection) {
+        pConnection.setConnectTimeout(CONNECT_TIMEOUT);
+        pConnection.setReadTimeout(READ_TIMEOUT);
+    }
 }
 

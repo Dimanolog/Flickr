@@ -28,7 +28,7 @@ public class IOUtils {
         }
     }
 
-    public static byte[] toByteArray(InputStream pInputstream) {
+    public static byte[] toByteArray(InputStream pInputstream) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = null;
         byte[] bytes = null;
         try {
@@ -40,8 +40,6 @@ public class IOUtils {
                 byteArrayOutputStream.write(chunk, 0, bytesRead);
             }
             bytes = byteArrayOutputStream.toByteArray();
-        } catch (IOException pE) {
-            pE.printStackTrace();
         } finally {
             close(pInputstream);
             close(byteArrayOutputStream);

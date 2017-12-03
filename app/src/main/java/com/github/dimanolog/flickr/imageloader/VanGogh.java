@@ -1,16 +1,20 @@
 package com.github.dimanolog.flickr.imageloader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.github.dimanolog.flickr.http.HttpClient;
+import com.github.dimanolog.flickr.util.IOUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,13 +22,38 @@ public class VanGogh extends HandlerThread {
     private static final String TAG = VanGogh.class.getSimpleName();
     private static final int MESSAGE_DOWNLOAD = 0;
 
-    private Handler mRequestHandler;
-    private ConcurrentMap<ImageRequest,String> mRequestMap = new ConcurrentHashMap<>();
-    private Handler mResponseHandler;
+    static volatile VanGogh sInstance = null;
 
-    public VanGogh(Handler responseHandler) {
+    private Context mContext;
+    private Handler mRequestHandler;
+    private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
+    private Handler mResponseHandler = new Handler(Looper.getMainLooper());
+
+
+    public VanGogh with(Context pContext) {
+        if (sInstance == null) {
+            synchronized (VanGogh.class) {
+                sInstance = new VanGogh(pContext);
+                return sInstance;
+            }
+        }
+        return sInstance;
+    }
+
+    VanGogh(Context pContext) {
         super(TAG);
-        mResponseHandler = responseHandler;
+        if (pContext == null) {
+            throw new IllegalArgumentException("Context must not be null.");
+        }
+        mContext = pContext.getApplicationContext();
+    }
+
+    public ImageRequest.ImageRequestBuilder load(String pUrl) {
+        return new ImageRequest.ImageRequestBuilder(pUrl);
+    }
+
+    public ImageRequest.ImageRequestBuilder load(Uri pUri) {
+        return new ImageRequest.ImageRequestBuilder(pUri);
     }
 
     @Override
@@ -41,7 +70,7 @@ public class VanGogh extends HandlerThread {
         };
     }
 
-    public void queueThumbnail( ImageRequest target, String url) {
+    public void queueThumbnail(ImageRequest target, String url) {
         Log.i(TAG, "Got a URL: " + url);
 
         if (url == null) {
@@ -65,8 +94,7 @@ public class VanGogh extends HandlerThread {
                 return;
             }
 
-
-            byte[] bitmapBytes;
+            final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(url));
 
             final Bitmap bitmap = BitmapFactory
                     .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
@@ -74,10 +102,17 @@ public class VanGogh extends HandlerThread {
 
             mResponseHandler.post(new Runnable() {
                 public void run() {
-                    if (mRequestMap.get(target) != url) {
+                    if (mRequestMap.get(target) != null) {
+                        ImageView imageView = target.getTargetImageView();
+                        if (imageView != null) {
+                            imageView.setImageBitmap(bitmap);
+                        }
+                        if(target.getCallback()!=null){
+                            target.getCallback().onSuccess(bitmap);
+                        }
+
                         return;
                     }
-
                     mRequestMap.remove(target);
                 }
             });
