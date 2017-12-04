@@ -3,6 +3,7 @@ package com.github.dimanolog.flickr.imageloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -100,6 +101,13 @@ public class VanGogh extends HandlerThread {
             });
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
+        }
+    }
+
+    private void beforeLoading(final ImageRequest target){
+        Drawable img = mContext.getResources().getDrawable(target.getPlaceholderResId());
+        if(target.getTargetImageView()!=null){
+            target.getTargetImageView().setImageDrawable(img);
         }
     }
 }
