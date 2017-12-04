@@ -14,12 +14,12 @@ import java.util.List;
 
 public class PhotoDataProvider {
 
-    public static PhotoDataProvider sInstance;
+    private static PhotoDataProvider sInstance;
     private Context mContext;
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiClient();
     private IDataProviderCallbacks<List<IPhoto>> mIDataProviderCallbacks;
     private IRequest<List<IPhoto>> mRequest;
-    private List<IPhoto> mIPhotoList=new ArrayList<>();
+    private List<IPhoto> mIPhotoList = new ArrayList<>();
 
 
     private PhotoDataProvider(Context pContext) {
@@ -35,7 +35,7 @@ public class PhotoDataProvider {
         return sInstance;
     }
 
-    public void searchPhotos(final int pPage, final String query) {
+    public void searchPhotos(final int pPage, final String query, boolean update) {
         IRequest<List<IPhoto>> request = new IRequest<List<IPhoto>>() {
             @Override
             public List<IPhoto> runRequest() {
@@ -43,10 +43,10 @@ public class PhotoDataProvider {
             }
         };
         mRequest = request;
-        startLoading(request);
+        startLoading(request, update);
     }
 
-    public void getRecent(final int pPage) {
+    public void getRecent(final int pPage, boolean update) {
         IRequest<List<IPhoto>> request = new IRequest<List<IPhoto>>() {
             @Override
             public List<IPhoto> runRequest() {
@@ -54,15 +54,15 @@ public class PhotoDataProvider {
             }
         };
         mRequest = request;
-        startLoading(request);
+        startLoading(request, update);
     }
 
     public void registerCallback(@NonNull IDataProviderCallbacks<List<IPhoto>> pCallback) {
         mIDataProviderCallbacks = pCallback;
     }
 
-    private void startLoading(@NonNull IRequest<List<IPhoto>> pRequest) {
-        RequestTask requestTask = new RequestTask();
+    private void startLoading(@NonNull IRequest<List<IPhoto>> pRequest, boolean update) {
+        RequestTask requestTask = new RequestTask(update);
         requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pRequest);
     }
 
@@ -72,6 +72,12 @@ public class PhotoDataProvider {
 
 
     private class RequestTask extends AsyncTask<IRequest<List<IPhoto>>, Void, List<IPhoto>> {
+        private boolean mUpdate;
+
+        RequestTask(boolean pUpdate) {
+            mUpdate = pUpdate;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -89,7 +95,13 @@ public class PhotoDataProvider {
         protected void onPostExecute(List<IPhoto> pResult) {
             super.onPostExecute(pResult);
             if (mIDataProviderCallbacks != null && pResult != null) {
-                mIPhotoList.addAll(pResult);
+                if (mUpdate) {
+                    mIPhotoList.addAll(pResult);
+
+                } else {
+                    mIPhotoList.clear();
+                    mIPhotoList.addAll(pResult);
+                }
                 mIDataProviderCallbacks.onSuccessResult(mIPhotoList);
             }
         }

@@ -52,7 +52,7 @@ public class PhotoPageFragment extends VisibleFragment {
 
         mProgressBar =
                 v.findViewById(R.id.fragment_photo_page_progress_bar);
-        mProgressBar.setMax(100); // Значения в диапазоне 0-100
+        mProgressBar.setMax(100);
 
         mWebView =  v.findViewById
                 (R.id.fragment_photo_page_web_view);

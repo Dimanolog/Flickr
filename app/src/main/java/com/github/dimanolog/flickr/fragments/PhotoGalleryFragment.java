@@ -3,7 +3,7 @@ package com.github.dimanolog.flickr.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -14,18 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
 import com.github.dimanolog.flickr.dataloader.IDataProviderCallbacks;
 import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
+import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ import java.util.List;
 public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallbacks<List<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();
+    private static final int WIDTH_COLUMNS = 360;
 
     private RecyclerView mPhotoRecyclerView;
     private ProgressBar mProgressBar;
@@ -63,10 +64,18 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mProgressBar = v.findViewById(R.id.progressBar);
         mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
-        mPhotoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mPhotoRecyclerView.setHasFixedSize(true);
 
+        mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int pxl = mPhotoRecyclerView.getWidth();
+                int nmbOfClmns = pxl / WIDTH_COLUMNS;
+                mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), nmbOfClmns));
+            }
+        });
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -77,7 +86,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 }
             }
         });
-
         updateItems();
         return v;
     }
@@ -153,11 +161,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
         if (TextUtils.isEmpty(query)) {
-            mPhotoDataProvider.getRecent(mCurrentPage);
+            mPhotoDataProvider.getRecent(mCurrentPage, mUpdating);
         } else {
-            mPhotoDataProvider.searchPhotos(mCurrentPage, query);
+            mPhotoDataProvider.searchPhotos(mCurrentPage, query, mUpdating);
         }
-
     }
 
     private void setupOrUpdateAdapter() {
@@ -171,7 +178,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         }
     }
 
-    private void loading(boolean state) {
+    void loading(boolean state) {
         mLoading = state;
         mProgressBar.setVisibility(state ? View.VISIBLE : View.GONE);
     }
@@ -184,7 +191,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(List<IPhoto> result) {
-        mItems.addAll(result);
+        mItems=result;
         loading(false);
         setupOrUpdateAdapter();
         mCurrentPage++;
@@ -197,23 +204,19 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private IPhoto mPhoto;
-        private TextView mInfoTxtVw;
         private ImageView mPhotoImageVw;
 
         PhotoHolder(View itemView) {
             super(itemView);
-            mInfoTxtVw = itemView.findViewById(R.id.info_text);
-            mPhotoImageVw = itemView.findViewById(R.id.photo_image_view);
+            mPhotoImageVw = itemView.findViewById(R.id.fragment_photo_gallery_image_view);
+            mPhotoImageVw.setOnClickListener(this);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
             mPhoto = photoItem;
-            mPhotoImageVw.setOnClickListener(this);
-            mInfoTxtVw.setText(mPhoto.getCaption());
-            Picasso.with(getActivity())
+
+           VanGogh.with(getActivity())
                     .load(mPhoto.getUrl())
-                    .placeholder(R.drawable.no_photo)
-                    .error(R.drawable.no_photo)
                     .into(mPhotoImageVw);
         }
 
