@@ -23,7 +23,7 @@ public class VanGogh extends HandlerThread {
     private static volatile VanGogh sInstance = null;
 
     private Context mContext;
-    private Handler mRequestHandler = new Handler(Looper.myLooper());
+    private Handler mRequestHandler;
     //private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler = new Handler(Looper.getMainLooper());
 
