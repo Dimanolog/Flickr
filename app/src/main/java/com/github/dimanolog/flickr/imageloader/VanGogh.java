@@ -20,10 +20,10 @@ public class VanGogh extends HandlerThread {
     private static final String TAG = VanGogh.class.getSimpleName();
     private static final int MESSAGE_DOWNLOAD = 0;
 
-    static volatile VanGogh sInstance = null;
+    private static volatile VanGogh sInstance = null;
 
     private Context mContext;
-    private Handler mRequestHandler;
+    private Handler mRequestHandler = new Handler(Looper.myLooper());
     //private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler = new Handler(Looper.getMainLooper());
 
@@ -38,12 +38,14 @@ public class VanGogh extends HandlerThread {
         return sInstance;
     }
 
-    VanGogh(Context pContext) {
+    private VanGogh(Context pContext) {
         super(TAG);
         if (pContext == null) {
             throw new IllegalArgumentException("Context must not be null.");
         }
         mContext = pContext.getApplicationContext();
+        super.start();
+        super.getLooper();
     }
 
     public ImageRequest.ImageRequestBuilder load(String pUrl) {
@@ -67,7 +69,7 @@ public class VanGogh extends HandlerThread {
         };
     }
 
-    public void queueThumbnail(ImageRequest target) {
+    void queueThumbnail(ImageRequest target) {
         Log.i(TAG, "Got a URL: " + target.getUri().toString());
         mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
                 .sendToTarget();
@@ -87,14 +89,14 @@ public class VanGogh extends HandlerThread {
 
             mResponseHandler.post(new Runnable() {
                 public void run() {
-                        ImageView imageView = target.getTargetImageView();
-                        if (imageView != null) {
-                            imageView.setImageBitmap(bitmap);
-                        }
-                        if (target.getCallback() != null) {
-                            target.getCallback().onSuccess(bitmap);
-                        }
+                    ImageView imageView = target.getTargetImageView();
+                    if (imageView != null) {
+                        imageView.setImageBitmap(bitmap);
                     }
+                    if (target.getCallback() != null) {
+                        target.getCallback().onSuccess(bitmap);
+                    }
+                }
             });
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);

@@ -191,7 +191,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(List<IPhoto> result) {
-        mItems=result;
+        mItems = result;
         loading(false);
         setupOrUpdateAdapter();
         mCurrentPage++;
@@ -215,7 +215,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         void bindPhotoItem(IPhoto photoItem) {
             mPhoto = photoItem;
 
-           VanGogh.with(getActivity())
+            VanGogh.with(getActivity())
                     .load(mPhoto.getUrl())
                     .into(mPhotoImageVw);
         }
