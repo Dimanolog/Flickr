@@ -1,5 +1,7 @@
 package com.github.dimanolog.flickr.imageloader;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,9 +11,12 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.util.IOUtils;
 
@@ -25,6 +30,8 @@ public class VanGogh extends HandlerThread {
 
     private Context mContext;
     private Handler mRequestHandler;
+    private LruCache<String, Bitmap> mLruCache;
+
     //private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler = new Handler(Looper.getMainLooper());
 
@@ -45,9 +52,18 @@ public class VanGogh extends HandlerThread {
             throw new IllegalArgumentException("Context must not be null.");
         }
         mContext = pContext.getApplicationContext();
+        onInitilize();
+    }
+
+    private void onInitilize() {
         super.start();
         super.getLooper();
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
+        mLruCache = new LruCache<String, Bitmap>(availMemorInBytes/8);
+
     }
+
 
     public ImageRequest.ImageRequestBuilder load(String pUrl) {
         return new ImageRequest.ImageRequestBuilder(pUrl, this);
@@ -74,6 +90,7 @@ public class VanGogh extends HandlerThread {
         Log.i(TAG, "Got a URL: " + target.getUri().toString());
         mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
                 .sendToTarget();
+        beforeLoading(target);
     }
 
 
@@ -82,31 +99,47 @@ public class VanGogh extends HandlerThread {
     }
 
     private void handleRequest(final ImageRequest target) {
-        try {
-            final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(target.getUri().toString()));
-            final Bitmap bitmap = BitmapFactory
-                    .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-            Log.i(TAG, "Bitmap created");
+        String url = target.getUri().toString();
+        Bitmap bitmap=mLruCache.get(url);
+        if(bitmap!=null){
+            handleRequest(bitmap,target);
+            return;
+        }
 
-            mResponseHandler.post(new Runnable() {
-                public void run() {
-                    ImageView imageView = target.getTargetImageView();
-                    if (imageView != null) {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                    if (target.getCallback() != null) {
-                        target.getCallback().onSuccess(bitmap);
-                    }
-                }
-            });
-        } catch (IOException ioe) {
-            Log.e(TAG, "Error downloading image", ioe);
+        if(target.getTargetImageView()!=null) {
+            try {
+                final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(url));
+                bitmap = BitmapFactory
+                        .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+                Log.i(TAG, "Bitmap created");
+                mLruCache.put(url, bitmap);
+                handleRequest(bitmap, target);
+
+            } catch (IOException ioe) {
+                Log.e(TAG, "Error downloading image", ioe);
+            }
         }
     }
 
-    private void beforeLoading(final ImageRequest target){
-        Drawable img = mContext.getResources().getDrawable(target.getPlaceholderResId());
-        if(target.getTargetImageView()!=null){
+
+    private void handleRequest(final Bitmap pBitmap, final ImageRequest target){
+        mResponseHandler.post(new Runnable() {
+            public void run() {
+                ImageView imageView = target.getTargetImageView();
+                if (imageView != null) {
+                    imageView.setImageBitmap(pBitmap);
+                }
+                if (target.getCallback() != null) {
+                    target.getCallback().onSuccess(pBitmap);
+                }
+            }
+        });
+    }
+
+    private void beforeLoading(final ImageRequest target) {
+        Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
+                target.getPlaceholderResId(), null);
+        if (target.getTargetImageView() != null) {
             target.getTargetImageView().setImageDrawable(img);
         }
     }

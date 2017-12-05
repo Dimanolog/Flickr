@@ -217,6 +217,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
             VanGogh.with(getActivity())
                     .load(mPhoto.getUrl())
+                    .placeHolder(R.drawable.no_photo)
                     .into(mPhotoImageVw);
         }
 
