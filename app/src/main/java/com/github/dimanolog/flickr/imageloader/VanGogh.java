@@ -1,6 +1,5 @@
 package com.github.dimanolog.flickr.imageloader;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,10 +15,10 @@ import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.util.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 
 public class VanGogh extends HandlerThread {
@@ -31,6 +30,7 @@ public class VanGogh extends HandlerThread {
     private Context mContext;
     private Handler mRequestHandler;
     private LruCache<String, Bitmap> mLruCache;
+    private DiskLruCache mDiskLruCache;
 
     //private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler = new Handler(Looper.getMainLooper());
@@ -60,7 +60,7 @@ public class VanGogh extends HandlerThread {
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
-        mLruCache = new LruCache<String, Bitmap>(availMemorInBytes/8);
+        mLruCache = new LruCache<String, Bitmap>(availMemorInBytes / 8);
 
     }
 
@@ -80,7 +80,7 @@ public class VanGogh extends HandlerThread {
             public void handleMessage(Message msg) {
                 if (msg.what == MESSAGE_DOWNLOAD) {
                     ImageRequest target = (ImageRequest) msg.obj;
-                    handleRequest(target);
+                    handleResponse(target);
                 }
             }
         };
@@ -88,9 +88,14 @@ public class VanGogh extends HandlerThread {
 
     void queueThumbnail(ImageRequest target) {
         Log.i(TAG, "Got a URL: " + target.getUri().toString());
-        mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
-                .sendToTarget();
-        beforeLoading(target);
+        Bitmap bitmap = mLruCache.get(target.getUri().toString());
+        if (bitmap != null) {
+            handleResponse(bitmap, target);
+        } else {
+            beforeLoading(target);
+            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
+                    .sendToTarget();
+        }
     }
 
 
@@ -98,22 +103,28 @@ public class VanGogh extends HandlerThread {
         mRequestHandler.removeMessages(MESSAGE_DOWNLOAD);
     }
 
-    private void handleRequest(final ImageRequest target) {
+    private void handleResponse(final ImageRequest target) {
         String url = target.getUri().toString();
-        Bitmap bitmap=mLruCache.get(url);
-        if(bitmap!=null){
-            handleRequest(bitmap,target);
+        Bitmap bitmap = mLruCache.get(url);
+        if (bitmap != null) {
+            handleResponse(bitmap, target);
             return;
         }
 
-        if(target.getTargetImageView()!=null) {
+        File file = mDiskLruCache.get(url);
+        if (file != null) {
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            handleResponse(bitmap, target);
+        }
+        if (target.getTargetImageView() != null) {
             try {
                 final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(url));
                 bitmap = BitmapFactory
                         .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
                 Log.i(TAG, "Bitmap created");
                 mLruCache.put(url, bitmap);
-                handleRequest(bitmap, target);
+                mDiskLruCache.add(url, bitmap);
+                handleResponse(bitmap, target);
 
             } catch (IOException ioe) {
                 Log.e(TAG, "Error downloading image", ioe);
@@ -122,7 +133,7 @@ public class VanGogh extends HandlerThread {
     }
 
 
-    private void handleRequest(final Bitmap pBitmap, final ImageRequest target){
+    private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {
         mResponseHandler.post(new Runnable() {
             public void run() {
                 ImageView imageView = target.getTargetImageView();
@@ -135,6 +146,17 @@ public class VanGogh extends HandlerThread {
             }
         });
     }
+
+  /*  private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {
+        ImageView imageView = target.getTargetImageView();
+        if (imageView != null) {
+            imageView.setImageBitmap(pBitmap);
+        }
+        if (target.getCallback() != null) {
+            target.getCallback().onSuccess(pBitmap);
+        }
+    }*/
+
 
     private void beforeLoading(final ImageRequest target) {
         Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
