@@ -52,15 +52,16 @@ public class VanGogh extends HandlerThread {
             throw new IllegalArgumentException("Context must not be null.");
         }
         mContext = pContext.getApplicationContext();
-        onInitilize();
+        onInitialize();
     }
 
-    private void onInitilize() {
+    private void onInitialize() {
         super.start();
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
-        mLruCache = new LruCache<String, Bitmap>(availMemorInBytes / 8);
+        mLruCache = new LruCache<String, Bitmap>(1000);
+        mDiskLruCache=new DiskLruCache(mContext);
 
     }
 
@@ -105,16 +106,12 @@ public class VanGogh extends HandlerThread {
 
     private void handleResponse(final ImageRequest target) {
         String url = target.getUri().toString();
-        Bitmap bitmap = mLruCache.get(url);
-        if (bitmap != null) {
-            handleResponse(bitmap, target);
-            return;
-        }
-
+        Bitmap bitmap;
         File file = mDiskLruCache.get(url);
         if (file != null) {
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             handleResponse(bitmap, target);
+            return;
         }
         if (target.getTargetImageView() != null) {
             try {
@@ -134,17 +131,20 @@ public class VanGogh extends HandlerThread {
 
 
     private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {
-        mResponseHandler.post(new Runnable() {
-            public void run() {
-                ImageView imageView = target.getTargetImageView();
-                if (imageView != null) {
-                    imageView.setImageBitmap(pBitmap);
+        if (pBitmap!=null) {
+            mResponseHandler.post(new Runnable() {
+                public void run() {
+
+                    ImageView imageView = target.getTargetImageView();
+                    if (imageView != null) {
+                        imageView.setImageBitmap(pBitmap);
+                    }
+                    if (target.getCallback() != null) {
+                        target.getCallback().onSuccess(pBitmap);
+                    }
                 }
-                if (target.getCallback() != null) {
-                    target.getCallback().onSuccess(pBitmap);
-                }
-            }
-        });
+            });
+        }
     }
 
   /*  private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {

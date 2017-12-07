@@ -74,6 +74,7 @@ public class DiskLruCache {
         if (files != null && files.length == 1) {
             File imageFile = files[0];
             imageFile.setLastModified(System.currentTimeMillis());
+            Log.d(TAG, String.format("success return file from cache: %s, %s",imageFile.getName(), imageUri));
             return imageFile;
         }
         return null;
@@ -98,6 +99,7 @@ public class DiskLruCache {
                     boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
                     if(savedSuccessfully) {
                         imageFile.setLastModified(System.currentTimeMillis());
+                        Log.d(TAG, "success create new image file in cache"+imageFile.getName());
                     }
                 }
             } catch (IOException e) {
