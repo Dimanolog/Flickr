@@ -150,7 +150,6 @@ public class DiskLruCache {
 
     private static long calculateDiskCacheSize(File dir) {
         long size = MIN_DISK_CACHE_SIZE;
-
         try {
             StatFs statFs = new StatFs(dir.getAbsolutePath());
             long available = ((long) statFs.getBlockCount()) * statFs.getBlockSize();
@@ -158,8 +157,8 @@ public class DiskLruCache {
         } catch (IllegalArgumentException ignored) {
         }
 
-//        return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
-        return 40772;
+       return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
+
     }
 }
 

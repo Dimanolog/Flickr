@@ -60,7 +60,7 @@ public class VanGogh extends HandlerThread {
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
-        mLruCache = new LruCache<String, Bitmap>(1000);
+        mLruCache = new LruCache<String, Bitmap>(10);
         mDiskLruCache=new DiskLruCache(mContext);
 
     }
