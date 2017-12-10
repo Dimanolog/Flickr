@@ -16,13 +16,13 @@ public class Photo implements IPhoto {
     @SerializedName("title")
     @Column("tittle")
     private String mCaption;
-    @Column("url")
+    @Column("url_s")
     @SerializedName("url_s")
     private String mUrl;
-    @Column("url")
+    @Column("owner")
     @SerializedName("owner")
     private String mOwner;
-    @Column("dateUpload")
+    @Column("date_upload")
     @SerializedName("dateupload")
     private Date uploadDate;
 

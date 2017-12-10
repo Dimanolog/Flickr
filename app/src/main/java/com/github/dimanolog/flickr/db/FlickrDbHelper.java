@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.github.dimanolog.flickr.db.annotations.Column;
 import com.github.dimanolog.flickr.db.annotations.Identity;
-import com.github.dimanolog.flickr.db.annotations.Table;
+import com.github.dimanolog.flickr.util.ReflectUtil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -20,20 +20,27 @@ import java.util.Map;
 
 public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final String TAG = FlickrDbHelper.class.getSimpleName();
-    private static final String TABLE_TEMPLATE =
-            "CREATE TABLE IF NOT EXISTS %s (%s) ";
+    private static final String DATABASE_NAME = "Flickr.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
     private static final String ID = "INTEGER PRIMARY KEY NOT NULL";
     private Map<Class<?>, String> classToSqlTypeMap = new HashMap<>();
 
 
-    public FlickrDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public FlickrDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        createTableFromModel(db);
+        Class<?>[] modelClasses = DbUtil.getModelClasses();
+        for (Class<?> clazz : modelClasses) {
+            String sql=getCreateTableSqlString(clazz);
+            if(sql!=null) {
+                createTable(sql);
+            }
+        }
     }
 
     @Override
@@ -41,46 +48,41 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
 
     }
 
-    private void createTableFromModel(SQLiteDatabase db) {
-        Class<?>[] modelClasses = ModelClassHolder.getModelClasses();
-
-        String tableName;
-        for (Class<?> clazz : modelClasses) {
-            Table tableAnnotation = clazz.getAnnotation(Table.class);
-            if (tableAnnotation == null) {
-                continue;
-            }
-            tableName = tableAnnotation.value();
-            Field[] fields = clazz.getFields();
-            StringBuilder sqlStringBuilder = new StringBuilder();
-            addSqlColumns(sqlStringBuilder, fields);
-            Log.d(TAG, "creating table: " + tableName);
-            createTable(db, String.format(TABLE_TEMPLATE, tableName, sqlStringBuilder.toString()));
+    private String getCreateTableSqlString(Class<?> pClass) {
+        String tableName = ReflectUtil.getTableName(pClass);
+        if (tableName == null) {
+            return null;
         }
+        Field[] fields = pClass.getDeclaredFields();
+        StringBuilder sqlStringBuilder = new StringBuilder();
+        addSqlColumns(sqlStringBuilder, fields);
+
+        return String.format(TABLE_TEMPLATE, tableName, sqlStringBuilder.toString());
     }
 
-    private void createTable(SQLiteDatabase pDb, String pSqlTable) {
-        pDb.beginTransaction();
+    private void createTable(String pSqlTable) {
+        SQLiteDatabase db=getWritableDatabase();
+        db.beginTransaction();
         try {
-            pDb.execSQL(pSqlTable);
-            pDb.setTransactionSuccessful();
+            db.execSQL(pSqlTable);
+            db.setTransactionSuccessful();
             Log.d(TAG, "create table success, table sql: " + pSqlTable);
         } catch (SQLException pE) {
-            Log.e(TAG, "Cant create tabel sql: " + pSqlTable);
+            Log.e(TAG, "cant create tabel sql: " + pSqlTable);
         } finally {
-            pDb.endTransaction();
+            db.endTransaction();
         }
     }
 
     private void addSqlColumns(StringBuilder pStringBuilder, Field[] pFields) {
-        Map<Class<?>, String> classToSqlTypeMap = ModelClassHolder.getTypesMap();
+        Map<Class<?>, String> classToSqlTypeMap = DbUtil.getTypesMap();
         for (Field field : pFields) {
             Column column = field.getAnnotation(Column.class);
             String columnName;
             String sqlType;
             if (column != null) {
                 columnName = column.value();
-                sqlType = classToSqlTypeMap.get(field.getClass());
+                sqlType = classToSqlTypeMap.get(field.getType());
                 if (sqlType != null) {
                     pStringBuilder.append(columnName)
                             .append(" ")
@@ -91,7 +93,7 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
             }
             Identity identity = field.getAnnotation(Identity.class);
             if (identity != null) {
-                sqlType = classToSqlTypeMap.get(field.getClass());
+                sqlType = classToSqlTypeMap.get(field.getType());
                 if (sqlType != null) {
                     pStringBuilder.append(identity.value())
                             .append(" ")

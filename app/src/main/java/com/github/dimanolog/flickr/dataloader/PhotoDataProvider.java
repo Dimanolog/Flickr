@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
+import com.github.dimanolog.flickr.db.FlickrDbHelper;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 
 import java.util.ArrayList;
@@ -20,11 +21,7 @@ public class PhotoDataProvider {
     private IDataProviderCallbacks<List<IPhoto>> mIDataProviderCallbacks;
     private IRequest<List<IPhoto>> mRequest;
     private List<IPhoto> mIPhotoList = new ArrayList<>();
-
-
-    private PhotoDataProvider(Context pContext) {
-        mContext = pContext.getApplicationContext();
-    }
+    private FlickrDbHelper mFlickrDbHelper;
 
     public static PhotoDataProvider getInstance(Context context) {
         if (sInstance == null) {
@@ -33,6 +30,12 @@ public class PhotoDataProvider {
             }
         }
         return sInstance;
+    }
+
+    private PhotoDataProvider(Context pContext) {
+        mContext = pContext.getApplicationContext();
+        mFlickrDbHelper=new FlickrDbHelper(pContext);
+        mFlickrDbHelper.getWritableDatabase();
     }
 
     public void searchPhotos(final int pPage, final String query, boolean update) {

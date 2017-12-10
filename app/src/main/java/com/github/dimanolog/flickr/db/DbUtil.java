@@ -10,15 +10,15 @@ import java.util.Map;
  * Created by Dimanolog on 09.12.2017.
  */
 
-public class ModelClassHolder {
-   public static Class<?>[] getModelClasses(){
-        return new Class[] {
+class DbUtil {
+    static Class<?>[] getModelClasses() {
+        return new Class[]{
                 Photo.class
         };
     }
 
-    public static Map<Class<?>,String> getTypesMap() {
-        Map<Class<?>,String> classToSqlTypeMap=new HashMap<>();
+    static Map<Class<?>, String> getTypesMap() {
+        Map<Class<?>, String> classToSqlTypeMap = new HashMap<>();
         classToSqlTypeMap.put(Integer.class, "INTEGER");
         classToSqlTypeMap.put(Long.class, "INTEGER");
         classToSqlTypeMap.put(Date.class, "INTEGER");
