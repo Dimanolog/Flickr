@@ -14,15 +14,12 @@ package com.github.dimanolog.flickr.imageloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
-import com.bumptech.glide.load.engine.cache.DiskCache;
+
 import com.github.dimanolog.flickr.util.IOUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -38,25 +35,26 @@ public class DiskLruCache {
     private static final String IMAGE_CACHE_DIR_NAME = "IMAGE_CACHE";
     private static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024;
     private static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024;
-    private final File cacheDir;
-    private final long cacheSize;
+
+    private final File mCacheDir;
+    private final long mCacheSize;
 
     public DiskLruCache(Context pContext) {
-        this.cacheDir = pContext.getCacheDir();
-        if (!cacheDir.exists()) {
-            boolean mkdir = this.cacheDir.mkdirs();
+        this.mCacheDir = pContext.getCacheDir();
+        if (!mCacheDir.exists()) {
+            boolean mkdir = this.mCacheDir.mkdirs();
             if (!mkdir) {
                 throw new IllegalStateException("Can't create dir for images");
             }
 
         }
-        this.cacheDir.setWritable(true);
+        this.mCacheDir.setWritable(true);
 
-        if (!this.cacheDir.canWrite()) {
+        if (!this.mCacheDir.canWrite()) {
             throw new IllegalStateException("Can't write into dir for images");
         }
 
-        cacheSize = calculateDiskCacheSize(this.cacheDir);
+        mCacheSize = calculateDiskCacheSize(this.mCacheDir);
         freeSpaceIfRequired();
 
     }
@@ -64,7 +62,7 @@ public class DiskLruCache {
 
     public File get(String imageUri) {
         final String fileName = MD5.hash(imageUri);
-        File[] files = cacheDir.listFiles(new FilenameFilter() {
+        File[] files = mCacheDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return fileName.equals(name);
@@ -85,7 +83,7 @@ public class DiskLruCache {
         File imageFile = get(imageUri);
         if (imageFile == null) {
             String fileName = MD5.hash(imageUri);
-            imageFile = new File(cacheDir, fileName);
+            imageFile = new File(mCacheDir, fileName);
 
             freeSpaceIfRequired();
             OutputStream os = null;
@@ -115,8 +113,8 @@ public class DiskLruCache {
     private void freeSpaceIfRequired() {
         Log.d(TAG, "freeSpaceIfRequired() called");
         long currentCacheSize = getCurrentCacheSize();
-        if (currentCacheSize > cacheSize) {
-            File[] files = cacheDir.listFiles();
+        if (currentCacheSize > mCacheSize) {
+            File[] files = mCacheDir.listFiles();
             Arrays.sort(files, new Comparator<File>() {
 
                 @Override
@@ -133,14 +131,14 @@ public class DiskLruCache {
                 }
                 i++;
                 Log.d(TAG, "freeSpaceIfRequired: after delete " + currentCacheSize);
-            } while (currentCacheSize > cacheSize);
+            } while (currentCacheSize > mCacheSize);
         }
         Log.d(TAG, "freeSpaceIfRequired() returned: " + currentCacheSize);
     }
 
    private long getCurrentCacheSize() {
         long length = 0;
-        for (File file : cacheDir.listFiles()) {
+        for (File file : mCacheDir.listFiles()) {
             if (file.isFile())
                 length += file.length();
         }

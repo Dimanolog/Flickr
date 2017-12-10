@@ -54,10 +54,9 @@ public class FlickrApiClient implements IFlickrApiClient {
 
     private List<IPhoto> parseJson(String pJsonString) {
         try {
-            java.util.List<IPhoto> iPhotos = new PhotoParserFactory()
+            return new PhotoParserFactory()
                     .getGsonParser()
                     .parseArray(pJsonString);
-            return iPhotos;
         } catch (JSONException pE) {
             throw new RuntimeException(pE);
         }

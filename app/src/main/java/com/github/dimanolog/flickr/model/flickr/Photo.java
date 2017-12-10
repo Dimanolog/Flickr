@@ -2,19 +2,27 @@ package com.github.dimanolog.flickr.model.flickr;
 
 import android.net.Uri;
 
+import com.github.dimanolog.flickr.db.annotations.Identity;
+import com.github.dimanolog.flickr.db.annotations.Table;
+import com.github.dimanolog.flickr.db.annotations.Column;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
-
+@Table("Photo")
 public class Photo implements IPhoto {
-    @SerializedName("title")
-    private String mCaption;
     @SerializedName("id")
+    @Identity("_id")
     private Long mId;
+    @SerializedName("title")
+    @Column("tittle")
+    private String mCaption;
+    @Column("url")
     @SerializedName("url_s")
     private String mUrl;
+    @Column("url")
     @SerializedName("owner")
     private String mOwner;
+    @Column("dateUpload")
     @SerializedName("dateupload")
     private Date uploadDate;
 
