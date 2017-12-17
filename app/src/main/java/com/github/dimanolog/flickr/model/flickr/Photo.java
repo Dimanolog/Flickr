@@ -8,7 +8,7 @@ import com.github.dimanolog.flickr.db.annotations.Column;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
-@Table("Photo")
+@Table("photo")
 public class Photo implements IPhoto {
     @SerializedName("id")
     @Identity("_id")
@@ -22,8 +22,8 @@ public class Photo implements IPhoto {
     @Column("owner")
     @SerializedName("owner")
     private String mOwner;
-    @Column("date_upload")
-    @SerializedName("dateupload")
+    @Column("upload_date")
+    @SerializedName("dateUpload")
     private Date uploadDate;
 
     @Override

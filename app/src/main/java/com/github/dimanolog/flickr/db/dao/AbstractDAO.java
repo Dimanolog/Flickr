@@ -36,6 +36,7 @@ public abstract class AbstractDAO<T> {
     public ICustomCursorWrapper<T> rawQuery(final String sql, final String... args) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, args);
+
         return wrapCursor(cursor);
     }
 
