@@ -44,7 +44,7 @@ public class JsonPhotoParser implements IParser<IPhoto> {
 
     private Photo parsePhotoJsonObject(JSONObject jsonObject) {
         Photo photo = new Photo();
-        photo.setCaption(jsonObject.optString(TITLE));
+        photo.setTittle(jsonObject.optString(TITLE));
         photo.setId(Long.valueOf(jsonObject.optString(ID)));
         photo.setOwner(jsonObject.optString(OWNER));
         photo.setUrl(jsonObject.optString(URL_S));

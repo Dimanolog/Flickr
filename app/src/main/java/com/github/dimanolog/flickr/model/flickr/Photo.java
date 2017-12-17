@@ -15,7 +15,7 @@ public class Photo implements IPhoto {
     private Long mId;
     @SerializedName("title")
     @Column("tittle")
-    private String mCaption;
+    private String mTittle;
     @Column("url_s")
     @SerializedName("url_s")
     private String mUrl;
@@ -47,13 +47,13 @@ public class Photo implements IPhoto {
     }
 
     @Override
-    public String getCaption() {
-        return mCaption;
+    public String getTittle() {
+        return mTittle;
     }
 
     @Override
-    public void setCaption(String caption) {
-        mCaption = caption;
+    public void setTittle(String caption) {
+        mTittle = caption;
     }
 
     @Override
@@ -67,10 +67,10 @@ public class Photo implements IPhoto {
     }
     @Override
     public String toString() {
-        if (mCaption.length() > 15)
-            return mCaption.substring(0, 15) + "...";
+        if (mTittle.length() > 15)
+            return mTittle.substring(0, 15) + "...";
         else
-            return mCaption;
+            return mTittle;
     }
 
     @Override

@@ -213,7 +213,7 @@ public class JsonParseTest {
         assertNotNull(mPhoto);
         assertEquals(EXPECTED_ID, mPhoto.getId());
         assertEquals(EXPECTED_OWNER, mPhoto.getOwner());
-        assertEquals(EXPECTED_TITLE, mPhoto.getCaption());
+        assertEquals(EXPECTED_TITLE, mPhoto.getTittle());
         assertEquals(EXPECTED_PHOTO_URL, mPhoto.getUrl());
         assertEquals(EXPECTED_UPLOAD_DATE, mPhoto.getUploadDate());
     }

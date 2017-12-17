@@ -11,6 +11,11 @@ import java.util.Map;
  */
 
 class DbUtil {
+
+    private static final String SQL_INT = "INTEGER";
+    private static final String SQL_STRING = "TEXT";
+    private static final String SQL_DOUBLE = "REAL";
+
     static Class<?>[] getModelClasses() {
         return new Class[]{
                 Photo.class
@@ -19,11 +24,11 @@ class DbUtil {
 
     static Map<Class<?>, String> getTypesMap() {
         Map<Class<?>, String> classToSqlTypeMap = new HashMap<>();
-        classToSqlTypeMap.put(Integer.class, "INTEGER");
-        classToSqlTypeMap.put(Long.class, "INTEGER");
-        classToSqlTypeMap.put(Date.class, "INTEGER");
-        classToSqlTypeMap.put(String.class, "TEXT");
-        classToSqlTypeMap.put(Double.class, "REAL");
+        classToSqlTypeMap.put(Integer.class, SQL_INT);
+        classToSqlTypeMap.put(Long.class, SQL_INT);
+        classToSqlTypeMap.put(Date.class, SQL_INT);
+        classToSqlTypeMap.put(String.class, SQL_STRING);
+        classToSqlTypeMap.put(Double.class, SQL_DOUBLE);
 
         return classToSqlTypeMap;
     }

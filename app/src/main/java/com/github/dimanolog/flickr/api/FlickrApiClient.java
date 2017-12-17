@@ -1,5 +1,7 @@
 package com.github.dimanolog.flickr.api;
 
+import android.support.annotation.WorkerThread;
+
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
@@ -23,7 +25,7 @@ public class FlickrApiClient implements IFlickrApiClient {
 
     private IHttpClient mHttpClient = new HttpClient();
 
-
+    @WorkerThread
     public List<IPhoto> getRecent(int page) {
         String url = ApiConstants.ENDPOINT.buildUpon()
                 .appendQueryParameter(METHOD, GET_RECENT_METHOD)
@@ -34,7 +36,7 @@ public class FlickrApiClient implements IFlickrApiClient {
 
         return parseJson(result);
     }
-
+    @WorkerThread
     public List<IPhoto> searchPhotos(int page, String search) {
         String url = ApiConstants.ENDPOINT.buildUpon()
                 .appendQueryParameter(METHOD, SEARCH_METHOD)
@@ -78,7 +80,7 @@ public class FlickrApiClient implements IFlickrApiClient {
             mThrowable = t;
         }
 
-        public String getResultStr() {
+        String getResultStr() {
             return mResultStr;
         }
 

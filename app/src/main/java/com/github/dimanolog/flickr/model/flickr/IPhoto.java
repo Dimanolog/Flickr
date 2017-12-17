@@ -14,9 +14,9 @@ public interface IPhoto {
 
     void setId(Long id);
 
-    String getCaption();
+    String getTittle();
 
-    void setCaption(String caption);
+    void setTittle(String caption);
 
     String getUrl();
 

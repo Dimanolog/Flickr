@@ -20,8 +20,9 @@ import android.widget.ProgressBar;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
-import com.github.dimanolog.flickr.dataloader.IDataProviderCallbacks;
+import com.github.dimanolog.flickr.dataloader.IDataProviderCallback;
 import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
+import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallbacks<List<IPhoto>> {
+public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallback<ICustomCursorWrapper<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();
     private static final int WIDTH_COLUMNS = 360;
@@ -55,7 +56,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         setHasOptionsMenu(true);
         mPhotoDataProvider = PhotoDataProvider.getInstance(getActivity());
         mPhotoDataProvider.registerCallback(this);
-
     }
 
     @Override
@@ -167,13 +167,14 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         }
     }
 
-    private void setupOrUpdateAdapter() {
+    private void setupOrUpdateAdapter(ICustomCursorWrapper<IPhoto> pResult) {
         if (isAdded()) {
             if (!mUpdating) {
-                mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
+                mPhotoRecyclerView.setAdapter(new PhotoAdapter(pResult));
                 mUpdating = true;
             } else {
-                mPhotoRecyclerView.getAdapter().notifyDataSetChanged();
+                PhotoAdapter photoAdapter = (PhotoAdapter) mPhotoRecyclerView.getAdapter();
+                photoAdapter.swapCursor(pResult);
             }
         }
     }
@@ -190,10 +191,9 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     }
 
     @Override
-    public void onSuccessResult(List<IPhoto> result) {
-        mItems = result;
+    public void onSuccessResult(ICustomCursorWrapper<IPhoto> result) {
         loading(false);
-        setupOrUpdateAdapter();
+        setupOrUpdateAdapter(result);
         mCurrentPage++;
     }
 
@@ -231,10 +231,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
 
-        private List<IPhoto> mPhotoList;
+        private ICustomCursorWrapper<IPhoto> mPhotoCursor;
 
-        PhotoAdapter(List<IPhoto> photoList) {
-            mPhotoList = photoList;
+        PhotoAdapter(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
+            mPhotoCursor = pPhotoCursor;
         }
 
         @Override
@@ -247,13 +247,19 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position) {
-            IPhoto photoItem = mPhotoList.get(position);
+            mPhotoCursor.moveToPosition(position);
+            IPhoto photoItem = mPhotoCursor.get();
             photoHolder.bindPhotoItem(photoItem);
+        }
+
+        public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor){
+            mPhotoCursor.close();
+            mPhotoCursor = pPhotoCursor;
         }
 
         @Override
         public int getItemCount() {
-            return mPhotoList.size();
+            return mPhotoCursor.getCount();
         }
     }
 }

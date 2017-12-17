@@ -5,5 +5,7 @@ package com.github.dimanolog.flickr.dataloader;
  */
 
 interface IRequest<T> {
+  //  void onPreExecute();
     T runRequest();
+  //  void onPostExecute(T object);
 }

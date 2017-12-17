@@ -32,6 +32,7 @@ public class HttpClient implements IHttpClient {
         }
     }
 
+    @Override
     public InputStream request(String pUrl) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) (new URL(pUrl)).openConnection();
         tuneConnection(connection);

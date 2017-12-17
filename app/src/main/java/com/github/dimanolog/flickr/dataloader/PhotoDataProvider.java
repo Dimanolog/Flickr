@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
-import com.github.dimanolog.flickr.db.FlickrDbHelper;
+import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.db.dao.PhotoDAO;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 
 import java.util.ArrayList;
@@ -14,58 +15,70 @@ import java.util.List;
 
 
 public class PhotoDataProvider {
-
     private static PhotoDataProvider sInstance;
+
     private Context mContext;
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiClient();
-    private IDataProviderCallbacks<List<IPhoto>> mIDataProviderCallbacks;
-    private IRequest<List<IPhoto>> mRequest;
+    private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
+    private PhotoDAO mPhotoDAO;
     private List<IPhoto> mIPhotoList = new ArrayList<>();
-    private FlickrDbHelper mFlickrDbHelper;
 
-    public static PhotoDataProvider getInstance(Context context) {
+
+    public static PhotoDataProvider getInstance(@NonNull Context context) {
         if (sInstance == null) {
             synchronized (PhotoDataProvider.class) {
-                sInstance = new PhotoDataProvider(context);
+                if (sInstance == null) {
+                    sInstance = new PhotoDataProvider(context);
+                }
             }
         }
+
         return sInstance;
     }
 
-    private PhotoDataProvider(Context pContext) {
+    private PhotoDataProvider(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
-        mFlickrDbHelper=new FlickrDbHelper(pContext);
-        mFlickrDbHelper.getWritableDatabase();
+        mPhotoDAO = new PhotoDAO(pContext);
     }
 
     public void searchPhotos(final int pPage, final String query, boolean update) {
-        IRequest<List<IPhoto>> request = new IRequest<List<IPhoto>>() {
+        IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
             @Override
-            public List<IPhoto> runRequest() {
-                return mIFlickrApiClient.searchPhotos(pPage, query);
+            public ICustomCursorWrapper<IPhoto> runRequest() {
+                List<IPhoto> photoList = mIFlickrApiClient.getRecent(pPage);
+                addResultToDb(photoList);
+
+                return getAllPhotosFromDb();
             }
         };
-        mRequest = request;
+
         startLoading(request, update);
     }
 
     public void getRecent(final int pPage, boolean update) {
-        IRequest<List<IPhoto>> request = new IRequest<List<IPhoto>>() {
+        IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
             @Override
-            public List<IPhoto> runRequest() {
-                return mIFlickrApiClient.getRecent(pPage);
+            public ICustomCursorWrapper<IPhoto> runRequest() {
+                List<IPhoto> photoList = mIFlickrApiClient.getRecent(pPage);
+                addResultToDb(photoList);
+
+                return getAllPhotosFromDb();
             }
         };
-        mRequest = request;
+
         startLoading(request, update);
     }
 
-    public void registerCallback(@NonNull IDataProviderCallbacks<List<IPhoto>> pCallback) {
-        mIDataProviderCallbacks = pCallback;
+    public void registerCallback(@NonNull IDataProviderCallback<ICustomCursorWrapper<IPhoto>> pCallback) {
+        mIDataProviderCallback = pCallback;
     }
 
-    private void startLoading(@NonNull IRequest<List<IPhoto>> pRequest, boolean update) {
-        RequestTask requestTask = new RequestTask(update);
+    public void unRegisterCallback(){
+        mIDataProviderCallback=null;
+    }
+
+    private void startLoading(@NonNull IRequest<ICustomCursorWrapper<IPhoto>> pRequest, boolean update) {
+        RequestTask requestTask = new RequestTask(mIDataProviderCallback);
         requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pRequest);
     }
 
@@ -73,39 +86,41 @@ public class PhotoDataProvider {
         return mIPhotoList;
     }
 
+    private Integer addResultToDb(List<IPhoto> pPhotoList) {
+        return mPhotoDAO.bulkInsert(pPhotoList);
+    }
 
-    private class RequestTask extends AsyncTask<IRequest<List<IPhoto>>, Void, List<IPhoto>> {
-        private boolean mUpdate;
+    private ICustomCursorWrapper<IPhoto> getAllPhotosFromDb() {
+        return mPhotoDAO.getAll();
+    }
 
-        RequestTask(boolean pUpdate) {
-            mUpdate = pUpdate;
+
+    private static class RequestTask extends AsyncTask<IRequest<ICustomCursorWrapper<IPhoto>>, Void, ICustomCursorWrapper<IPhoto>> {
+
+        private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
+
+        RequestTask(IDataProviderCallback<ICustomCursorWrapper<IPhoto>> pIDataProviderCallback) {
+            mIDataProviderCallback = pIDataProviderCallback;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mIDataProviderCallbacks != null) {
-                mIDataProviderCallbacks.onStartLoading();
+            if (mIDataProviderCallback != null) {
+                mIDataProviderCallback.onStartLoading();
             }
         }
 
         @Override
-        protected List<IPhoto> doInBackground(IRequest<List<IPhoto>>[] pRequests) {
+        protected ICustomCursorWrapper<IPhoto> doInBackground(IRequest<ICustomCursorWrapper<IPhoto>>[] pRequests) {
             return pRequests != null ? pRequests[0].runRequest() : null;
         }
 
         @Override
-        protected void onPostExecute(List<IPhoto> pResult) {
+        protected void onPostExecute(ICustomCursorWrapper<IPhoto> pResult) {
             super.onPostExecute(pResult);
-            if (mIDataProviderCallbacks != null && pResult != null) {
-                if (mUpdate) {
-                    mIPhotoList.addAll(pResult);
-
-                } else {
-                    mIPhotoList.clear();
-                    mIPhotoList.addAll(pResult);
-                }
-                mIDataProviderCallbacks.onSuccessResult(mIPhotoList);
+            if(mIDataProviderCallback!=null){
+                mIDataProviderCallback.onSuccessResult(pResult);
             }
         }
     }

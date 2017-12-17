@@ -4,25 +4,34 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.github.dimanolog.flickr.db.FlickrDbSchema;
+import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 
 /**
  * Created by Dimanolog on 10.12.2017.
  */
 
-public class PhotoDAO extends AbstractDAO<Photo> {
+public class PhotoDAO extends AbstractDAO<IPhoto> {
 
-    PhotoDAO(Context pContext) {
+    public PhotoDAO(Context pContext) {
         super(pContext, Photo.class);
     }
 
     @Override
-    protected Photo cursorToEntity(Cursor pCursor) {
-        return null;
+    protected ICustomCursorWrapper<IPhoto> wrapCursor(Cursor pCursor) {
+        return new PhotoCursorWrapper(pCursor);
     }
 
     @Override
-    protected ContentValues entityToContentValues(Photo pEntity) {
-        return null;
+    protected ContentValues entityToContentValues(IPhoto pEntity) {
+        ContentValues values = new ContentValues();
+        values.put(FlickrDbSchema.PhotoTable.Cols.ID, pEntity.getId());
+        values.put(FlickrDbSchema.PhotoTable.Cols.OWNER, pEntity.getOwner());
+        values.put(FlickrDbSchema.PhotoTable.Cols.TITLE, pEntity.getTittle());
+        values.put(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE, pEntity.getUploadDate().getTime());
+        values.put(FlickrDbSchema.PhotoTable.Cols.URL, pEntity.getUrl());
+
+        return values;
     }
 }
