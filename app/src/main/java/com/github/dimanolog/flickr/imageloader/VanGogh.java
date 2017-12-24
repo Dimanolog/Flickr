@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.util.IOUtils;
+import com.github.dimanolog.flickr.util.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,13 +90,19 @@ public class VanGogh extends HandlerThread {
     }
 
     void queueThumbnail(ImageRequest target) {
-        Log.i(TAG, "Got a URL: " + target.getUri().toString());
-        Bitmap bitmap = mLruCache.get(target.getUri().toString());
+        Uri uri = target.getUri();
+        if (uri == null) {
+            setPlaceHolder(target);
+            LogUtil.message(Log.DEBUG, TAG, "uri is null only set placeholder");
+            return;
+        }
+        Log.i(TAG, "Got a URL: " + uri.toString());
+        Bitmap bitmap = mLruCache.get(uri.toString());
         if (bitmap != null) {
             handleResponse(bitmap, target);
         } else {
-            beforeLoading(target);
-            if(target.getUri()!=null) {
+            setPlaceHolder(target);
+            if (uri != null) {
                 mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
                         .sendToTarget();
             }
@@ -148,12 +155,14 @@ public class VanGogh extends HandlerThread {
         }
     }
 
-    private void beforeLoading(final ImageRequest target) {
-        Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
-                target.getPlaceholderResId(), null);
-        ImageView targetImageView = target.getTargetImageView().get();
-        if (targetImageView != null) {
-            targetImageView.setImageDrawable(img);
+    private void setPlaceHolder(final ImageRequest target) {
+        if (target.isPlaceHolderFlag()) {
+            Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
+                    target.getPlaceholderResId(), null);
+            ImageView targetImageView = target.getTargetImageView().get();
+            if (targetImageView != null) {
+                targetImageView.setImageDrawable(img);
+            }
         }
     }
 }

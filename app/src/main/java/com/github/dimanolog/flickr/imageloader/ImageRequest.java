@@ -2,6 +2,7 @@ package com.github.dimanolog.flickr.imageloader;
 
 
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -14,15 +15,17 @@ class ImageRequest {
     private int mPlaceholderResId;
     private int mTargetHeight;
     private int mTargetWidth;
+    private boolean mPlaceHolderFlag;
 
 
     ImageRequest(ImageRequestBuilder pBuilder) {
         mUri = pBuilder.mUri;
         mPlaceholderResId = pBuilder.mPlaceholderResID;
-        mTargetImageView = new WeakReference<ImageView>(pBuilder.mTargetImageView);
+        mTargetImageView = new WeakReference<>(pBuilder.mTargetImageView);
         mTargetHeight = pBuilder.mTargetHeight;
         mTargetWidth = pBuilder.mTargetWidth;
         mCallback = pBuilder.mCallback;
+        mPlaceHolderFlag=pBuilder.mPlaceHolderFlag;
     }
 
     Uri getUri() {
@@ -49,6 +52,10 @@ class ImageRequest {
         return mTargetWidth;
     }
 
+    public boolean isPlaceHolderFlag() {
+        return mPlaceHolderFlag;
+    }
+
     static public final class ImageRequestBuilder {
         private final VanGogh mVanGogh;
         private Uri mUri;
@@ -56,6 +63,7 @@ class ImageRequest {
         private int mTargetHeight;
         private int mTargetWidth;
         private int mPlaceholderResID;
+        private boolean mPlaceHolderFlag;
         private VanGoghCallback mCallback;
 
         ImageRequestBuilder(Uri pUri, VanGogh pVanGogh) {
@@ -79,8 +87,9 @@ class ImageRequest {
             return this;
         }
 
-        public ImageRequestBuilder placeHolder(int pResID) {
+        public ImageRequestBuilder placeHolder(@DrawableRes int pResID) {
             mPlaceholderResID = pResID;
+            mPlaceHolderFlag=true;
             return this;
         }
 
