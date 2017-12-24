@@ -5,23 +5,24 @@ import android.net.Uri;
 import com.github.dimanolog.flickr.db.annotations.Column;
 import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.db.annotations.Table;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.google.gson.annotations.SerializedName;
 @Table("photo")
 public class Photo implements IPhoto {
     @SerializedName("id")
-    @Identity("_id")
+    @Identity(FlickrDbSchema.PhotoTable.Cols.ID)
     private Long mId;
     @SerializedName("title")
-    @Column("tittle")
+    @Column(FlickrDbSchema.PhotoTable.Cols.TITLE)
     private String mTittle;
-    @Column("url_s")
     @SerializedName("url_s")
+    @Column(FlickrDbSchema.PhotoTable.Cols.URL)
     private String mUrl;
-    @Column("owner")
     @SerializedName("owner")
+    @Column(FlickrDbSchema.PhotoTable.Cols.OWNER)
     private String mOwner;
-    @Column("date_upload")
     @SerializedName("dateupload")
+    @Column(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE)
     private Long uploadDate;
 
     @Override
@@ -82,6 +83,4 @@ public class Photo implements IPhoto {
                 .appendPath(mId.toString())
                 .build();
     }
-
-
 }

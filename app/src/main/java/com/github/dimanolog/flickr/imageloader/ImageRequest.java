@@ -2,11 +2,14 @@ package com.github.dimanolog.flickr.imageloader;
 
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 class ImageRequest {
     private Uri mUri;
-    private ImageView mTargetImageView;
+    private WeakReference<ImageView> mTargetImageView;
     private VanGoghCallback mCallback;
     private int mPlaceholderResId;
     private int mTargetHeight;
@@ -16,33 +19,33 @@ class ImageRequest {
     ImageRequest(ImageRequestBuilder pBuilder) {
         mUri = pBuilder.mUri;
         mPlaceholderResId = pBuilder.mPlaceholderResID;
-        mTargetImageView = pBuilder.mTargetImageView;
+        mTargetImageView = new WeakReference<ImageView>(pBuilder.mTargetImageView);
         mTargetHeight = pBuilder.mTargetHeight;
         mTargetWidth = pBuilder.mTargetWidth;
         mCallback = pBuilder.mCallback;
     }
 
-    public Uri getUri() {
+    Uri getUri() {
         return mUri;
     }
 
-    public ImageView getTargetImageView() {
+    WeakReference<ImageView> getTargetImageView() {
         return mTargetImageView;
     }
 
-    public VanGoghCallback getCallback() {
+    VanGoghCallback getCallback() {
         return mCallback;
     }
 
-    public int getPlaceholderResId() {
+    int getPlaceholderResId() {
         return mPlaceholderResId;
     }
 
-    public int getTargetHeight() {
+    int getTargetHeight() {
         return mTargetHeight;
     }
 
-    public int getTargetWidth() {
+    int getTargetWidth() {
         return mTargetWidth;
     }
 
@@ -61,7 +64,11 @@ class ImageRequest {
         }
 
         ImageRequestBuilder(String pUrl, VanGogh pVanGogh) {
-            mUri = Uri.parse(pUrl);
+            if (!TextUtils.isEmpty(pUrl)) {
+                mUri = Uri.parse(pUrl);
+            } else {
+                mUri = null;
+            }
             mVanGogh = pVanGogh;
         }
 

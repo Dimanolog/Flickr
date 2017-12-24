@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 public class HttpClient implements IHttpClient {
     private static final int READ_TIMEOUT = 5000;
     private static final int CONNECT_TIMEOUT = 5000;

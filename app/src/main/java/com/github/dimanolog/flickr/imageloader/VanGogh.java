@@ -135,7 +135,7 @@ public class VanGogh extends HandlerThread {
             mResponseHandler.post(new Runnable() {
                 public void run() {
 
-                    ImageView imageView = target.getTargetImageView();
+                    ImageView imageView = target.getTargetImageView().get();
                     if (imageView != null) {
                         imageView.setImageBitmap(pBitmap);
                     }
@@ -161,8 +161,9 @@ public class VanGogh extends HandlerThread {
     private void beforeLoading(final ImageRequest target) {
         Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
                 target.getPlaceholderResId(), null);
-        if (target.getTargetImageView() != null) {
-            target.getTargetImageView().setImageDrawable(img);
+        ImageView targetImageView = target.getTargetImageView().get();
+        if (targetImageView != null) {
+            targetImageView.setImageDrawable(img);
         }
     }
 }

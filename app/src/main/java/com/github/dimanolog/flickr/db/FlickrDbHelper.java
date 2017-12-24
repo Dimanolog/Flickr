@@ -21,7 +21,7 @@ import java.util.Map;
 public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final String TAG = FlickrDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "Flickr.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
     private static final String ID = "INTEGER PRIMARY KEY NOT NULL";
     private static final String DELETE_TABLE_TEMPLATE = "DROP TABLE IF EXISTS '%s'";
@@ -37,7 +37,7 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
         for (Class<?> clazz : modelClasses) {
             String sql = getCreateTableSqlString(clazz);
             if (!TextUtils.isEmpty(sql)) {
-                createTable(sql);
+                createTable(sql, db);
             }
         }
     }
@@ -67,8 +67,7 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
         return String.format(TABLE_TEMPLATE, tableName, sqlStringBuilder.toString());
     }
 
-    private void createTable(String pSqlTable) {
-        SQLiteDatabase db = getWritableDatabase();
+    private void createTable(String pSqlTable,  SQLiteDatabase db) {
         db.beginTransaction();
         try {
             db.execSQL(pSqlTable);

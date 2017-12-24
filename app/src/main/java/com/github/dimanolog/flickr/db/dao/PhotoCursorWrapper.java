@@ -12,11 +12,7 @@ import com.github.dimanolog.flickr.model.flickr.Photo;
  */
 
 public class PhotoCursorWrapper extends CursorWrapper implements ICustomCursorWrapper<IPhoto> {
-    /**
-     * Creates a cursor wrapper.
-     *
-     * @param cursor The underlying cursor to wrap.
-     */
+
     public PhotoCursorWrapper(Cursor cursor) {
         super(cursor);
     }
@@ -27,7 +23,7 @@ public class PhotoCursorWrapper extends CursorWrapper implements ICustomCursorWr
         String tittle = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.TITLE));
         Long uploadDate =getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE));
         String owner = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.OWNER));
-        String url = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.OWNER));
+        String url = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.URL));
 
         IPhoto photo = new Photo();
         photo.setTittle(tittle);
