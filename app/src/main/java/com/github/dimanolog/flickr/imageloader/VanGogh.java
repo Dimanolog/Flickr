@@ -60,7 +60,7 @@ public class VanGogh extends HandlerThread {
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
-        mLruCache = new LruCache<String, Bitmap>(availMemorInBytes / 8);
+        mLruCache = new LruCache<>(availMemorInBytes / 8);
         mDiskLruCache = new DiskLruCache(mContext);
 
     }
@@ -129,12 +129,10 @@ public class VanGogh extends HandlerThread {
         }
     }
 
-
     private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {
         if (pBitmap != null) {
             mResponseHandler.post(new Runnable() {
                 public void run() {
-
                     ImageView imageView = target.getTargetImageView().get();
                     if (imageView != null) {
                         imageView.setImageBitmap(pBitmap);
@@ -146,17 +144,6 @@ public class VanGogh extends HandlerThread {
             });
         }
     }
-
-  /*  private void handleResponse(final Bitmap pBitmap, final ImageRequest target) {
-        ImageView imageView = target.getTargetImageView();
-        if (imageView != null) {
-            imageView.setImageBitmap(pBitmap);
-        }
-        if (target.getCallback() != null) {
-            target.getCallback().onSuccess(pBitmap);
-        }
-    }*/
-
 
     private void beforeLoading(final ImageRequest target) {
         Drawable img = ResourcesCompat.getDrawable(mContext.getResources(),
