@@ -3,11 +3,9 @@ package com.github.dimanolog.flickr.db.dao;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.github.dimanolog.flickr.db.FlickrDbSchema;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.Photo;
-
-import java.util.Date;
 
 /**
  * Created by Dimanolog on 17.12.2017.
@@ -27,7 +25,7 @@ public class PhotoCursorWrapper extends CursorWrapper implements ICustomCursorWr
     public IPhoto get() {
         Long id = getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.ID));
         String tittle = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.TITLE));
-        Date uploadDate = new Date(getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE)));
+        Long uploadDate =getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE));
         String owner = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.OWNER));
         String url = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.OWNER));
 

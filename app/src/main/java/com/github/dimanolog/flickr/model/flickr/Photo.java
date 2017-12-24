@@ -2,12 +2,10 @@ package com.github.dimanolog.flickr.model.flickr;
 
 import android.net.Uri;
 
+import com.github.dimanolog.flickr.db.annotations.Column;
 import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.db.annotations.Table;
-import com.github.dimanolog.flickr.db.annotations.Column;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
 @Table("photo")
 public class Photo implements IPhoto {
     @SerializedName("id")
@@ -22,19 +20,9 @@ public class Photo implements IPhoto {
     @Column("owner")
     @SerializedName("owner")
     private String mOwner;
-    @Column("upload_date")
-    @SerializedName("dateUpload")
-    private Date uploadDate;
-
-    @Override
-    public String getOwner() {
-        return mOwner;
-    }
-
-    @Override
-    public void setOwner(String owner) {
-        mOwner = owner;
-    }
+    @Column("date_upload")
+    @SerializedName("dateupload")
+    private Long uploadDate;
 
     @Override
     public Long getId() {
@@ -42,8 +30,8 @@ public class Photo implements IPhoto {
     }
 
     @Override
-    public void setId(Long id) {
-        mId = id;
+    public void setId(Long pId) {
+        mId = pId;
     }
 
     @Override
@@ -52,8 +40,8 @@ public class Photo implements IPhoto {
     }
 
     @Override
-    public void setTittle(String caption) {
-        mTittle = caption;
+    public void setTittle(String pTittle) {
+        mTittle = pTittle;
     }
 
     @Override
@@ -62,15 +50,28 @@ public class Photo implements IPhoto {
     }
 
     @Override
-    public void setUrl(String url) {
-        mUrl = url;
+    public void setUrl(String pUrl) {
+        mUrl = pUrl;
     }
+
     @Override
-    public String toString() {
-        if (mTittle.length() > 15)
-            return mTittle.substring(0, 15) + "...";
-        else
-            return mTittle;
+    public String getOwner() {
+        return mOwner;
+    }
+
+    @Override
+    public void setOwner(String pOwner) {
+        mOwner = pOwner;
+    }
+
+    @Override
+    public Long getUploadDate() {
+        return uploadDate;
+    }
+
+    @Override
+    public void setUploadDate(Long pUploadDate) {
+        uploadDate = pUploadDate;
     }
 
     @Override
@@ -82,13 +83,5 @@ public class Photo implements IPhoto {
                 .build();
     }
 
-    @Override
-    public Date getUploadDate() {
-        return uploadDate;
-    }
 
-    @Override
-    public void setUploadDate(Date uploadDate) {
-        this.uploadDate = uploadDate;
-    }
 }

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.github.dimanolog.flickr.db.FlickrDbSchema;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 
@@ -29,7 +29,7 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
         values.put(FlickrDbSchema.PhotoTable.Cols.ID, pEntity.getId());
         values.put(FlickrDbSchema.PhotoTable.Cols.OWNER, pEntity.getOwner());
         values.put(FlickrDbSchema.PhotoTable.Cols.TITLE, pEntity.getTittle());
-        values.put(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE, pEntity.getUploadDate().getTime());
+        values.put(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE, pEntity.getUploadDate());
         values.put(FlickrDbSchema.PhotoTable.Cols.URL, pEntity.getUrl());
 
         return values;

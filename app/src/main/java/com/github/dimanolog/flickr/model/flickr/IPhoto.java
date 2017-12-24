@@ -2,8 +2,6 @@ package com.github.dimanolog.flickr.model.flickr;
 
 import android.net.Uri;
 
-import java.util.Date;
-
 
 public interface IPhoto {
     String getOwner();
@@ -24,7 +22,7 @@ public interface IPhoto {
 
     Uri getPhotoPageUri();
 
-    Date getUploadDate();
+    Long getUploadDate();
 
-    void setUploadDate(Date uploadDate);
+    void setUploadDate(Long uploadDate);
 }

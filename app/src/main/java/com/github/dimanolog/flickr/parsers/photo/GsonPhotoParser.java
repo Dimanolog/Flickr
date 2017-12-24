@@ -6,16 +6,10 @@ import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class GsonPhotoParser implements IParser<IPhoto> {
@@ -23,15 +17,9 @@ public class GsonPhotoParser implements IParser<IPhoto> {
     private final Gson mGson;
 
     GsonPhotoParser() {
-       GsonBuilder gsonBuilder= new GsonBuilder()
+        mGson = new GsonBuilder()
                 .setPrettyPrinting()
-                .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-                    @Override
-                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        return new Date(json.getAsJsonPrimitive().getAsLong());
-                    }
-                });
-        mGson = gsonBuilder.create();
+                .create();
     }
 
     @Override
@@ -42,9 +30,9 @@ public class GsonPhotoParser implements IParser<IPhoto> {
     @Override
     public List<IPhoto> parseArray(String pJsonString) {
         JsonParser parser = new JsonParser();
-        JsonObject jsonBody=parser.parse(pJsonString).getAsJsonObject();
-        JsonObject jsonObjPhotos=jsonBody.getAsJsonObject("photos");
-        JsonArray jsonArrayPhoto=jsonObjPhotos.getAsJsonArray("photo");
+        JsonObject jsonBody = parser.parse(pJsonString).getAsJsonObject();
+        JsonObject jsonObjPhotos = jsonBody.getAsJsonObject("photos");
+        JsonArray jsonArrayPhoto = jsonObjPhotos.getAsJsonArray("photo");
         IPhoto[] photos = mGson.fromJson(jsonArrayPhoto, Photo[].class);
         return Arrays.asList(photos);
     }
