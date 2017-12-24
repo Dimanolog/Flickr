@@ -31,8 +31,6 @@ public class VanGogh extends HandlerThread {
     private Handler mRequestHandler;
     private LruCache<String, Bitmap> mLruCache;
     private DiskLruCache mDiskLruCache;
-
-    //private ConcurrentMap<ImageRequest, String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler = new Handler(Looper.getMainLooper());
 
 
@@ -59,7 +57,10 @@ public class VanGogh extends HandlerThread {
         super.start();
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        int availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
+        int availMemorInBytes = 16 * 1024 * 1024;
+        if (activityManager != null) {
+            availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
+        }
         mLruCache = new LruCache<>(availMemorInBytes / 8);
         mDiskLruCache = new DiskLruCache(mContext);
 
@@ -94,8 +95,10 @@ public class VanGogh extends HandlerThread {
             handleResponse(bitmap, target);
         } else {
             beforeLoading(target);
-            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
-                    .sendToTarget();
+            if(target.getUri()!=null) {
+                mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
+                        .sendToTarget();
+            }
         }
     }
 
