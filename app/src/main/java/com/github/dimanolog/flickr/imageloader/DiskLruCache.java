@@ -26,6 +26,7 @@ import java.util.Comparator;
 /**
  * @author Shnipko Dmitry
  */
+//TODO add to imageView tag or solve bug with another way
 public class DiskLruCache {
 
     private static final String TAG = DiskLruCache.class.getSimpleName();
