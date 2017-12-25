@@ -161,9 +161,9 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
         if (TextUtils.isEmpty(query)) {
-            mPhotoDataProvider.getRecent(mCurrentPage, mUpdating);
+            mPhotoDataProvider.getRecent(mCurrentPage);
         } else {
-            mPhotoDataProvider.searchPhotos(mCurrentPage, query, mUpdating);
+            mPhotoDataProvider.searchPhotos(mCurrentPage, query);
         }
     }
 

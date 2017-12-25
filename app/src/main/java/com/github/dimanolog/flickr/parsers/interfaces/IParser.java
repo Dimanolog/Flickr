@@ -9,6 +9,6 @@ import java.util.List;
  */
 
 public interface IParser<T> {
-    public T parseObject(String jsonString) throws JSONException;
-    public List<T> parseArray(String jsonArray) throws JSONException;
+     T parseObject(String jsonString) throws JSONException;
+     List<T> parseArray(String jsonArray) throws JSONException;
 }
