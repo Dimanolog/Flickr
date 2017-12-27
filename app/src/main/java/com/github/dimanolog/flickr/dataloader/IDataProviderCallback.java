@@ -6,6 +6,8 @@ package com.github.dimanolog.flickr.dataloader;
 
 public interface IDataProviderCallback<T> {
     void onStartLoading();
+
     void onSuccessResult(T result);
+
     void onError(Throwable t);
 }

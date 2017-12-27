@@ -4,10 +4,10 @@ package com.github.dimanolog.flickr.dataloader;
  * Created by Dimanolog on 06.11.2017.
  */
 
-interface IRequest<T, Y> {
-    void onPreExecute();
+interface IRequest {
+    void onPreRequest();
 
-    T runRequest();
+    void runRequest();
 
-    void onPostExecute(T object);
+    void onPostRequest();
 }

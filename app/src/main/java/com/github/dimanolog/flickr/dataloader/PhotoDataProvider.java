@@ -45,11 +45,21 @@ public class PhotoDataProvider {
     public void searchPhotos(final int pPage, final String query) {
         IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
             @Override
+            public void onPreRequest() {
+
+            }
+
+            @Override
             public ICustomCursorWrapper<IPhoto> runRequest() {
                 List<IPhoto> photoList = mIFlickrApiClient.searchPhotos(pPage, query);
                 addResultToDb(photoList);
 
                 return getAllPhotosFromDb();
+            }
+
+            @Override
+            public void onPostExecute(Object object) {
+
             }
         };
 
@@ -57,34 +67,7 @@ public class PhotoDataProvider {
     }
 
     public void getRecent(final int pPage) {
-        IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>>() {
-            @Override
-            public void onPreExecute() {
-                if (mIDataProviderCallback != null) {
-                    mIDataProviderCallback.onStartLoading();
-                }
-            }
-
-            @Override
-            public ICustomCursorWrapper<IPhoto> runRequest() {
-                IResponse<List<IPhoto>> recent = mIFlickrApiClient.getRecent(pPage);
-                if (!recent.isError()) {
-                    addResultToDb(recent.getResult());
-                    return getAllPhotosFromDb();
-                }else {
-
-                }
-
-
-
-            }
-
-            @Override
-            public void onPostExecute(ICustomCursorWrapper<IPhoto> object) {
-
-            }
-
-        };
+        IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>> request = new GetRecentRequest(pPage);
 
         startLoading(request);
     }
@@ -115,32 +98,65 @@ public class PhotoDataProvider {
     }
 
 
-    private static class RequestTask extends AsyncTask<IRequest<ICustomCursorWrapper<IPhoto>>, Void, ICustomCursorWrapper<IPhoto>> {
+    private static class RequestTask extends AsyncTask<Void, Void, Void> {
+        private IRequest mIRequest;
 
-        private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
-
-        RequestTask(IDataProviderCallback<ICustomCursorWrapper<IPhoto>> pIDataProviderCallback) {
-            mIDataProviderCallback = pIDataProviderCallback;
+        public RequestTask(IRequest pIRequest) {
+            mIRequest = pIRequest;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mIRequest.onPreRequest();
+        }
+
+        @Override
+        protected void onPostExecute(Void pVoid) {
+            super.onPostExecute(pVoid);
+            mIRequest.onPostRequest();
+        }
+
+        @Override
+        protected Void doInBackground(Void... pVoids) {
+            mIRequest.runRequest();
+            return null;
+        }
+    }
+
+    private  class GetRecentRequest implements IRequest {
+
+        private final int mPage;
+        private IResponse<List<IPhoto>> mResponse;
+        private ICustomCursorWrapper<IPhoto> mAllPhotosFromDb;
+
+        GetRecentRequest(int pPage) {
+            mPage = pPage;
+        }
+
+        @Override
+        public void onPreRequest() {
             if (mIDataProviderCallback != null) {
                 mIDataProviderCallback.onStartLoading();
             }
         }
 
         @Override
-        protected ICustomCursorWrapper<IPhoto> doInBackground(IRequest<ICustomCursorWrapper<IPhoto>>[] pRequests) {
-            return pRequests != null ? pRequests[0].runRequest() : null;
+        public void runRequest() {
+            mResponse = mIFlickrApiClient.getRecent(mPage);
+            if (!mResponse.isError()) {
+                addResultToDb(mResponse.getResult());
+                mAllPhotosFromDb = getAllPhotosFromDb();
+
+            }
         }
 
         @Override
-        protected void onPostExecute(ICustomCursorWrapper<IPhoto> pResult) {
-            super.onPostExecute(pResult);
-            if (mIDataProviderCallback != null) {
-                mIDataProviderCallback.onSuccessResult(pResult);
+        public void onPostRequest() {
+            if (!mResponse.isError()) {
+                mIDataProviderCallback.onSuccessResult(mAllPhotosFromDb);
+            } else {
+                mIDataProviderCallback.onError(mResponse.getError());
             }
         }
     }
