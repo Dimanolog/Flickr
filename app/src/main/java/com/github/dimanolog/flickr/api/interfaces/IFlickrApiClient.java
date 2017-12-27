@@ -9,6 +9,6 @@ import java.util.List;
  */
 
 public interface IFlickrApiClient {
-    public List<IPhoto> getRecent(int page);
-    public List<IPhoto> searchPhotos(int page, String search);
+   IResponse<List<IPhoto>> getRecent(int page);
+   IResponse<List<IPhoto>> searchPhotos(int page, String search);
 }

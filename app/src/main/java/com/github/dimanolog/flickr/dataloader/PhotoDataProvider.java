@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
+import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.db.dao.PhotoDAO;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
@@ -45,7 +46,7 @@ public class PhotoDataProvider {
         IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
             @Override
             public ICustomCursorWrapper<IPhoto> runRequest() {
-                List<IPhoto> photoList = mIFlickrApiClient.searchPhotos(pPage, query) ;
+                List<IPhoto> photoList = mIFlickrApiClient.searchPhotos(pPage, query);
                 addResultToDb(photoList);
 
                 return getAllPhotosFromDb();
@@ -56,14 +57,33 @@ public class PhotoDataProvider {
     }
 
     public void getRecent(final int pPage) {
-        IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
+        IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>>() {
+            @Override
+            public void onPreExecute() {
+                if (mIDataProviderCallback != null) {
+                    mIDataProviderCallback.onStartLoading();
+                }
+            }
+
             @Override
             public ICustomCursorWrapper<IPhoto> runRequest() {
-                List<IPhoto> photoList = mIFlickrApiClient.getRecent(pPage);
-                addResultToDb(photoList);
+                IResponse<List<IPhoto>> recent = mIFlickrApiClient.getRecent(pPage);
+                if (!recent.isError()) {
+                    addResultToDb(recent.getResult());
+                    return getAllPhotosFromDb();
+                }else {
 
-                return getAllPhotosFromDb();
+                }
+
+
+
             }
+
+            @Override
+            public void onPostExecute(ICustomCursorWrapper<IPhoto> object) {
+
+            }
+
         };
 
         startLoading(request);
@@ -73,8 +93,8 @@ public class PhotoDataProvider {
         mIDataProviderCallback = pCallback;
     }
 
-    public void unRegisterCallback(){
-        mIDataProviderCallback=null;
+    public void unRegisterCallback() {
+        mIDataProviderCallback = null;
     }
 
     private void startLoading(@NonNull IRequest<ICustomCursorWrapper<IPhoto>> pRequest) {
@@ -119,7 +139,7 @@ public class PhotoDataProvider {
         @Override
         protected void onPostExecute(ICustomCursorWrapper<IPhoto> pResult) {
             super.onPostExecute(pResult);
-            if(mIDataProviderCallback!=null){
+            if (mIDataProviderCallback != null) {
                 mIDataProviderCallback.onSuccessResult(pResult);
             }
         }
