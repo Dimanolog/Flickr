@@ -93,19 +93,18 @@ public class VanGogh extends HandlerThread {
         Uri uri = target.getUri();
         if (uri == null) {
             setPlaceHolder(target);
-            LogUtil.message(Log.DEBUG, TAG, "uri is null only set placeholder");
+            LogUtil.d(TAG, "uri is null only set placeholder");
             return;
         }
-        LogUtil.message(Log.DEBUG, TAG, "Got a URL: " + uri.toString());
+        LogUtil.d(TAG, "Got a URL: " + uri.toString());
         Bitmap bitmap = mLruCache.get(uri.toString());
         if (bitmap != null) {
-            handleResponse(bitmap, target);
+            setBitmap(target, bitmap);
         } else {
             setPlaceHolder(target);
-            if (uri != null) {
-                mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
-                        .sendToTarget();
-            }
+            setTag(target);
+            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
+                    .sendToTarget();
         }
     }
 
@@ -123,19 +122,27 @@ public class VanGogh extends HandlerThread {
             handleResponse(bitmap, target);
             return;
         }
-        if (target.getTargetImageView() != null) {
+        if (target.getTargetImageView().get() != null) {
             try {
                 final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(url));
                 bitmap = BitmapFactory
                         .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-                Log.i(TAG, "Bitmap created");
+                LogUtil.d(TAG, "Bitmap created");
                 mLruCache.put(url, bitmap);
                 mDiskLruCache.add(url, bitmap);
                 handleResponse(bitmap, target);
 
             } catch (IOException ioe) {
-                Log.e(TAG, "Error downloading image", ioe);
+                LogUtil.e(TAG, "Error downloading image", ioe);
             }
+        }
+    }
+
+    private void setTag(ImageRequest pTarget) {
+        ImageView imageView = pTarget.getTargetImageView().get();
+        if (imageView != null) {
+            String url = pTarget.getUri().toString();
+            imageView.setTag(url);
         }
     }
 
@@ -152,7 +159,9 @@ public class VanGogh extends HandlerThread {
     private void setBitmap(ImageRequest target, Bitmap pBitmap) {
         ImageView imageView = target.getTargetImageView().get();
         if (imageView != null) {
-            imageView.setImageBitmap(pBitmap);
+            if (imageView.getTag().equals(target.getUri().toString())) {
+                imageView.setImageBitmap(pBitmap);
+            }
         }
         if (target.getCallback() != null) {
             target.getCallback().onSuccess(pBitmap);
