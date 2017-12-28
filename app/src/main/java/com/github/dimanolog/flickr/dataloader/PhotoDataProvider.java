@@ -43,33 +43,42 @@ public class PhotoDataProvider {
     }
 
     public void searchPhotos(final int pPage, final String query) {
-        IRequest<ICustomCursorWrapper<IPhoto>> request = new IRequest<ICustomCursorWrapper<IPhoto>>() {
+        IRequest request = new IRequest() {
+            private IResponse<List<IPhoto>> mResponse;
+            private ICustomCursorWrapper<IPhoto> mAllPhotosFromDb;
             @Override
             public void onPreRequest() {
-
+                if (mIDataProviderCallback != null) {
+                    mIDataProviderCallback.onStartLoading();
+                }
             }
 
             @Override
-            public ICustomCursorWrapper<IPhoto> runRequest() {
-                List<IPhoto> photoList = mIFlickrApiClient.searchPhotos(pPage, query);
-                addResultToDb(photoList);
+            public void runRequest() {
+                mResponse = mIFlickrApiClient.searchPhotos(pPage,query);
+                if (!mResponse.isError()) {
+                    addResultToDb(mResponse.getResult());
+                    mAllPhotosFromDb = getAllPhotosFromDb();
 
-                return getAllPhotosFromDb();
+                }
             }
 
             @Override
-            public void onPostExecute(Object object) {
-
+            public void onPostRequest() {
+                if (!mResponse.isError()) {
+                    mIDataProviderCallback.onSuccessResult(mAllPhotosFromDb);
+                } else {
+                    mIDataProviderCallback.onError(mResponse.getError());
+                }
             }
+
         };
 
         startLoading(request);
     }
 
     public void getRecent(final int pPage) {
-        IRequest<ICustomCursorWrapper<IPhoto>, ICustomCursorWrapper<IPhoto>> request = new GetRecentRequest(pPage);
-
-        startLoading(request);
+        startLoading(new GetRecentRequest(pPage));
     }
 
     public void registerCallback(@NonNull IDataProviderCallback<ICustomCursorWrapper<IPhoto>> pCallback) {
@@ -80,9 +89,9 @@ public class PhotoDataProvider {
         mIDataProviderCallback = null;
     }
 
-    private void startLoading(@NonNull IRequest<ICustomCursorWrapper<IPhoto>> pRequest) {
-        RequestTask requestTask = new RequestTask(mIDataProviderCallback);
-        requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pRequest);
+    private void startLoading(@NonNull IRequest pRequest) {
+        RequestTask requestTask = new RequestTask(pRequest);
+        requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, null);
     }
 
     public List<IPhoto> getResult() {
