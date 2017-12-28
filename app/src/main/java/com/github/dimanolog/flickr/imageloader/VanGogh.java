@@ -96,7 +96,7 @@ public class VanGogh extends HandlerThread {
             LogUtil.message(Log.DEBUG, TAG, "uri is null only set placeholder");
             return;
         }
-        Log.i(TAG, "Got a URL: " + uri.toString());
+        LogUtil.message(Log.DEBUG, TAG, "Got a URL: " + uri.toString());
         Bitmap bitmap = mLruCache.get(uri.toString());
         if (bitmap != null) {
             handleResponse(bitmap, target);
@@ -143,15 +143,19 @@ public class VanGogh extends HandlerThread {
         if (pBitmap != null) {
             mResponseHandler.post(new Runnable() {
                 public void run() {
-                    ImageView imageView = target.getTargetImageView().get();
-                    if (imageView != null) {
-                        imageView.setImageBitmap(pBitmap);
-                    }
-                    if (target.getCallback() != null) {
-                        target.getCallback().onSuccess(pBitmap);
-                    }
+                    setBitmap(target, pBitmap);
                 }
             });
+        }
+    }
+
+    private void setBitmap(ImageRequest target, Bitmap pBitmap) {
+        ImageView imageView = target.getTargetImageView().get();
+        if (imageView != null) {
+            imageView.setImageBitmap(pBitmap);
+        }
+        if (target.getCallback() != null) {
+            target.getCallback().onSuccess(pBitmap);
         }
     }
 

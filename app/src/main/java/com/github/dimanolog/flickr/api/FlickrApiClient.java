@@ -17,11 +17,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO provide exceptions to others layers
 public class FlickrApiClient implements IFlickrApiClient {
     private static final String GET_RECENT_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
-
     private static final String METHOD = "method";
     private static final String PAGE = "page";
     private static final String SEARCH_TEXT = "text";
