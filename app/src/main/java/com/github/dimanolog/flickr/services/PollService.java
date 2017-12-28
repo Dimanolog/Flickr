@@ -21,6 +21,7 @@ import android.util.Log;
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoGalleryActivity;
 import com.github.dimanolog.flickr.api.FlickrApiClient;
+import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 
@@ -88,17 +89,17 @@ public class PollService extends JobService {
         }
         String query = QueryPreferences.getStoredQuery(this);
         Long lastResultId = QueryPreferences.getLastResultId(this);
-        List<IPhoto> items;
+        IResponse<List<IPhoto>> items;
         FlickrApiClient apiClient = new FlickrApiClient();
         if (query == null) {
             items = apiClient.getRecent(1);
         } else {
             items = apiClient.searchPhotos(1, query);
         }
-        if (items.size() == 0) {
+        if (items.getResult().size() == 0) {
             return;
         }
-        Long resultId = items.get(0).getId();
+        Long resultId = items.getResult().get(0).getId();
         if (resultId.equals(lastResultId)) {
             Log.i(TAG, "Got an old result: " + resultId);
         } else {

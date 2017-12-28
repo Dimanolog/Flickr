@@ -36,9 +36,12 @@ public class DiskLruCache {
     private static final String IMAGE_CACHE_DIR_NAME = "IMAGE_CACHE";
     private static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024;
     private static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024;
+    private static final int CLEAN_DISK_SIZE = 5 * 1024 * 1024;
 
     private final File mCacheDir;
     private final long mCacheSize;
+
+    private volatile long mCurrentCacheSize;
 
     public DiskLruCache(Context pContext) {
         this.mCacheDir = pContext.getCacheDir();
@@ -56,8 +59,8 @@ public class DiskLruCache {
         }
 
         mCacheSize = calculateDiskCacheSize(this.mCacheDir);
-        freeSpaceIfRequired();
 
+        freeSpaceIfRequired();
     }
 
 
@@ -73,51 +76,63 @@ public class DiskLruCache {
         if (files != null && files.length == 1) {
             File imageFile = files[0];
             imageFile.setLastModified(System.currentTimeMillis());
-            Log.d(TAG, String.format("success return file from cache: %s, %s",imageFile.getName(), imageUri));
+            Log.d(TAG, String.format("success return file from cache: %s, %s", imageFile.getName(), imageUri));
             return imageFile;
         }
         return null;
     }
 
 
-    public void add(String imageUri, Bitmap bitmap) {
-        File imageFile = get(imageUri);
-        if (imageFile == null) {
-            String fileName = MD5.hash(imageUri);
-            imageFile = new File(mCacheDir, fileName);
+    public void add(final String imageUri, final Bitmap bitmap) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String fileName = MD5.hash(imageUri);
+                File imageFile = new File(fileName);
+                if (!imageFile.exists()) {
+                    imageFile = new File(mCacheDir, fileName + "temp");
 
-            freeSpaceIfRequired();
-            OutputStream os = null;
-            FileOutputStream out = null;
-            try {
-                if(imageFile.createNewFile())
-                {
-                    out = new FileOutputStream(imageFile);
-                    os = new BufferedOutputStream(out, BUFFER_SIZE);
+                    OutputStream os = null;
+                    FileOutputStream out = null;
+                    try {
+                        if (imageFile.createNewFile()) {
+                            out = new FileOutputStream(imageFile);
+                            os = new BufferedOutputStream(out, BUFFER_SIZE);
 
-                    boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
-                    if(savedSuccessfully) {
-                        imageFile.setLastModified(System.currentTimeMillis());
-                        Log.d(TAG, "success create new image file in cache"+imageFile.getName());
+                            boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
+                            if (savedSuccessfully) {
+                                imageFile.setLastModified(System.currentTimeMillis());
+                                imageFile.renameTo(new File(fileName));
+                                long current = mCurrentCacheSize + imageFile.length();
+                                if (current > mCacheSize) {
+                                    freeSpaceIfRequired();
+                                }
+                                Log.d(TAG, "success create new image file in cache" + imageFile.getName());
+                            }
+                        }
+                    } catch (IOException e) {
+                        Log.d(TAG, "cant create new Image file");
+                    } finally {
+                        IOUtils.close(os);
+                        IOUtils.close(out);
                     }
                 }
-            } catch (IOException e) {
-                Log.d(TAG, "cant create new Image file");
-            } finally {
-                IOUtils.close(os);
-                IOUtils.close(out);
             }
-        }
+        }).start();
     }
 
 
-    private void freeSpaceIfRequired() {
+    private synchronized void freeSpaceIfRequired() {
         Log.d(TAG, "freeSpaceIfRequired() called");
         long currentCacheSize = getCurrentCacheSize();
+
         if (currentCacheSize > mCacheSize) {
+            long targetSize = mCacheSize;
+            if (mCacheSize > CLEAN_DISK_SIZE) {
+                targetSize = mCacheSize - CLEAN_DISK_SIZE;
+            }
             File[] files = mCacheDir.listFiles();
             Arrays.sort(files, new Comparator<File>() {
-
                 @Override
                 public int compare(File lhs, File rhs) {
                     return Long.valueOf(lhs.lastModified()).compareTo(rhs.lastModified());
@@ -132,12 +147,13 @@ public class DiskLruCache {
                 }
                 i++;
                 Log.d(TAG, "freeSpaceIfRequired: after delete " + currentCacheSize);
-            } while (currentCacheSize > mCacheSize);
+            } while (currentCacheSize > targetSize);
+            mCurrentCacheSize=getCurrentCacheSize();
         }
         Log.d(TAG, "freeSpaceIfRequired() returned: " + currentCacheSize);
     }
 
-   private long getCurrentCacheSize() {
+    private long getCurrentCacheSize() {
         long length = 0;
         for (File file : mCacheDir.listFiles()) {
             if (file.isFile())
@@ -156,7 +172,7 @@ public class DiskLruCache {
         } catch (IllegalArgumentException ignored) {
         }
 
-       return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
+        return Math.max(Math.min(size, MAX_DISK_CACHE_SIZE), MIN_DISK_CACHE_SIZE);
 
     }
 }
