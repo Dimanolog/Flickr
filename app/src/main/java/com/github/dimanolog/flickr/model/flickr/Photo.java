@@ -7,7 +7,7 @@ import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.db.annotations.Table;
 import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.google.gson.annotations.SerializedName;
-@Table("photo")
+@Table(FlickrDbSchema.PhotoTable.NAME)
 public class Photo implements IPhoto {
     @SerializedName("id")
     @Identity(FlickrDbSchema.PhotoTable.Cols.ID)
