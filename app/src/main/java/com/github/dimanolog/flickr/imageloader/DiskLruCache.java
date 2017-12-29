@@ -18,6 +18,7 @@ import android.os.StatFs;
 import android.util.Log;
 
 import com.github.dimanolog.flickr.util.IOUtils;
+import com.github.dimanolog.flickr.util.LogUtil;
 
 import java.io.*;
 import java.util.Arrays;
@@ -107,11 +108,11 @@ public class DiskLruCache {
                                 if (current > mCacheSize) {
                                     freeSpaceIfRequired();
                                 }
-                                Log.d(TAG, "success create new image file in cache" + imageFile.getName());
+                                LogUtil.d(TAG, "success create new image file in cache" + imageFile.getName());
                             }
                         }
                     } catch (IOException e) {
-                        Log.d(TAG, "cant create new Image file");
+                        LogUtil.d(TAG, "cant create new Image file");
                     } finally {
                         IOUtils.close(os);
                         IOUtils.close(out);
@@ -123,7 +124,7 @@ public class DiskLruCache {
 
 
     private synchronized void freeSpaceIfRequired() {
-        Log.d(TAG, "freeSpaceIfRequired() called");
+        LogUtil.d(TAG, "freeSpaceIfRequired() called");
         long currentCacheSize = getCurrentCacheSize();
 
         if (currentCacheSize > mCacheSize) {
@@ -146,11 +147,11 @@ public class DiskLruCache {
                     currentCacheSize -= length;
                 }
                 i++;
-                Log.d(TAG, "freeSpaceIfRequired: after delete " + currentCacheSize);
+                LogUtil.d(TAG, "freeSpaceIfRequired: after delete " + currentCacheSize);
             } while (currentCacheSize > targetSize);
             mCurrentCacheSize=getCurrentCacheSize();
         }
-        Log.d(TAG, "freeSpaceIfRequired() returned: " + currentCacheSize);
+        LogUtil.d(TAG, "freeSpaceIfRequired() returned: " + currentCacheSize);
     }
 
     private long getCurrentCacheSize() {
