@@ -26,7 +26,7 @@ public class PhotoPageFragment extends VisibleFragment {
     private ProgressBar mProgressBar;
 
     public interface OnBackPressedListener {
-        public boolean doBack();
+       boolean doBack();
     }
 
     public static PhotoPageFragment newInstance(Uri uri) {

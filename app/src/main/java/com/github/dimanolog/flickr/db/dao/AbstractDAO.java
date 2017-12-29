@@ -42,7 +42,7 @@ public abstract class AbstractDAO<T> {
 
     public ICustomCursorWrapper<T> getAll() {
         final SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
-        return rawQuery("select * from "+mTableName, null);
+        return rawQuery("select * from " + mTableName, null);
     }
 
 
@@ -91,22 +91,16 @@ public abstract class AbstractDAO<T> {
 
 
     public int delete(final String sql, final String[] args) {
-        final String name = ReflectUtil.getTableName(mClass);
-
-        if (name != null) {
-            final SQLiteDatabase db = mFlickrDbHelper.getWritableDatabase();
-            int count = 0;
-            try {
-                db.beginTransaction();
-                count = db.delete(name, sql, args);
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }
-            return count;
-        } else {
-            throw new RuntimeException(ENTITY_DONT_HAVE_ANNOTATION_TABLE);
+        final SQLiteDatabase db = mFlickrDbHelper.getWritableDatabase();
+        int count;
+        try {
+            db.beginTransaction();
+            count = db.delete(mTableName, sql, args);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
+        return count;
     }
 
     private List<ContentValues> entityCollectionToContentValues(Collection<T> pEntities) {
