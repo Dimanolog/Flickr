@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.github.dimanolog.flickr.db.annotations.Column;
 import com.github.dimanolog.flickr.db.annotations.Identity;
+import com.github.dimanolog.flickr.util.LogUtil;
 import com.github.dimanolog.flickr.util.ReflectUtil;
 
 import java.lang.reflect.Field;
@@ -72,9 +73,9 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
         try {
             db.execSQL(pSqlTable);
             db.setTransactionSuccessful();
-            Log.d(TAG, "create table success, table sql: " + pSqlTable);
+            LogUtil.d(TAG, "create table success, table sql: " + pSqlTable);
         } catch (SQLException pE) {
-            Log.e(TAG, "cant create tabel sql: " + pSqlTable);
+            LogUtil.e(TAG, "cant create tabel sql: " + pSqlTable, pE);
         } finally {
             db.endTransaction();
         }

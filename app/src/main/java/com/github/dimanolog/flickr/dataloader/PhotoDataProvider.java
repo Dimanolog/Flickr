@@ -46,6 +46,7 @@ public class PhotoDataProvider {
         IRequest request = new IRequest() {
             private IResponse<List<IPhoto>> mResponse;
             private ICustomCursorWrapper<IPhoto> mAllPhotosFromDb;
+
             @Override
             public void onPreRequest() {
                 if (mIDataProviderCallback != null) {

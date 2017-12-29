@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import com.github.dimanolog.flickr.fragments.PhotoPageFragment;
 
 public class PhotoPageActivity extends SingleFragmentActivity {
+
     protected PhotoPageFragment.OnBackPressedListener onBackPressedListener;
+
     public static Intent newIntent(Context context, Uri photoPageUri) {
         Intent i = new Intent(context, PhotoPageActivity.class);
         i.setData(photoPageUri);

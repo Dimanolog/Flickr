@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
  */
 
 public class IOUtils {
+    private static final String TAG = IOUtils.class.getSimpleName();
 
     private IOUtils() {
     }
@@ -23,7 +24,7 @@ public class IOUtils {
             try {
                 pCloseable.close();
             } catch (IOException e) {
-                Log.e("IOUtils", e.getMessage());
+                LogUtil.e(TAG, "something's gone wrong", e);
             }
         }
     }
@@ -51,7 +52,7 @@ public class IOUtils {
         InputStreamReader inputStreamReader = null;
         BufferedReader reader = null;
         StringBuilder sb = new StringBuilder();
-        String line = null;
+        String line;
         try {
             inputStreamReader = new InputStreamReader(pInputstream);
             reader = new BufferedReader(inputStreamReader);
