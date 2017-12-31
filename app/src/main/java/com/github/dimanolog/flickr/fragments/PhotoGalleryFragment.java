@@ -24,7 +24,7 @@ import com.github.dimanolog.flickr.dataloader.IDataProviderCallback;
 import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
 import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
-import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
 

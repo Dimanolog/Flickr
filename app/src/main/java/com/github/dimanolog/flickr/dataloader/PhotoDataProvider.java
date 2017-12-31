@@ -9,7 +9,7 @@ import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.db.dao.PhotoDAO;
-import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,6 @@ public class PhotoDataProvider {
                 if (!mResponse.isError()) {
                     addResultToDb(mResponse.getResult());
                     mAllPhotosFromDb = getAllPhotosFromDb();
-
                 }
             }
 
@@ -71,7 +70,6 @@ public class PhotoDataProvider {
                     mIDataProviderCallback.onError(mResponse.getError());
                 }
             }
-
         };
 
         startLoading(request);

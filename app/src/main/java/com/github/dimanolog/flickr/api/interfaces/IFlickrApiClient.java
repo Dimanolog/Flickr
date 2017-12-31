@@ -1,6 +1,6 @@
 package com.github.dimanolog.flickr.api.interfaces;
 
-import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
 import java.util.List;
 

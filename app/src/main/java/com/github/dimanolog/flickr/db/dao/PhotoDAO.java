@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
-import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 
 /**

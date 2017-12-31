@@ -5,9 +5,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.github.dimanolog.flickr.db.annotations.Column;
+import com.github.dimanolog.flickr.db.annotations.ForeignKey;
 import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.util.LogUtil;
 import com.github.dimanolog.flickr.util.ReflectUtil;
@@ -25,7 +25,9 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 4;
     private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
     private static final String ID = "INTEGER PRIMARY KEY NOT NULL";
+    private static final String AUTOINCREMENT = "AUTOINCREMENT";
     private static final String DELETE_TABLE_TEMPLATE = "DROP TABLE IF EXISTS '%s'";
+    private static final String FOREIGN_KEY_TEMPLATE = "'%s' INTEGER, FOREIGN KEY('%s') REFERENCES %s(%s)";
 
     public FlickrDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,8 +51,9 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
             Class<?>[] modelClasses = DbUtil.getModelClasses();
             for (Class<?> clazz : modelClasses) {
                 String tableName = ReflectUtil.getTableName(clazz);
-                db.execSQL(String.format(DELETE_TABLE_TEMPLATE, tableName));
-
+                if (tableName != null) {
+                    db.execSQL(String.format(DELETE_TABLE_TEMPLATE, tableName));
+                }
                 onCreate(db);
             }
         }
@@ -68,7 +71,7 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
         return String.format(TABLE_TEMPLATE, tableName, sqlStringBuilder.toString());
     }
 
-    private void createTable(String pSqlTable,  SQLiteDatabase db) {
+    private void createTable(String pSqlTable, SQLiteDatabase db) {
         db.beginTransaction();
         try {
             db.execSQL(pSqlTable);
@@ -104,9 +107,23 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
                 if (sqlType != null) {
                     pStringBuilder.append(identity.value())
                             .append(" ")
-                            .append(ID)
-                            .append(",");
+                            .append(ID);
+                    if (identity.autoincrement()) {
+                        pStringBuilder.append(' ')
+                                .append(AUTOINCREMENT);
+                    }
+                    pStringBuilder.append(',');
                 }
+                continue;
+            }
+
+            ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
+            if (foreignKey != null) {
+               String foreignKeyStr = String.format(FOREIGN_KEY_TEMPLATE, foreignKey.name(), foreignKey.name(),foreignKey.table(), foreignKey.column());
+                pStringBuilder.append(' ')
+                        .append(foreignKeyStr)
+                        .append(',');
+
             }
         }
         pStringBuilder.setLength(pStringBuilder.length() - 1);

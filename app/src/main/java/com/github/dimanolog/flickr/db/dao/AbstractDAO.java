@@ -41,7 +41,6 @@ public abstract class AbstractDAO<T> {
     }
 
     public ICustomCursorWrapper<T> getAll() {
-        final SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         return rawQuery("select * from " + mTableName, null);
     }
 

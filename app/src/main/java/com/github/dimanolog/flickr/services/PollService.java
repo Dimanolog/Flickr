@@ -22,7 +22,7 @@ import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoGalleryActivity;
 import com.github.dimanolog.flickr.api.FlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.model.flickr.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 
 import java.util.List;

@@ -1,6 +1,8 @@
 package com.github.dimanolog.flickr.db;
 
 import com.github.dimanolog.flickr.model.flickr.Photo;
+import com.github.dimanolog.flickr.model.flickr.SearchQuery;
+import com.github.dimanolog.flickr.model.flickr.SearchQueryToPhoto;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +20,9 @@ class DbUtil {
 
     static Class<?>[] getModelClasses() {
         return new Class[]{
-                Photo.class
+                Photo.class,
+                SearchQuery.class,
+                SearchQueryToPhoto.class
         };
     }
 

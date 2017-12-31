@@ -6,11 +6,13 @@ import com.github.dimanolog.flickr.db.annotations.Column;
 import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.db.annotations.Table;
 import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.google.gson.annotations.SerializedName;
+
 @Table(FlickrDbSchema.PhotoTable.NAME)
 public class Photo implements IPhoto {
-    @SerializedName("id")
-    @Identity(FlickrDbSchema.PhotoTable.Cols.ID)
+    @SerializedName("mId")
+    @Identity(value = FlickrDbSchema.PhotoTable.Cols.ID, autoincrement = false)
     private Long mId;
     @SerializedName("title")
     @Column(FlickrDbSchema.PhotoTable.Cols.TITLE)
