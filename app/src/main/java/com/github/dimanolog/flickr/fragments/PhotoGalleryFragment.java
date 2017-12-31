@@ -28,9 +28,6 @@ import com.github.dimanolog.flickr.model.flickr.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallback<ICustomCursorWrapper<IPhoto>> {
 
@@ -39,7 +36,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private RecyclerView mPhotoRecyclerView;
     private ProgressBar mProgressBar;
-    private List<IPhoto> mItems = new ArrayList<>();
     private Integer mCurrentPage = 1;
     private boolean mLoading;
     private boolean mUpdating;
@@ -75,7 +71,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
             }
         });
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);

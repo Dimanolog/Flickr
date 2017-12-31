@@ -26,6 +26,5 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(c);
         notificationManager.notify(requestCode, notification);
-
     }
 }

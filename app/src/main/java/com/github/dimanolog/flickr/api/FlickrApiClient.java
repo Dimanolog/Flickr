@@ -84,7 +84,7 @@ public class FlickrApiClient implements IFlickrApiClient {
 
         @Override
         public boolean isError() {
-            return false;
+            return mIsError;
         }
     }
 
