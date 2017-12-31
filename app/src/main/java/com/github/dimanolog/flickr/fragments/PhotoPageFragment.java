@@ -16,8 +16,6 @@ import android.widget.ProgressBar;
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
 
-
-
 public class PhotoPageFragment extends VisibleFragment {
     private static final String TAG = PhotoPageFragment.class.getSimpleName();
     private static final String ARG_URI = "photo_page_url";

@@ -33,7 +33,6 @@ public class PhotoDataProvider {
                 }
             }
         }
-
         return sInstance;
     }
 

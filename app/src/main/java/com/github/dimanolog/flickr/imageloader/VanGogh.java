@@ -12,7 +12,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.github.dimanolog.flickr.http.HttpClient;
@@ -132,8 +131,12 @@ public class VanGogh extends HandlerThread {
                 mDiskLruCache.add(url, bitmap);
                 handleResponse(bitmap, target);
 
-            } catch (IOException ioe) {
-                LogUtil.e(TAG, "Error downloading image", ioe);
+            } catch (IOException pE) {
+                VanGoghCallback callback = target.getCallback();
+                if(callback !=null){
+                    LogUtil.e(TAG, "Error downloading image", pE);
+                    callback.onError(pE);
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  */
 
 public interface VanGoghCallback {
-    void onError();
+    void onError(Throwable pThrowable);
 
     void onSuccess(Bitmap pBitmap);
 }
