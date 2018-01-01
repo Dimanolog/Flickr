@@ -5,8 +5,6 @@ package com.github.dimanolog.flickr.db.annotations;
  */
 
 public @interface ForeignKey {
-    String name();
-
     String table();
 
     String column();

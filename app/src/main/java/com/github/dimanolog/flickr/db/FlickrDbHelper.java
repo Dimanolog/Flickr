@@ -22,12 +22,13 @@ import java.util.Map;
 public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final String TAG = FlickrDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "Flickr.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
-    private static final String ID = "INTEGER PRIMARY KEY NOT NULL";
+    private static final String NOT_NULL = "NOT NULL";
+    private static final String ID = "INTEGER PRIMARY KEY";
     private static final String AUTOINCREMENT = "AUTOINCREMENT";
     private static final String DELETE_TABLE_TEMPLATE = "DROP TABLE IF EXISTS '%s'";
-    private static final String FOREIGN_KEY_TEMPLATE = "'%s' INTEGER, FOREIGN KEY('%s') REFERENCES %s(%s)";
+    private static final String FOREIGN_KEY_TEMPLATE = "FOREIGN KEY (%s) REFERENCES %s (%s)";
 
     public FlickrDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -67,6 +68,9 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
         Field[] fields = pClass.getDeclaredFields();
         StringBuilder sqlStringBuilder = new StringBuilder();
         addSqlColumns(sqlStringBuilder, fields);
+        addForeignKeys(sqlStringBuilder, fields);
+        //delete last comma
+        sqlStringBuilder.setLength(sqlStringBuilder.length() - 1);
 
         return String.format(TABLE_TEMPLATE, tableName, sqlStringBuilder.toString());
     }
@@ -106,26 +110,34 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
                 sqlType = classToSqlTypeMap.get(field.getType());
                 if (sqlType != null) {
                     pStringBuilder.append(identity.value())
-                            .append(" ")
+                            .append(' ')
                             .append(ID);
                     if (identity.autoincrement()) {
                         pStringBuilder.append(' ')
                                 .append(AUTOINCREMENT);
+
                     }
+                    pStringBuilder.append(' ')
+                            .append(NOT_NULL);
                     pStringBuilder.append(',');
                 }
-                continue;
-            }
-
-            ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
-            if (foreignKey != null) {
-               String foreignKeyStr = String.format(FOREIGN_KEY_TEMPLATE, foreignKey.name(), foreignKey.name(),foreignKey.table(), foreignKey.column());
-                pStringBuilder.append(' ')
-                        .append(foreignKeyStr)
-                        .append(',');
-
             }
         }
-        pStringBuilder.setLength(pStringBuilder.length() - 1);
+    }
+
+    private void addForeignKeys(StringBuilder pStringBuilder, Field[] pFields) {
+        for (Field field : pFields) {
+            ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
+            if (foreignKey != null) {
+                Column column = field.getAnnotation(Column.class);
+                if(column!=null) {
+                    String foreignKeyStr = String.format(FOREIGN_KEY_TEMPLATE, column.value(),
+                            foreignKey.table(), foreignKey.column());
+                    pStringBuilder.append(' ')
+                            .append(foreignKeyStr)
+                            .append(',');
+                }
+            }
+        }
     }
 }

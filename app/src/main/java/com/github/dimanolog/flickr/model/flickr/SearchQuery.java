@@ -9,9 +9,9 @@ import com.github.dimanolog.flickr.model.flickr.interfaces.ISearchQuery;
 @Table(FlickrDbSchema.QueryTable.NAME)
 public class SearchQuery implements ISearchQuery {
     @Identity(value = FlickrDbSchema.QueryTable.Cols.ID, autoincrement = true)
-    Long mId;
+    private Long mId;
     @Column(FlickrDbSchema.QueryTable.Cols.QUERY)
-    String mQuery;
+    private String mQuery;
 
     @Override
     public Long getId() {

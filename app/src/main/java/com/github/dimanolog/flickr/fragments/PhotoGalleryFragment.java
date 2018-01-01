@@ -7,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,8 +26,9 @@ import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.PollService;
+import com.github.dimanolog.flickr.util.LogUtil;
 
-
+//TODO add russian and english localization
 public class PhotoGalleryFragment extends VisibleFragment implements IDataProviderCallback<ICustomCursorWrapper<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();
@@ -106,7 +106,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 (new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String s) {
-                        Log.d(TAG, "QueryTextSubmit: " + s);
+                        LogUtil.d(TAG, "QueryTextSubmit: " + s);
                         QueryPreferences.setStoredQuery(getActivity(), s);
                         newPage();
                         updateItems();
@@ -116,7 +116,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
                     @Override
                     public boolean onQueryTextChange(String s) {
-                        Log.d(TAG, "QueryTextChange: " + s);
+                        LogUtil.d(TAG, "QueryTextChange: " + s);
                         return false;
                     }
                 });

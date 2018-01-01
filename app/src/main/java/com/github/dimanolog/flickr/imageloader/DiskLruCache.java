@@ -28,6 +28,7 @@ public class DiskLruCache {
     private static final int CLEAN_DISK_SIZE = 5 * 1024 * 1024;
 
     private final File mCacheDir;
+    //TODO need use lock for this field?
     private final long mCacheSize;
 
     private volatile long mCurrentCacheSize;
@@ -71,7 +72,7 @@ public class DiskLruCache {
         return null;
     }
 
-
+    //TODO use thread pool
     public void add(final String imageUri, final Bitmap bitmap) {
         new Thread(new Runnable() {
             @Override
@@ -110,7 +111,7 @@ public class DiskLruCache {
         }).start();
     }
 
-
+    //TODO this method never used
     private synchronized void freeSpaceIfRequired() {
         LogUtil.d(TAG, "freeSpaceIfRequired() called");
         long currentCacheSize = getCurrentCacheSize();

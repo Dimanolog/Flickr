@@ -18,7 +18,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context c, Intent i) {
         Log.i(TAG, "received result: " + getResultCode());
         if (getResultCode() != Activity.RESULT_OK) {
-
             return;
         }
         int requestCode = i.getIntExtra(PollService.REQUEST_CODE, 0);
