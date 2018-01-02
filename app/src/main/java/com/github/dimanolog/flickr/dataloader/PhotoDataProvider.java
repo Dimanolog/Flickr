@@ -7,11 +7,11 @@ import android.support.annotation.NonNull;
 import com.github.dimanolog.flickr.api.FlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.db.dao.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.db.PhotoService;
 import com.github.dimanolog.flickr.db.dao.PhotoDAO;
+import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +22,7 @@ public class PhotoDataProvider {
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiClient();
     private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
     private PhotoDAO mPhotoDAO;
-    private List<IPhoto> mIPhotoList = new ArrayList<>();
+    private PhotoService mPhotoService;
 
 
     public static PhotoDataProvider getInstance(@NonNull Context context) {
@@ -39,12 +39,13 @@ public class PhotoDataProvider {
     private PhotoDataProvider(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mPhotoDAO = new PhotoDAO(pContext);
+        mPhotoService = new PhotoService(pContext);
     }
 
-    public void searchPhotos(final int pPage, final String query) {
+    public void searchPhotos(final int pPage, final String pQuery) {
         IRequest request = new IRequest() {
             private IResponse<List<IPhoto>> mResponse;
-            private ICustomCursorWrapper<IPhoto> mAllPhotosFromDb;
+            private ICustomCursorWrapper<IPhoto> mSearchPhotosFromDb;
 
             @Override
             public void onPreRequest() {
@@ -55,17 +56,17 @@ public class PhotoDataProvider {
 
             @Override
             public void runRequest() {
-                mResponse = mIFlickrApiClient.searchPhotos(pPage,query);
+                mResponse = mIFlickrApiClient.searchPhotos(pPage, pQuery);
                 if (!mResponse.isError()) {
-                    addResultToDb(mResponse.getResult());
-                    mAllPhotosFromDb = getAllPhotosFromDb();
+                    mPhotoService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
+                    mSearchPhotosFromDb = mPhotoService.getSearchQueryResult(pQuery)
                 }
             }
 
             @Override
             public void onPostRequest() {
                 if (!mResponse.isError()) {
-                    mIDataProviderCallback.onSuccessResult(mAllPhotosFromDb);
+                    mIDataProviderCallback.onSuccessResult(mSearchPhotosFromDb);
                 } else {
                     mIDataProviderCallback.onError(mResponse.getError());
                 }
@@ -92,9 +93,6 @@ public class PhotoDataProvider {
         requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, null);
     }
 
-    public List<IPhoto> getResult() {
-        return mIPhotoList;
-    }
 
     private Integer addResultToDb(List<IPhoto> pPhotoList) {
         return mPhotoDAO.bulkInsert(pPhotoList);
@@ -131,7 +129,7 @@ public class PhotoDataProvider {
         }
     }
 
-    private  class GetRecentRequest implements IRequest {
+    private class GetRecentRequest implements IRequest {
 
         private final int mPage;
         private IResponse<List<IPhoto>> mResponse;

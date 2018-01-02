@@ -1,11 +1,11 @@
-package com.github.dimanolog.flickr.db.dao;
+package com.github.dimanolog.flickr.db.dao.cursorwrappers;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
-import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.Photo;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
 /**
  * Created by Dimanolog on 17.12.2017.

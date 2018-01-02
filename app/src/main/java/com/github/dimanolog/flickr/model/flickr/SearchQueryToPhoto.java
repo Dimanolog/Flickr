@@ -9,14 +9,14 @@ import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 /**
  * Created by Dimanolog on 31.12.2017.
  */
-@Table(FlickrDbSchema.SearchQueryToPhoto.NAME)
+@Table(FlickrDbSchema.SearchQueryToPhotoTable.NAME)
 public class SearchQueryToPhoto {
-    @Identity( value = FlickrDbSchema.SearchQueryToPhoto.Cols.ID, autoincrement = true)
+    @Identity( value = FlickrDbSchema.SearchQueryToPhotoTable.Cols.ID, autoincrement = true)
     private Long mId;
     @ForeignKey(table = FlickrDbSchema.PhotoTable.NAME, column = FlickrDbSchema.PhotoTable.Cols.ID )
-    @Column(FlickrDbSchema.SearchQueryToPhoto.Cols.photoId)
+    @Column(FlickrDbSchema.SearchQueryToPhotoTable.Cols.photoId)
     private Long mPhotoId;
     @ForeignKey(table = FlickrDbSchema.QueryTable.NAME, column = FlickrDbSchema.QueryTable.Cols.ID)
-    @Column(FlickrDbSchema.SearchQueryToPhoto.Cols.searchQueryId)
+    @Column(FlickrDbSchema.SearchQueryToPhotoTable.Cols.searchQueryId)
     private Long mSearchQueryId;
 }

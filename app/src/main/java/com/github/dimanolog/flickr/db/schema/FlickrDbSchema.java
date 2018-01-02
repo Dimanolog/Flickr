@@ -22,7 +22,7 @@ public class FlickrDbSchema {
         }
     }
 
-    public static final class SearchQueryToPhoto {
+    public static final class SearchQueryToPhotoTable {
         public static final String NAME = "searchquery_photo";
 
         public static final class Cols {

@@ -133,7 +133,7 @@ public class VanGogh extends HandlerThread {
 
             } catch (IOException pE) {
                 VanGoghCallback callback = target.getCallback();
-                if(callback !=null){
+                if (callback != null) {
                     LogUtil.e(TAG, "Error downloading image", pE);
                     callback.onError(pE);
                 }
@@ -162,7 +162,8 @@ public class VanGogh extends HandlerThread {
     private void setBitmap(ImageRequest target, Bitmap pBitmap) {
         ImageView imageView = target.getTargetImageView().get();
         if (imageView != null) {
-            if (imageView.getTag().equals(target.getUri().toString())) {
+            Object tag = imageView.getTag();
+            if (tag != null && tag.equals(target.getUri().toString())) {
                 imageView.setImageBitmap(pBitmap);
             }
         }

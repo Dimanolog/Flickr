@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.github.dimanolog.flickr.db.FlickrDbHelper;
+import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.util.ReflectUtil;
 
 import java.util.Collection;
@@ -17,12 +18,12 @@ import java.util.List;
  */
 public abstract class AbstractDAO<T> {
     private static final String ENTITY_DONT_HAVE_ANNOTATION_TABLE = "Entity dont have annotation @Table";
-
-    private final FlickrDbHelper mFlickrDbHelper;
     private final Class<? extends T> mClass;
-    private final String mTableName;
+    protected final String mTableName;
 
-    AbstractDAO(Context pContext, Class<? extends T> pClass) {
+    protected final FlickrDbHelper mFlickrDbHelper;
+
+   protected AbstractDAO(Context pContext, Class<? extends T> pClass) {
         mFlickrDbHelper = new FlickrDbHelper(pContext);
         mClass = pClass;
         String name = ReflectUtil.getTableName(mClass);
@@ -36,6 +37,21 @@ public abstract class AbstractDAO<T> {
     public ICustomCursorWrapper<T> rawQuery(final String sql, final String... args) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, args);
+
+        return wrapCursor(cursor);
+    }
+
+    protected ICustomCursorWrapper<T> query(String whereClause, String[] whereArgs) {
+        SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                mTableName,
+                null, // Columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, // having
+                null  // orderBy
+        );
 
         return wrapCursor(cursor);
     }
@@ -59,7 +75,6 @@ public abstract class AbstractDAO<T> {
             } finally {
                 db.endTransaction();
             }
-
             return id;
         }
 

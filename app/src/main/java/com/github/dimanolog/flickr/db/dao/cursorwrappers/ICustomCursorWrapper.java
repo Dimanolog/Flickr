@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.db.dao;
+package com.github.dimanolog.flickr.db.dao.cursorwrappers;
 
 import android.database.Cursor;
 
