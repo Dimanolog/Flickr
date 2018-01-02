@@ -8,16 +8,22 @@ import android.util.Log;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.LogUtil;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Shnipko Dmitry
  */
 
 public class DiskLruCache {
-
     private static final String TAG = DiskLruCache.class.getSimpleName();
     private static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private static final int DEFAULT_COMPRESS_QUALITY = 80;
@@ -26,12 +32,14 @@ public class DiskLruCache {
     private static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024;
     private static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024;
     private static final int CLEAN_DISK_SIZE = 5 * 1024 * 1024;
+    private static final int DEFAULT_THREAD_POOL_SIZE = 4;
 
     private final File mCacheDir;
     //TODO need use lock for this field?
     private final long mCacheSize;
 
     private volatile long mCurrentCacheSize;
+    private final ExecutorService mExecutorService;
 
     public DiskLruCache(Context pContext) {
         this.mCacheDir = pContext.getCacheDir();
@@ -49,13 +57,13 @@ public class DiskLruCache {
         }
 
         mCacheSize = calculateDiskCacheSize(this.mCacheDir);
-
+        mExecutorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
         freeSpaceIfRequired();
     }
 
 
     public File get(String imageUri) {
-        final String fileName = MD5.hash(imageUri);
+        final String fileName = imageUri;
         File[] files = mCacheDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -72,43 +80,48 @@ public class DiskLruCache {
         return null;
     }
 
-    //TODO use thread pool
+
     public void add(final String imageUri, final Bitmap bitmap) {
-        new Thread(new Runnable() {
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                String fileName = MD5.hash(imageUri);
-                File imageFile = new File(fileName);
-                if (!imageFile.exists()) {
-                    imageFile = new File(mCacheDir, fileName + "temp");
+                addToDisk(imageUri, bitmap);
+            }
+        };
+        mExecutorService.execute(runnable);
+    }
 
-                    OutputStream os = null;
-                    FileOutputStream out = null;
-                    try {
-                        if (imageFile.createNewFile()) {
-                            out = new FileOutputStream(imageFile);
-                            os = new BufferedOutputStream(out, BUFFER_SIZE);
+    private void addToDisk(String imageUri, Bitmap bitmap) {
+        String fileName = imageUri;
+        File imageFile = new File(fileName);
+        if (!imageFile.exists()) {
+            imageFile = new File(mCacheDir, fileName + "temp");
 
-                            boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
-                            if (savedSuccessfully) {
-                                imageFile.setLastModified(System.currentTimeMillis());
-                                imageFile.renameTo(new File(fileName));
-                                long current = mCurrentCacheSize + imageFile.length();
-                                if (current > mCacheSize) {
-                                    freeSpaceIfRequired();
-                                }
-                                LogUtil.d(TAG, "success create new image file in cache" + imageFile.getName());
-                            }
+            OutputStream os = null;
+            FileOutputStream out = null;
+            try {
+                if (imageFile.createNewFile()) {
+                    out = new FileOutputStream(imageFile);
+                    os = new BufferedOutputStream(out, BUFFER_SIZE);
+
+                    boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
+                    if (savedSuccessfully) {
+                        imageFile.setLastModified(System.currentTimeMillis());
+                        imageFile.renameTo(new File(fileName));
+                        long current = mCurrentCacheSize + imageFile.length();
+                        if (current > mCacheSize) {
+                            freeSpaceIfRequired();
                         }
-                    } catch (IOException e) {
-                        LogUtil.d(TAG, "cant create new Image file");
-                    } finally {
-                        IOUtils.close(os);
-                        IOUtils.close(out);
+                        LogUtil.d(TAG, "success create new image file in cache" + imageFile.getName());
                     }
                 }
+            } catch (IOException e) {
+                LogUtil.d(TAG, "cant create new Image file");
+            } finally {
+                IOUtils.close(os);
+                IOUtils.close(out);
             }
-        }).start();
+        }
     }
 
     //TODO this method never used
@@ -138,7 +151,7 @@ public class DiskLruCache {
                 i++;
                 LogUtil.d(TAG, "freeSpaceIfRequired: after delete " + currentCacheSize);
             } while (currentCacheSize > targetSize);
-            mCurrentCacheSize=getCurrentCacheSize();
+            mCurrentCacheSize = getCurrentCacheSize();
         }
         LogUtil.d(TAG, "freeSpaceIfRequired() returned: " + currentCacheSize);
     }

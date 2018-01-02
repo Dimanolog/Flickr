@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.dimanolog.flickr.db.FlickrDbHelper;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.util.LogUtil;
 import com.github.dimanolog.flickr.util.ReflectUtil;
 
 import java.util.Collection;
@@ -37,6 +38,7 @@ public abstract class AbstractDAO<T> {
     public ICustomCursorWrapper<T> rawQuery(final String sql, final String... args) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, args);
+        LogUtil.d(mClass.getSimpleName(), "getPhotosBySearchId: " + sql);
 
         return wrapCursor(cursor);
     }

@@ -8,6 +8,7 @@ import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.PhotoCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
+import com.github.dimanolog.flickr.util.LogUtil;
 
 import static com.github.dimanolog.flickr.db.schema.FlickrDbSchema.PhotoTable;
 import static com.github.dimanolog.flickr.db.schema.FlickrDbSchema.SearchQueryToPhotoTable;
@@ -18,6 +19,7 @@ import static com.github.dimanolog.flickr.db.schema.FlickrDbSchema.SearchQueryTo
  */
 
 public class PhotoDAO extends AbstractDAO<IPhoto> {
+    private static final String TAG = PhotoDAO.class.getSimpleName();
 
     public PhotoDAO(Context pContext) {
         super(pContext, Photo.class);
@@ -52,7 +54,7 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
                 "=" +
                 id +
                 " )";
-
-       return rawQuery(s,null);
+        LogUtil.d(TAG, "getPhotosBySearchId: " + s);
+        return rawQuery(s, null);
     }
 }
