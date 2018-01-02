@@ -28,16 +28,17 @@ public class PhotoService {
         mSearchQueryToPhotoDAO = new SearchQueryToPhotoDAO(pContext);
     }
 
-    public void addSearchQueryResultToDb(List<IPhoto> pPhotoList, String pSearchQuery) {
+    public Long addSearchQueryResultToDb(List<IPhoto> pPhotoList, String pSearchQuery) {
         mPhotoDAO.bulkInsert(pPhotoList);
         Long id = getQueryId(pSearchQuery);
         if (id != null) {
             mSearchQueryToPhotoDAO.addConnection(pPhotoList, id);
         }
+        return id;
     }
 
-    public ICustomCursorWrapper<IPhoto> getSearchQueryResult(ISearchQuery pSearchQuery) {
-        return mPhotoDAO.getPhotosBySearch(pSearchQuery);
+    public ICustomCursorWrapper<IPhoto> getSearchQueryResult(Long pSearchQueryId) {
+        return mPhotoDAO.getPhotosBySearchId(pSearchQueryId);
     }
 
     private Long getQueryId(String pSearchQuery) {

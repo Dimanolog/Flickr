@@ -58,8 +58,8 @@ public class PhotoDataProvider {
             public void runRequest() {
                 mResponse = mIFlickrApiClient.searchPhotos(pPage, pQuery);
                 if (!mResponse.isError()) {
-                    mPhotoService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
-                    mSearchPhotosFromDb = mPhotoService.getSearchQueryResult(pQuery)
+                    Long id = mPhotoService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
+                    mSearchPhotosFromDb = mPhotoService.getSearchQueryResult(id);
                 }
             }
 
