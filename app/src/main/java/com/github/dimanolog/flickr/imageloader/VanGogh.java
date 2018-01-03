@@ -57,13 +57,17 @@ public class VanGogh extends HandlerThread {
         super.start();
         super.getLooper();
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        int availMemorInBytes = 16 * 1024 * 1024;
+        int availMemorInKb = 16 * 1024;
         if (activityManager != null) {
-            availMemorInBytes = activityManager.getMemoryClass() * 1024 * 1024;
+            availMemorInKb = activityManager.getMemoryClass() * 1024;
         }
-        mLruCache = new LruCache<>(availMemorInBytes / 8);
+        mLruCache = new LruCache<String, Bitmap>(availMemorInKb / 8) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount() / 1024;
+            }
+        };
         mDiskLruCache = new DiskLruCache(mContext);
-
     }
 
 
@@ -102,8 +106,8 @@ public class VanGogh extends HandlerThread {
         } else {
             setPlaceHolder(target);
             setTag(target);
-            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target)
-                    .sendToTarget();
+            Message message = mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target);
+            mRequestHandler.sendMessageAtFrontOfQueue(message);
         }
     }
 

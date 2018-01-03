@@ -94,8 +94,7 @@ public class PhotoPageFragment extends VisibleFragment {
                     }
                     return true;
                 }
-            }
-            );
+            });
             return v;
         }
 

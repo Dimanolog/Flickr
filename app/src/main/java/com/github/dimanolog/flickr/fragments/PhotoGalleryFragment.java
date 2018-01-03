@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -37,6 +38,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     private RecyclerView mPhotoRecyclerView;
     private ProgressBar mProgressBar;
+    private ImageView mImagePreView;
     private Integer mCurrentPage = 1;
     private boolean mLoading;
     private boolean mUpdating;
@@ -61,6 +63,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mProgressBar = v.findViewById(R.id.progressBar);
         mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
+        mImagePreView = v.findViewById(R.id.fragment_photo_gallery_image_view);
 
         mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -71,6 +74,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), nmbOfClmns));
             }
         });
+
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -83,6 +87,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
             }
         });
         updateItems();
+
         return v;
     }
 
@@ -188,19 +193,23 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         mCurrentPage++;
     }
 
+    //TODO handle error
     @Override
     public void onError(Throwable t) {
 
     }
 
-    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
         private IPhoto mPhoto;
         private ImageView mPhotoImageVw;
+        private boolean isImageVwLongPressed;
 
         PhotoHolder(View itemView) {
             super(itemView);
             mPhotoImageVw = itemView.findViewById(R.id.fragment_photo_gallery_image_view);
             mPhotoImageVw.setOnClickListener(this);
+            mPhotoImageVw.setOnTouchListener(this);
+            mPhotoImageVw.setOnLongClickListener(this);
         }
 
         void bindPhotoItem(IPhoto photoItem) {
@@ -218,42 +227,64 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                     .newIntent(getActivity(), Uri.parse(mPhoto.getOriginalUrl()));
             startActivity(i);
         }
-    }
 
-    private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
+        @Override
+        public boolean onLongClick(View v) {
+            mImagePreView.setImageDrawable(mPhotoImageVw.getDrawable());
+            isImageVwLongPressed = true;
+            mImagePreView.setVisibility(View.VISIBLE);
 
-        private ICustomCursorWrapper<IPhoto> mPhotoCursor;
-
-        PhotoAdapter(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
-            mPhotoCursor = pPhotoCursor;
+            return true;
         }
 
         @Override
-        public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.gallery_item, viewGroup,
-                    false);
-            return new PhotoHolder(view);
-        }
+        public boolean onTouch(View pView, MotionEvent pEvent) {
+            if (pEvent.getAction() == MotionEvent.ACTION_UP || pEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+                if (isImageVwLongPressed) {
+                    isImageVwLongPressed = false;
+                    mImagePreView.setVisibility(View.INVISIBLE);
 
-        @Override
-        public void onBindViewHolder(PhotoHolder photoHolder, int position) {
-            mPhotoCursor.moveToPosition(position);
-            IPhoto photoItem = mPhotoCursor.get();
-            photoHolder.bindPhotoItem(photoItem);
-        }
-
-        public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor){
-            if(pPhotoCursor!=null) {
-                mPhotoCursor.close();
+                }
             }
-            mPhotoCursor = pPhotoCursor;
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getItemCount() {
-            return mPhotoCursor.getCount();
+            return false;
         }
     }
-}
+
+
+        private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
+
+            private ICustomCursorWrapper<IPhoto> mPhotoCursor;
+
+            PhotoAdapter(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
+                mPhotoCursor = pPhotoCursor;
+            }
+
+            @Override
+            public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View view = inflater.inflate(R.layout.gallery_item, viewGroup,
+                        false);
+                return new PhotoHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(PhotoHolder photoHolder, int position) {
+                mPhotoCursor.moveToPosition(position);
+                IPhoto photoItem = mPhotoCursor.get();
+                photoHolder.bindPhotoItem(photoItem);
+            }
+
+            public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
+                if (pPhotoCursor != null) {
+                    mPhotoCursor.close();
+                }
+                mPhotoCursor = pPhotoCursor;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public int getItemCount() {
+                return mPhotoCursor.getCount();
+            }
+        }
+    }

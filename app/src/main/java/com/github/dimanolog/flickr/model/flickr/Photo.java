@@ -17,7 +17,7 @@ public class Photo implements IPhoto {
     @SerializedName("title")
     @Column(FlickrDbSchema.PhotoTable.Cols.TITLE)
     private String mTittle;
-    @SerializedName("url_s")
+    @SerializedName("url_z")
     @Column(FlickrDbSchema.PhotoTable.Cols.SMALL_IMAGE_URL)
     private String mSmallUrl;
     @SerializedName("url_o")

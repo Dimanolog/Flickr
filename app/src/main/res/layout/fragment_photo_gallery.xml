@@ -17,6 +17,18 @@
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/fragment_photo_gallery_image_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:contentDescription="@string/current_image"
+        android:background="#cc1a1a1a"
+        android:scaleType="centerInside"
+        />
+
 </FrameLayout>
 
 
