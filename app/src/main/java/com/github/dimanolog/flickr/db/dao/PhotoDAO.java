@@ -37,7 +37,8 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
         values.put(PhotoTable.Cols.OWNER, pEntity.getOwner());
         values.put(PhotoTable.Cols.TITLE, pEntity.getTittle());
         values.put(PhotoTable.Cols.UPLOAD_DATE, pEntity.getUploadDate());
-        values.put(PhotoTable.Cols.URL, pEntity.getUrl());
+        values.put(PhotoTable.Cols.SMALL_IMAGE_URL, pEntity.getSmallUrl());
+        values.put(PhotoTable.Cols.ORIGINAL_IMAGE_URL, pEntity.getOriginalUrl());
 
         return values;
     }

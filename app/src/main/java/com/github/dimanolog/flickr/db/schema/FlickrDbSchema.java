@@ -9,7 +9,8 @@ public class FlickrDbSchema {
             public static final String TITLE = "title";
             public static final String UPLOAD_DATE = "date_upload";
             public static final String OWNER = "owner";
-            public static final String URL = "url";
+            public static final String SMALL_IMAGE_URL = "small_url";
+            public static final String ORIGINAL_IMAGE_URL = "original_url";
         }
     }
 

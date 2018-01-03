@@ -95,7 +95,7 @@ public class VanGogh extends HandlerThread {
             LogUtil.d(TAG, "uri is null only set placeholder");
             return;
         }
-        LogUtil.d(TAG, "Got a URL: " + uri.toString());
+        LogUtil.d(TAG, "Got a SMALL_IMAGE_URL: " + uri.toString());
         Bitmap bitmap = mLruCache.get(uri.toString());
         if (bitmap != null) {
             setBitmap(target, bitmap);

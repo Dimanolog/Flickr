@@ -11,7 +11,7 @@ class ApiConstants {
             .appendQueryParameter("api_key", API_KEY)
             .appendQueryParameter("format", "json")
             .appendQueryParameter("nojsoncallback", "1")
-            .appendQueryParameter("extras", "date_upload,url_s")
+            .appendQueryParameter("extras", "date_upload,url_s,url_o")
             .build();
 
     private  ApiConstants(){}

@@ -16,13 +16,17 @@ public interface IPhoto {
 
     void setTittle(String caption);
 
-    String getUrl();
+    String getSmallUrl();
 
-    void setUrl(String url);
+    void setSmallUrl(String url);
 
     Uri getPhotoPageUri();
 
     Long getUploadDate();
 
     void setUploadDate(Long uploadDate);
+
+    public String getOriginalUrl();
+
+    public void setOriginalUrl(String pOriginalUrl);
 }

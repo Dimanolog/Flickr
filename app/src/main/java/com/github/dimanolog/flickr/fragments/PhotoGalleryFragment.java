@@ -2,6 +2,7 @@ package com.github.dimanolog.flickr.fragments;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -89,11 +90,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     public void onDetach() {
         super.onDetach();
         mUpdating = false;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -211,7 +207,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
             mPhoto = photoItem;
 
             VanGogh.with(getActivity())
-                    .load(mPhoto.getUrl())
+                    .load(mPhoto.getSmallUrl())
                     .placeHolder(R.drawable.no_photo)
                     .into(mPhotoImageVw);
         }
@@ -219,7 +215,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         @Override
         public void onClick(View v) {
             Intent i = PhotoPageActivity
-                    .newIntent(getActivity(), mPhoto.getPhotoPageUri());
+                    .newIntent(getActivity(), Uri.parse(mPhoto.getOriginalUrl()));
             startActivity(i);
         }
     }
@@ -248,8 +244,11 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         }
 
         public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor){
-            mPhotoCursor.close();
+            if(pPhotoCursor!=null) {
+                mPhotoCursor.close();
+            }
             mPhotoCursor = pPhotoCursor;
+            notifyDataSetChanged();
         }
 
         @Override

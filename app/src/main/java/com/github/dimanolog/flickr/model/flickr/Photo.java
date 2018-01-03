@@ -18,8 +18,11 @@ public class Photo implements IPhoto {
     @Column(FlickrDbSchema.PhotoTable.Cols.TITLE)
     private String mTittle;
     @SerializedName("url_s")
-    @Column(FlickrDbSchema.PhotoTable.Cols.URL)
-    private String mUrl;
+    @Column(FlickrDbSchema.PhotoTable.Cols.SMALL_IMAGE_URL)
+    private String mSmallUrl;
+    @SerializedName("url_o")
+    @Column("original_url")
+    private String mOriginalUrl;
     @SerializedName("owner")
     @Column(FlickrDbSchema.PhotoTable.Cols.OWNER)
     private String mOwner;
@@ -48,13 +51,13 @@ public class Photo implements IPhoto {
     }
 
     @Override
-    public String getUrl() {
-        return mUrl;
+    public String getSmallUrl() {
+        return mSmallUrl;
     }
 
     @Override
-    public void setUrl(String pUrl) {
-        mUrl = pUrl;
+    public void setSmallUrl(String pSmallUrl) {
+        mSmallUrl = pSmallUrl;
     }
 
     @Override
@@ -75,6 +78,14 @@ public class Photo implements IPhoto {
     @Override
     public void setUploadDate(Long pUploadDate) {
         uploadDate = pUploadDate;
+    }
+
+    public String getOriginalUrl() {
+        return mOriginalUrl;
+    }
+
+    public void setOriginalUrl(String pOriginalUrl) {
+        mOriginalUrl = pOriginalUrl;
     }
 
     @Override

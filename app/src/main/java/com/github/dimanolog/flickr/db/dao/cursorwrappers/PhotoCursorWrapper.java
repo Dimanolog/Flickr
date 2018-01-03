@@ -21,16 +21,18 @@ public class PhotoCursorWrapper extends CursorWrapper implements ICustomCursorWr
     public IPhoto get() {
         Long id = getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.ID));
         String tittle = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.TITLE));
-        Long uploadDate =getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE));
+        Long uploadDate = getLong(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.UPLOAD_DATE));
         String owner = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.OWNER));
-        String url = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.URL));
-
+        String urlSmall = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.SMALL_IMAGE_URL));
+        String urlOriginal = getString(getColumnIndex(FlickrDbSchema.PhotoTable.Cols.ORIGINAL_IMAGE_URL));
         IPhoto photo = new Photo();
+
         photo.setTittle(tittle);
         photo.setId(id);
         photo.setOwner(owner);
         photo.setUploadDate(uploadDate);
-        photo.setUrl(url);
+        photo.setSmallUrl(urlSmall);
+        photo.setOriginalUrl(urlOriginal);
 
         return photo;
     }
