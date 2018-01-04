@@ -27,7 +27,7 @@ import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
-import com.github.dimanolog.flickr.services.PollService;
+import com.github.dimanolog.flickr.services.FlickrPollService;
 import com.github.dimanolog.flickr.util.LogUtil;
 
 //TODO add russian and english localization
@@ -122,7 +122,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                     }
                 });
         MenuItem toggleItem = menu.findItem(R.id.menu_item_toggle_polling);
-        if (PollService.isServiceAlarmOn(getActivity())) {
+        if (FlickrPollService.isServiceAlarmOn(getActivity())) {
             toggleItem.setTitle(R.string.stop_polling);
         } else {
             toggleItem.setTitle(R.string.start_polling);
@@ -139,8 +139,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
                 return true;
             case R.id.menu_item_toggle_polling:
                 boolean shouldStartAlarm =
-                        !PollService.isServiceAlarmOn(getActivity());
-                PollService.setServiceAlarm(getActivity(), shouldStartAlarm);
+                        !FlickrPollService.isServiceAlarmOn(getActivity());
+                FlickrPollService.setServiceAlarm(getActivity(), shouldStartAlarm);
                 getActivity().invalidateOptionsMenu();
                 return true;
             default:

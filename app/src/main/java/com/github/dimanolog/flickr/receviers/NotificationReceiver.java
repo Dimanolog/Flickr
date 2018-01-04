@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import com.github.dimanolog.flickr.services.PollService;
+import com.github.dimanolog.flickr.services.PollJobService;
 
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -20,8 +20,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (getResultCode() != Activity.RESULT_OK) {
             return;
         }
-        int requestCode = i.getIntExtra(PollService.REQUEST_CODE, 0);
-        Notification notification = i.getParcelableExtra(PollService.NOTIFICATION);
+        int requestCode = i.getIntExtra(PollJobService.REQUEST_CODE, 0);
+        Notification notification = i.getParcelableExtra(PollJobService.NOTIFICATION);
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(c);
         notificationManager.notify(requestCode, notification);

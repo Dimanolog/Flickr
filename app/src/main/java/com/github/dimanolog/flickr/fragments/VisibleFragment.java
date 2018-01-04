@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.github.dimanolog.flickr.services.PollService;
+import com.github.dimanolog.flickr.services.PollJobService;
 
 
 public abstract class VisibleFragment extends Fragment {
@@ -17,9 +17,9 @@ public abstract class VisibleFragment extends Fragment {
     public void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter
-                (PollService.ACTION_SHOW_NOTIFICATION);
+                (PollJobService.ACTION_SHOW_NOTIFICATION);
         getActivity().registerReceiver(mOnShowNotification, filter,
-                PollService.PERM_PRIVATE, null);
+                PollJobService.PERM_PRIVATE, null);
     }
     @Override
     public void onStop() {

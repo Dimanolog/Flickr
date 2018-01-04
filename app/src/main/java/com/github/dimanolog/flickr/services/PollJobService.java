@@ -28,8 +28,8 @@ import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class PollService extends JobService {
-    private static final String TAG = "PollService";
+public class PollJobService extends JobService {
+    private static final String TAG = "PollJobService";
     private static final int JOB_ID = 1;
 
     public static final String ACTION_SHOW_NOTIFICATION =
@@ -42,7 +42,7 @@ public class PollService extends JobService {
     private PollTask mCurrentTask;
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, PollService.class);
+        return new Intent(context, PollJobService.class);
     }
 
     public static boolean isServiceAlarmOn(Context context) {
@@ -62,7 +62,7 @@ public class PollService extends JobService {
                 context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (isOn) {
             JobInfo jobInfo = new JobInfo.Builder(
-                    JOB_ID, new ComponentName(context, PollService.class))
+                    JOB_ID, new ComponentName(context, PollJobService.class))
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                     .setPeriodic(1000 * 60 * 15)
                     .setPersisted(true)
@@ -123,7 +123,7 @@ public class PollService extends JobService {
     }
 
     private void showBackgroundNotification(int requestCode,
-                                            Notification notification) {
+                                             Notification notification) {
         Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
         i.putExtra(REQUEST_CODE, requestCode);
         i.putExtra(NOTIFICATION, notification);
@@ -134,10 +134,12 @@ public class PollService extends JobService {
     private boolean isNetworkAvailableAndConnected() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
-        boolean isNetworkConnected = isNetworkAvailable &&
+        boolean isNetworkAvailable = false;
+        if (cm != null) {
+            isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        }
+        return isNetworkAvailable &&
                 cm.getActiveNetworkInfo().isConnected();
-        return isNetworkConnected;
     }
 
     @Override
