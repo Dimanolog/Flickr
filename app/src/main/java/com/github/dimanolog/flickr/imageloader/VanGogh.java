@@ -61,7 +61,7 @@ public class VanGogh extends HandlerThread {
         if (activityManager != null) {
             availMemorInKb = activityManager.getMemoryClass() * 1024;
         }
-        mLruCache = new LruCache<String, Bitmap>(availMemorInKb / 8) {
+        mLruCache = new LruCache<String, Bitmap>(availMemorInKb / 4) {
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {
                 return bitmap.getByteCount() / 1024;
