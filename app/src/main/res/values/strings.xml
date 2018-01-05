@@ -2,13 +2,13 @@
     <string name="app_name">Flickr</string>
     <string name="new_version">Вышла новая версия приложения</string>
     <string name="new_version_msg">Требуется обновить приложение</string>
-    <string name="ok">Так точно</string>
+    <string name="ok">Так точно!</string>
     <string name="action_settings">Настройки</string>
     <string name="search">Поиск</string>
     <string name="clear_search">Очистить поиск</string>
-    <string name="start_polling">Start polling</string>
-    <string name="stop_polling">Stop polling</string>
-    <string name="new_pictures_title">New PhotoGallery Pictures</string>
+    <string name="start_polling">Отслеживать изменения</string>
+    <string name="stop_polling">Закончить</string>
+    <string name="new_pictures_title">Новые картинки</string>
     <string name="new_pictures_text">У вас новые картинки в Flickr</string>
-    <string name="current_image">current image</string>
+    <string name="current_image">Текущее изображение</string>
 </resources>
