@@ -187,9 +187,9 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
     @Override
     public void onSuccessResult(ICustomCursorWrapper<IPhoto> result) {
-        loading(false);
         setupOrUpdateAdapter(result);
         mCurrentPage++;
+        loading(false);
     }
 
     //TODO handle error
