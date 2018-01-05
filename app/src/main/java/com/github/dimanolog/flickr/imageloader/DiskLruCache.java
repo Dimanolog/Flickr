@@ -38,7 +38,7 @@ public class DiskLruCache {
     private final long mCacheSize;
     private final ExecutorService mExecutorService;
 
-    private volatile long mCurrentCacheSize;
+    private volatile Long mCurrentCacheSize;
 
     public DiskLruCache(Context pContext) {
         this.mCacheDir = pContext.getCacheDir();
@@ -91,10 +91,9 @@ public class DiskLruCache {
     }
 
     private void addToDisk(String imageUri, Bitmap bitmap) {
-        String fileName = imageUri;
-        File imageFile = new File(fileName);
+        File imageFile = new File(imageUri);
         if (!imageFile.exists()) {
-            imageFile = new File(mCacheDir, fileName + "temp");
+            imageFile = new File(mCacheDir, imageUri + "temp");
 
             OutputStream os = null;
             FileOutputStream out = null;
@@ -106,13 +105,16 @@ public class DiskLruCache {
                     boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
                     if (savedSuccessfully) {
                         imageFile.setLastModified(System.currentTimeMillis());
-                        imageFile.renameTo(new File(fileName));
-                        mCurrentCacheSize = +imageFile.length();
-                        if (mCurrentCacheSize > mCacheSize) {
-                            freeSpaceIfRequired();
+                        imageFile.renameTo(new File(imageUri));
+                        synchronized (mCurrentCacheSize) {
+                            mCurrentCacheSize = +imageFile.length();
+                            if (mCurrentCacheSize > mCacheSize) {
+                                freeSpaceIfRequired();
+                            }
                         }
                         LogUtil.d(TAG, "success create new image file in cache" + imageFile.getName());
                     }
+
                 }
             } catch (IOException e) {
                 LogUtil.d(TAG, "cant create new Image file");
