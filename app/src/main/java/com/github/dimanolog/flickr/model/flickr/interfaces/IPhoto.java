@@ -2,8 +2,10 @@ package com.github.dimanolog.flickr.model.flickr.interfaces;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 
-public interface IPhoto {
+
+public interface IPhoto extends Serializable {
     String getOwner();
 
     void setOwner(String owner);

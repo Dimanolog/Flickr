@@ -2,7 +2,6 @@ package com.github.dimanolog.flickr.fragments;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.github.dimanolog.flickr.R;
-import com.github.dimanolog.flickr.activities.PhotoPageActivity;
+import com.github.dimanolog.flickr.activities.PhotoPageAlternativeActivity;
 import com.github.dimanolog.flickr.dataloader.IDataProviderCallback;
 import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
@@ -223,8 +222,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         @Override
         public void onClick(View v) {
-            Intent i = PhotoPageActivity
-                    .newIntent(getActivity(), Uri.parse(mPhoto.getOriginalUrl()));
+            Intent i = PhotoPageAlternativeActivity
+                    .newIntent(getActivity(), mPhoto);
             startActivity(i);
         }
 
@@ -239,7 +238,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
 
         @Override
         public boolean onTouch(View pView, MotionEvent pEvent) {
-            if (pEvent.getAction() == MotionEvent.ACTION_UP || pEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+            int action = pEvent.getAction();
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                 if (isImageVwLongPressed) {
                     isImageVwLongPressed = false;
                     mImagePreView.setVisibility(View.INVISIBLE);

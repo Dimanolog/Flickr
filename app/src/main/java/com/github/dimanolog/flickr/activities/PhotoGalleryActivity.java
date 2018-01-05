@@ -8,8 +8,8 @@ import com.github.dimanolog.flickr.fragments.PhotoGalleryFragment;
 
 public class PhotoGalleryActivity extends SingleFragmentActivity  {
 
-    public static Intent newIntent(Context context) {
-        return new Intent(context, PhotoGalleryActivity.class);
+    public static Intent newIntent(Context pContext) {
+        return new Intent(pContext, PhotoGalleryActivity.class);
     }
 
     @Override
