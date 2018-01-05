@@ -38,7 +38,6 @@ public class DiskLruCache {
     private final long mCacheSize;
     private final ExecutorService mExecutorService;
 
-    //TODO need use lock for this field?
     private volatile long mCurrentCacheSize;
 
     public DiskLruCache(Context pContext) {
