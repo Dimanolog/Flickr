@@ -17,7 +17,6 @@ class ImageRequest {
     private int mTargetWidth;
     private boolean mPlaceHolderFlag;
 
-
     ImageRequest(ImageRequestBuilder pBuilder) {
         mUri = pBuilder.mUri;
         mPlaceholderResId = pBuilder.mPlaceholderResID;

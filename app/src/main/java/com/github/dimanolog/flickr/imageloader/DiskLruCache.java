@@ -28,18 +28,18 @@ public class DiskLruCache {
     private static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private static final int DEFAULT_COMPRESS_QUALITY = 80;
     private static final int BUFFER_SIZE = 4096;
-    private static final String IMAGE_CACHE_DIR_NAME = "IMAGE_CACHE";
+    //private static final String IMAGE_CACHE_DIR_NAME = "IMAGE_CACHE";
     private static final int MIN_DISK_CACHE_SIZE = 5 * 1024 * 1024;
     private static final int MAX_DISK_CACHE_SIZE = 50 * 1024 * 1024;
     private static final int CLEAN_DISK_SIZE = 5 * 1024 * 1024;
     private static final int DEFAULT_THREAD_POOL_SIZE = 4;
 
     private final File mCacheDir;
-    //TODO need use lock for this field?
     private final long mCacheSize;
-
-    private volatile long mCurrentCacheSize;
     private final ExecutorService mExecutorService;
+
+    //TODO need use lock for this field?
+    private volatile long mCurrentCacheSize;
 
     public DiskLruCache(Context pContext) {
         this.mCacheDir = pContext.getCacheDir();
@@ -108,8 +108,8 @@ public class DiskLruCache {
                     if (savedSuccessfully) {
                         imageFile.setLastModified(System.currentTimeMillis());
                         imageFile.renameTo(new File(fileName));
-                        long current = mCurrentCacheSize + imageFile.length();
-                        if (current > mCacheSize) {
+                        mCurrentCacheSize = +imageFile.length();
+                        if (mCurrentCacheSize > mCacheSize) {
                             freeSpaceIfRequired();
                         }
                         LogUtil.d(TAG, "success create new image file in cache" + imageFile.getName());
