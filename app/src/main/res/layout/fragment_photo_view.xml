@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <WebView
-        android:id="@+id/photo_fragment_image_web_view"
+    android:layout_height="match_parent"
+    android:background="#000000">
+    <com.github.dimanolog.flickr.ui.customview.ImageViewWithZoom
+        android:id="@+id/photo_fragment_image_view_with_zoom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center">
-    </WebView>
+        android:layout_height="match_parent">
+    </com.github.dimanolog.flickr.ui.customview.ImageViewWithZoom>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -16,9 +16,10 @@ import android.widget.ProgressBar;
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
 
-public class PhotoPageFragment extends VisibleFragment {
-    private static final String TAG = PhotoPageFragment.class.getSimpleName();
+public class WebViewFragment extends VisibleFragment {
+    private static final String TAG = WebViewFragment.class.getSimpleName();
     private static final String ARG_URI = "photo_page_url";
+
     private Uri mUri;
     private WebView mWebView;
     private ProgressBar mProgressBar;
@@ -27,10 +28,10 @@ public class PhotoPageFragment extends VisibleFragment {
        boolean doBack();
     }
 
-    public static PhotoPageFragment newInstance(Uri uri) {
+    public static WebViewFragment newInstance(Uri uri) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_URI, uri);
-        PhotoPageFragment fragment = new PhotoPageFragment();
+        WebViewFragment fragment = new WebViewFragment();
         fragment.setArguments(args);
         return fragment;
     }

@@ -15,11 +15,11 @@ import android.support.v4.util.LruCache;
 import android.widget.ImageView;
 
 import com.github.dimanolog.flickr.http.HttpClient;
-import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class VanGogh extends HandlerThread {
     private static final String TAG = VanGogh.class.getSimpleName();
@@ -127,9 +127,13 @@ public class VanGogh extends HandlerThread {
         }
         if (target.getTargetImageView().get() != null) {
             try {
-                final byte[] bitmapBytes = IOUtils.toByteArray(new HttpClient().request(url));
-                bitmap = BitmapFactory
-                        .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+                InputStream request = new HttpClient().request(url);
+                if (target.isResizeFlag()) {
+                    bitmap = BitmapUtil.getScaledBitmap(request,
+                            target.getTargetWidth(), target.getTargetWidth());
+                } else {
+                    bitmap = BitmapUtil.getBitmap(request);
+                }
                 LogUtil.d(TAG, "Bitmap created");
                 mLruCache.put(url, bitmap);
                 mDiskLruCache.add(url, bitmap);

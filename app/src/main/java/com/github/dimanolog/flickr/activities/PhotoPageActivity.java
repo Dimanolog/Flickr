@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 
-import com.github.dimanolog.flickr.fragments.PhotoPageFragment;
+import com.github.dimanolog.flickr.fragments.WebViewFragment;
 
 public class PhotoPageActivity extends SingleFragmentActivity {
 
-    protected PhotoPageFragment.OnBackPressedListener onBackPressedListener;
+    protected WebViewFragment.OnBackPressedListener onBackPressedListener;
 
     public static Intent newIntent(Context context, Uri photoPageUri) {
         Intent i = new Intent(context, PhotoPageActivity.class);
         i.setData(photoPageUri);
         return i;
     }
-    public void setOnBackPressedListener(PhotoPageFragment.OnBackPressedListener onBackPressedListener) {
+    public void setOnBackPressedListener(WebViewFragment.OnBackPressedListener onBackPressedListener) {
         this.onBackPressedListener = onBackPressedListener;
     }
     @Override
     protected Fragment createFragment() {
-        return PhotoPageFragment.newInstance(getIntent().getData());
+        return WebViewFragment.newInstance(getIntent().getData());
     }
 
     @Override

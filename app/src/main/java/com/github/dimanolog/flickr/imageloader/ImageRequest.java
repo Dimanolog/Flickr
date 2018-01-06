@@ -16,6 +16,8 @@ class ImageRequest {
     private int mTargetHeight;
     private int mTargetWidth;
     private boolean mPlaceHolderFlag;
+    private boolean mResizeFlag;
+
 
     ImageRequest(ImageRequestBuilder pBuilder) {
         mUri = pBuilder.mUri;
@@ -25,6 +27,7 @@ class ImageRequest {
         mTargetWidth = pBuilder.mTargetWidth;
         mCallback = pBuilder.mCallback;
         mPlaceHolderFlag=pBuilder.mPlaceHolderFlag;
+        mResizeFlag = pBuilder.mResizeFlag;
     }
 
     Uri getUri() {
@@ -37,6 +40,10 @@ class ImageRequest {
 
     VanGoghCallback getCallback() {
         return mCallback;
+    }
+
+    public boolean isResizeFlag() {
+        return mResizeFlag;
     }
 
     int getPlaceholderResId() {
@@ -64,6 +71,7 @@ class ImageRequest {
         private int mPlaceholderResID;
         private boolean mPlaceHolderFlag;
         private VanGoghCallback mCallback;
+        private boolean mResizeFlag;
 
         ImageRequestBuilder(Uri pUri, VanGogh pVanGogh) {
             mUri = pUri;
@@ -82,6 +90,7 @@ class ImageRequest {
         public ImageRequestBuilder resize(int pHeight, int pWidth) {
             mTargetHeight = pHeight;
             mTargetWidth = pWidth;
+            mResizeFlag = true;
 
             return this;
         }

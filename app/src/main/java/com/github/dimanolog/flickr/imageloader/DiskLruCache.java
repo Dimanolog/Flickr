@@ -34,6 +34,7 @@ public class DiskLruCache {
     private static final int CLEAN_DISK_SIZE = 5 * 1024 * 1024;
     private static final int DEFAULT_THREAD_POOL_SIZE = 4;
 
+    private final Object mLock = new Object();
     private final File mCacheDir;
     private final long mCacheSize;
     private final ExecutorService mExecutorService;
@@ -61,8 +62,8 @@ public class DiskLruCache {
     }
 
 
-    public File get(String imageUri) {
-        final String fileName = imageUri;
+    public File get(String pImageUri) {
+        final String fileName = pImageUri;
         File[] files = mCacheDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -73,7 +74,7 @@ public class DiskLruCache {
         if (files != null && files.length == 1) {
             File imageFile = files[0];
             imageFile.setLastModified(System.currentTimeMillis());
-            Log.d(TAG, String.format("success return file from cache: %s, %s", imageFile.getName(), imageUri));
+            Log.d(TAG, String.format("success return file from cache: %s, %s", imageFile.getName(), pImageUri));
             return imageFile;
         }
         return null;
@@ -90,10 +91,10 @@ public class DiskLruCache {
         mExecutorService.execute(runnable);
     }
 
-    private void addToDisk(String imageUri, Bitmap bitmap) {
-        File imageFile = new File(imageUri);
+    private void addToDisk(String pImageUri, Bitmap pBitmap) {
+        File imageFile = new File(pImageUri);
         if (!imageFile.exists()) {
-            imageFile = new File(mCacheDir, imageUri + "temp");
+            imageFile = new File(mCacheDir, pImageUri + "temp");
 
             OutputStream os = null;
             FileOutputStream out = null;
@@ -102,11 +103,11 @@ public class DiskLruCache {
                     out = new FileOutputStream(imageFile);
                     os = new BufferedOutputStream(out, BUFFER_SIZE);
 
-                    boolean savedSuccessfully = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
+                    boolean savedSuccessfully = pBitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, os);
                     if (savedSuccessfully) {
                         imageFile.setLastModified(System.currentTimeMillis());
-                        imageFile.renameTo(new File(imageUri));
-                        synchronized (mCurrentCacheSize) {
+                        imageFile.renameTo(new File(pImageUri));
+                        synchronized (mLock) {
                             mCurrentCacheSize = +imageFile.length();
                             if (mCurrentCacheSize > mCacheSize) {
                                 freeSpaceIfRequired();
@@ -125,7 +126,6 @@ public class DiskLruCache {
         }
     }
 
-    //TODO this method never used
     private synchronized void freeSpaceIfRequired() {
         LogUtil.d(TAG, "freeSpaceIfRequired() called");
         long currentCacheSize = getCurrentCacheSize();
@@ -167,10 +167,10 @@ public class DiskLruCache {
     }
 
 
-    private static long calculateDiskCacheSize(File dir) {
+    private static long calculateDiskCacheSize(File pDir) {
         long size = MIN_DISK_CACHE_SIZE;
         try {
-            StatFs statFs = new StatFs(dir.getAbsolutePath());
+            StatFs statFs = new StatFs(pDir.getAbsolutePath());
             long available = ((long) statFs.getBlockCount()) * statFs.getBlockSize();
             size = available / 50;
         } catch (IllegalArgumentException ignored) {
