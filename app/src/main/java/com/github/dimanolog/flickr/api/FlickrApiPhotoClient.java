@@ -14,7 +14,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FlickrApiPhotoClient implements IFlickrApiClient {
@@ -57,37 +56,6 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
         return listener.getResult();
     }
 
-
-    private static class FlickrApiPhotoListResponse implements IResponse<List<IPhoto>> {
-        private List<IPhoto> mPhotoList = new ArrayList<>();
-        private Throwable mThrowable;
-        private boolean mIsError;
-
-        public FlickrApiPhotoListResponse(Throwable mThrowable) {
-            this.mThrowable = mThrowable;
-            this.mIsError = true;
-        }
-
-        public FlickrApiPhotoListResponse(List<IPhoto> mPhotoList) {
-            this.mPhotoList = mPhotoList;
-        }
-
-        @Override
-        public List<IPhoto> getResult() {
-            return mPhotoList;
-        }
-
-        @Override
-        public Throwable getError() {
-            return mThrowable;
-        }
-
-        @Override
-        public boolean isError() {
-            return mIsError;
-        }
-    }
-
     private static class FlickrApiResponseListener implements HttpClient.ResponseListener {
         private IResponse<List<IPhoto>> mResult;
 
@@ -95,12 +63,12 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
         public void onResponse(InputStream inputStream) throws IOException {
             String jsonString = IOUtils.toString(inputStream);
             List<IPhoto> photoList = parseJson(jsonString);
-            mResult = new FlickrApiPhotoListResponse(photoList);
+            mResult = new Response<>(photoList);
         }
 
         @Override
         public void onError(Throwable pThrowable) {
-            mResult = new FlickrApiPhotoListResponse(pThrowable);
+            mResult = new Response<>(pThrowable);
         }
 
         IResponse<List<IPhoto>> getResult() {
