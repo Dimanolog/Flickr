@@ -56,6 +56,9 @@ public class PhotoPageFragmentWithWebView extends VisibleFragment {
                 .resize(MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                 .into(mImageViewWithZoom);
 
+        mPhotoTittle = v.findViewById(R.id.photo_fragment_image_name_text_view);
+        mPhotoTittle.setText(mPhoto.getTittle());
+
         return v;
 
     }

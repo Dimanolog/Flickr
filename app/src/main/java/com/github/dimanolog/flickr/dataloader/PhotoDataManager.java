@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.github.dimanolog.flickr.api.FlickrApiClient;
+import com.github.dimanolog.flickr.api.FlickrApiPhotoClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.db.PhotoService;
@@ -15,28 +15,28 @@ import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import java.util.List;
 
 
-public class PhotoDataProvider {
-    private static PhotoDataProvider sInstance;
+public class PhotoDataManager {
+    private static PhotoDataManager sInstance;
 
     private Context mContext;
-    private IFlickrApiClient mIFlickrApiClient = new FlickrApiClient();
+    private IFlickrApiClient mIFlickrApiClient = new FlickrApiPhotoClient();
     private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
     private PhotoDAO mPhotoDAO;
     private PhotoService mPhotoService;
 
 
-    public static PhotoDataProvider getInstance(@NonNull Context context) {
+    public static PhotoDataManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
-            synchronized (PhotoDataProvider.class) {
+            synchronized (PhotoDataManager.class) {
                 if (sInstance == null) {
-                    sInstance = new PhotoDataProvider(context);
+                    sInstance = new PhotoDataManager(context);
                 }
             }
         }
         return sInstance;
     }
 
-    private PhotoDataProvider(@NonNull Context pContext) {
+    private PhotoDataManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mPhotoDAO = new PhotoDAO(pContext);
         mPhotoService = new PhotoService(pContext);
@@ -102,32 +102,6 @@ public class PhotoDataProvider {
         return mPhotoDAO.getAll();
     }
 
-
-    private static class RequestTask extends AsyncTask<Void, Void, Void> {
-        private IRequest mIRequest;
-
-        public RequestTask(IRequest pIRequest) {
-            mIRequest = pIRequest;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mIRequest.onPreRequest();
-        }
-
-        @Override
-        protected void onPostExecute(Void pVoid) {
-            super.onPostExecute(pVoid);
-            mIRequest.onPostRequest();
-        }
-
-        @Override
-        protected Void doInBackground(Void... pVoids) {
-            mIRequest.runRequest();
-            return null;
-        }
-    }
 
     private class GetRecentRequest implements IRequest {
 

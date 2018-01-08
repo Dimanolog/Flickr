@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoGalleryActivity;
-import com.github.dimanolog.flickr.api.FlickrApiClient;
+import com.github.dimanolog.flickr.api.FlickrApiPhotoClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.preferences.QueryPreferences;
@@ -90,7 +90,7 @@ public class PollJobService extends JobService {
         String query = QueryPreferences.getStoredQuery(this);
         Long lastResultId = QueryPreferences.getLastResultId(this);
         IResponse<List<IPhoto>> items;
-        FlickrApiClient apiClient = new FlickrApiClient();
+        FlickrApiPhotoClient apiClient = new FlickrApiPhotoClient();
         if (query == null) {
             items = apiClient.getRecent(1);
         } else {

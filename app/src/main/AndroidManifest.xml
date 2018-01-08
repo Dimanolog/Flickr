@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.github.dimanolog.flickr">
 
@@ -11,7 +10,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="com.github.dimanolog.flickr.PRIVATE"/>
-
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
         android:allowBackup="true"
@@ -22,16 +26,27 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.PhotoGalleryActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.VIEW"/>
 
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="callback"
+                    android:scheme="flickr"/>
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".activities.PhotoPageActivity"
+            android:name=".activities.WebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".activities.PhotoPageAlternativeActivity"/>
+        <activity android:name=".activities.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <receiver android:name="receviers.StartupReceiver">
             <intent-filter>
@@ -41,14 +56,18 @@
         <receiver
             android:name="receviers.NotificationReceiver"
             android:exported="false">
-            <intent-filter
-                android:priority="-999">
-                <action
-                    android:name="com.github.dimanolog.flickr.SHOW_NOTIFICATION"/>
+            <intent-filter android:priority="-999">
+                <action android:name="com.github.dimanolog.flickr.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
 
         <service android:name=".services.FlickrPollService"/>
+
+        <activity
+            android:name=".LoginActivity2"
+            android:label="@string/title_activity_login2">
+        </activity>
+        <activity android:name=".activities.AutheficationActivity"/>
     </application>
 
 </manifest>

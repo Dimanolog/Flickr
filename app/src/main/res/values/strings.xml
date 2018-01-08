@@ -11,4 +11,5 @@
     <string name="new_pictures_title">Новые картинки</string>
     <string name="new_pictures_text">У вас новые картинки в Flickr</string>
     <string name="current_image">Текущее изображение</string>
+
 </resources>

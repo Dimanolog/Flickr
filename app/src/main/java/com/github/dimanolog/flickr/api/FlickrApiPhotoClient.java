@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlickrApiClient implements IFlickrApiClient {
+public class FlickrApiPhotoClient implements IFlickrApiClient {
     private static final String GET_RECENT_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
     private static final String METHOD = "method";
@@ -27,7 +27,7 @@ public class FlickrApiClient implements IFlickrApiClient {
     @WorkerThread
     @Override
     public IResponse<List<IPhoto>> getRecent(int page) {
-        String url = ApiConstants.ENDPOINT.buildUpon()
+        String url = FlickrApiConstants.ENDPOINT.buildUpon()
                 .appendQueryParameter(METHOD, GET_RECENT_METHOD)
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .build()
@@ -39,7 +39,7 @@ public class FlickrApiClient implements IFlickrApiClient {
     @WorkerThread
     @Override
     public IResponse<List<IPhoto>> searchPhotos(int page, String search) {
-        String url = ApiConstants.ENDPOINT.buildUpon()
+        String url = FlickrApiConstants.ENDPOINT.buildUpon()
                 .appendQueryParameter(METHOD, SEARCH_METHOD)
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .appendQueryParameter(SEARCH_TEXT, search)

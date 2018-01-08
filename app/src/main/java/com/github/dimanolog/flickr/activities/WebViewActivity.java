@@ -7,12 +7,12 @@ import android.support.v4.app.Fragment;
 
 import com.github.dimanolog.flickr.fragments.WebViewFragment;
 
-public class PhotoPageActivity extends SingleFragmentActivity {
+public class WebViewActivity extends SingleFragmentActivity {
 
     protected WebViewFragment.OnBackPressedListener onBackPressedListener;
 
     public static Intent newIntent(Context context, Uri photoPageUri) {
-        Intent i = new Intent(context, PhotoPageActivity.class);
+        Intent i = new Intent(context, WebViewActivity.class);
         i.setData(photoPageUri);
         return i;
     }
@@ -30,4 +30,6 @@ public class PhotoPageActivity extends SingleFragmentActivity {
             super.onBackPressed();
         }
     }
+
+
 }

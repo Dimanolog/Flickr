@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageAlternativeActivity;
 import com.github.dimanolog.flickr.dataloader.IDataProviderCallback;
-import com.github.dimanolog.flickr.dataloader.PhotoDataProvider;
+import com.github.dimanolog.flickr.dataloader.PhotoDataManager;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
@@ -41,7 +41,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
     private Integer mCurrentPage = 1;
     private boolean mLoading;
     private boolean mUpdating;
-    private PhotoDataProvider mPhotoDataProvider;
+    private PhotoDataManager mPhotoDataProvider;
 
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
@@ -52,7 +52,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IDataProvid
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        mPhotoDataProvider = PhotoDataProvider.getInstance(getActivity());
+        mPhotoDataProvider = PhotoDataManager.getInstance(getActivity());
         mPhotoDataProvider.registerCallback(this);
     }
 
