@@ -9,7 +9,7 @@ public class UserSession {
     private String mFullName;
     private String mOAuthToken;
     private String mOAuthTokenSecret;
-
+    private String mOAuthVerifier;
 
     public String getUsernsid() {
         return mUsernsid;
@@ -41,5 +41,13 @@ public class UserSession {
 
     public void setOAuthTokenSecret(String pOAuthTokenSecret) {
         mOAuthTokenSecret = pOAuthTokenSecret;
+    }
+
+    public String getOAuthVerifier() {
+        return mOAuthVerifier;
+    }
+
+    public void setOAuthVerifier(String pOAuthVerifier) {
+        mOAuthVerifier = pOAuthVerifier;
     }
 }

@@ -101,11 +101,7 @@ public class AuthorizationWebView extends VisibleFragment {
                 startActivity(i);
                 return true;
             }
-
-
         });
-
-
 
         WebViewActivity webViewActivity = (WebViewActivity) getActivity();
         webViewActivity.setOnBackPressedListener(new WebViewFragment.OnBackPressedListener() {

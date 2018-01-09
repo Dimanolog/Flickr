@@ -42,6 +42,44 @@ public class AutheficationManager {
         mUserSession = new UserSession();
     }
 
+    public void onFlickrCallback(Uri pUri){
+        String oAuthVerifier = pUri.getQueryParameter("oauth_verifier");
+        mUserSession.setOAuthVerifier(oAuthVerifier);
+        FlickrApiAuthorizationClient.getAccesToken(mUserSession);
+
+    }
+
+    private getAccesToken(){
+        IRequest request = new IRequest() {
+
+            private Response<Uri> mUriResponse;
+
+            @Override
+            public void onPreRequest() {
+                mIManagerCallback.onStartLoading();
+            }
+
+            @Override
+            public void runRequest() {
+                IResponse<String> requestToken = FlickrApiAuthorizationClient.getRequestToken();
+                if (!requestToken.isError()) {
+                    Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
+                    String oAuthToken = paramValuePairs.get("oauth_token");
+                    String oAuthTokenSecret = paramValuePairs.get("oauth_token_secret");
+
+                    mUserSession.setOAuthToken(oAuthToken);
+                    mUserSession.setOAuthTokenSecret(oAuthTokenSecret);
+
+                    Uri userAuthorizationUri = FlickrApiAuthorizationClient.getUserAuthorizationUri(oAuthToken);
+
+                    mUriResponse = new Response<>(userAuthorizationUri);
+
+                } else {
+                    mUriResponse = new Response<>(requestToken.getError());
+                }
+    }
+
+
     public void getAuthorizationUri() {
         IRequest request = new IRequest() {
 
