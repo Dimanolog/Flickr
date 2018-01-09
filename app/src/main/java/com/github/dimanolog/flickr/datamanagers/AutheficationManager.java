@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.dataloader;
+package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,7 +12,7 @@ import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 
 public class AutheficationManager {
     private static AutheficationManager sInstance;
-    private IDataProviderCallback<Uri> mIDataProviderCallback;
+    private IManagerCallback<Uri> mIManagerCallback;
 
     private Context mContext;
 
@@ -27,8 +27,8 @@ public class AutheficationManager {
         return sInstance;
     }
 
-    public void setIDataProviderCallback(IDataProviderCallback<Uri> pIDataProviderCallback) {
-        mIDataProviderCallback = pIDataProviderCallback;
+    public void setIDataProviderCallback(IManagerCallback<Uri> pIManagerCallback) {
+        mIManagerCallback = pIManagerCallback;
     }
 
     private AutheficationManager(@NonNull Context pContext) {
@@ -39,7 +39,7 @@ public class AutheficationManager {
         IRequest request = new IRequest() {
             @Override
             public void onPreRequest() {
-                mIDataProviderCallback.onStartLoading();
+                mIManagerCallback.onStartLoading();
             }
 
             @Override
@@ -49,7 +49,7 @@ public class AutheficationManager {
 
             @Override
             public void onPostRequest() {
-                mIDataProviderCallback.onSuccessResult();
+                mIManagerCallback.onSuccessResult();
             }
         }
     }

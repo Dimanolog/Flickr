@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.dataloader;
+package com.github.dimanolog.flickr.datamanagers;
 
 /**
  * Created by Dimanolog on 06.11.2017.

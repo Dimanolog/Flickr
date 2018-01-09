@@ -1,10 +1,10 @@
-package com.github.dimanolog.flickr.dataloader;
+package com.github.dimanolog.flickr.datamanagers;
 
 /**
  * Created by Dimanolog on 12.11.2017.
  */
 
-public interface IDataProviderCallback<T> {
+public interface IManagerCallback<T> {
     void onStartLoading();
 
     void onSuccessResult(T result);

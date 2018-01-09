@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.dataloader;
+package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,7 +20,7 @@ public class PhotoDataManager {
 
     private Context mContext;
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiPhotoClient();
-    private IDataProviderCallback<ICustomCursorWrapper<IPhoto>> mIDataProviderCallback;
+    private IManagerCallback<ICustomCursorWrapper<IPhoto>> mIManagerCallback;
     private PhotoDAO mPhotoDAO;
     private PhotoService mPhotoService;
 
@@ -49,8 +49,8 @@ public class PhotoDataManager {
 
             @Override
             public void onPreRequest() {
-                if (mIDataProviderCallback != null) {
-                    mIDataProviderCallback.onStartLoading();
+                if (mIManagerCallback != null) {
+                    mIManagerCallback.onStartLoading();
                 }
             }
 
@@ -66,9 +66,9 @@ public class PhotoDataManager {
             @Override
             public void onPostRequest() {
                 if (!mResponse.isError()) {
-                    mIDataProviderCallback.onSuccessResult(mSearchPhotosFromDb);
+                    mIManagerCallback.onSuccessResult(mSearchPhotosFromDb);
                 } else {
-                    mIDataProviderCallback.onError(mResponse.getError());
+                    mIManagerCallback.onError(mResponse.getError());
                 }
             }
         };
@@ -80,12 +80,12 @@ public class PhotoDataManager {
         startLoading(new GetRecentRequest(pPage));
     }
 
-    public void registerCallback(@NonNull IDataProviderCallback<ICustomCursorWrapper<IPhoto>> pCallback) {
-        mIDataProviderCallback = pCallback;
+    public void registerCallback(@NonNull IManagerCallback<ICustomCursorWrapper<IPhoto>> pCallback) {
+        mIManagerCallback = pCallback;
     }
 
     public void unRegisterCallback() {
-        mIDataProviderCallback = null;
+        mIManagerCallback = null;
     }
 
     private void startLoading(@NonNull IRequest pRequest) {
@@ -115,8 +115,8 @@ public class PhotoDataManager {
 
         @Override
         public void onPreRequest() {
-            if (mIDataProviderCallback != null) {
-                mIDataProviderCallback.onStartLoading();
+            if (mIManagerCallback != null) {
+                mIManagerCallback.onStartLoading();
             }
         }
 
@@ -133,9 +133,9 @@ public class PhotoDataManager {
         @Override
         public void onPostRequest() {
             if (!mResponse.isError()) {
-                mIDataProviderCallback.onSuccessResult(mAllPhotosFromDb);
+                mIManagerCallback.onSuccessResult(mAllPhotosFromDb);
             } else {
-                mIDataProviderCallback.onError(mResponse.getError());
+                mIManagerCallback.onError(mResponse.getError());
             }
         }
     }

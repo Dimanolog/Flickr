@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.dataloader;
+package com.github.dimanolog.flickr.datamanagers;
 
 import android.os.AsyncTask;
 

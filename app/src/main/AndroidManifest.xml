@@ -63,10 +63,6 @@
 
         <service android:name=".services.FlickrPollService"/>
 
-        <activity
-            android:name=".LoginActivity2"
-            android:label="@string/title_activity_login2">
-        </activity>
         <activity android:name=".activities.AutheficationActivity"/>
     </application>
 
