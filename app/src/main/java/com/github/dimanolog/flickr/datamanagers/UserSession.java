@@ -8,7 +8,8 @@ public class UserSession {
     private String mUsernsid;
     private String mFullName;
     private String mOAuthToken;
-    private String moAuthTokenSecret;
+    private String mOAuthTokenSecret;
+
 
     public String getUsernsid() {
         return mUsernsid;
@@ -34,11 +35,11 @@ public class UserSession {
         mOAuthToken = pOAuthToken;
     }
 
-    public String getMoAuthTokenSecret() {
-        return moAuthTokenSecret;
+    public String getOAuthTokenSecret() {
+        return mOAuthTokenSecret;
     }
 
-    public void setMoAuthTokenSecret(String pMoAuthTokenSecret) {
-        moAuthTokenSecret = pMoAuthTokenSecret;
+    public void setOAuthTokenSecret(String pOAuthTokenSecret) {
+        mOAuthTokenSecret = pOAuthTokenSecret;
     }
 }

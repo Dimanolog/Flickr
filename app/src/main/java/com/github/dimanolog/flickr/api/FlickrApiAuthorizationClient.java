@@ -39,17 +39,17 @@ public class FlickrApiAuthorizationClient {
                 .build();
     }
 
-    public static void getRequestToken() {
-        final String s;
+    public static Response<String> getRequestToken() {
+
         try {
             InputStream inputStream = new HttpClient().request(requestToken().toString());
-            String response = IOUtils.toString(inputStream);
-            Uri parse = Uri.parse(response);
-            String oAuthToken = parse.getQueryParameter("oauth_token");
-            String oAuthTokenSecret = parse.getQueryParameter("oauth_token_secret");
+            String result = IOUtils.toString(inputStream);
 
+            return new Response<>(result);
         } catch (IOException pE) {
             pE.printStackTrace();
+
+            return new Response<>(pE);
         }
     }
 
@@ -72,6 +72,4 @@ public class FlickrApiAuthorizationClient {
 
         return SecureUtil.encryptByHmacSHA1(base, key);
     }
-
-
 }

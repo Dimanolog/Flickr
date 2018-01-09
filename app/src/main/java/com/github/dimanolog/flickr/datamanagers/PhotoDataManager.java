@@ -126,7 +126,6 @@ public class PhotoDataManager {
             if (!mResponse.isError()) {
                 addResultToDb(mResponse.getResult());
                 mAllPhotosFromDb = getAllPhotosFromDb();
-
             }
         }
 
