@@ -1,15 +1,16 @@
 package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
-import android.media.MediaCas;
 import android.net.Uri;
-import android.net.UrlQuerySanitizer;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Dimanolog on 08.01.2018.
@@ -38,6 +39,7 @@ public class AutheficationManager {
 
     private AutheficationManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
+        mUserSession = new UserSession();
     }
 
     public void getAuthorizationUri() {
@@ -54,9 +56,9 @@ public class AutheficationManager {
             public void runRequest() {
                 IResponse<String> requestToken = FlickrApiAuthorizationClient.getRequestToken();
                 if (!requestToken.isError()) {
-                    Uri parse = Uri.parse(requestToken.getResult());
-                    String oAuthToken = parse.getQueryParameter("oauth_token");
-                    String oAuthTokenSecret = parse.getQueryParameter("oauth_token_secret");
+                     Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
+                    String oAuthToken = paramValuePairs.get("oauth_token");
+                    String oAuthTokenSecret = paramValuePairs.get("oauth_token_secret");
 
                     mUserSession.setOAuthToken(oAuthToken);
                     mUserSession.setOAuthTokenSecret(oAuthTokenSecret);
@@ -75,11 +77,22 @@ public class AutheficationManager {
             public void onPostRequest() {
                 if (!mUriResponse.isError()) {
                     mIManagerCallback.onSuccessResult(mUriResponse.getResult());
-                }else {
+                } else {
                     mIManagerCallback.onError(mUriResponse.getError());
                 }
             }
         };
+        startLoading(request);
+    }
+
+    private Map<String, String> parseParametes(String pParameters) {
+        Map<String, String> paramNameToValueMap = new HashMap<>();
+        String[] arr = pParameters.split("&");
+        for (String s : arr) {
+            String[] a = s.split("=");
+            paramNameToValueMap.put(a[0], a[1]);
+        }
+        return paramNameToValueMap;
     }
 
     private void startLoading(@NonNull IRequest pRequest) {

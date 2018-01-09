@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
-import com.github.dimanolog.flickr.fragments.WebViewFragment;
+import com.github.dimanolog.flickr.fragments.AuthorizationWebView;
 
 /**
  * Created by Dimanolog on 07.01.2018.
@@ -21,9 +20,7 @@ public class LoginActivity extends WebViewActivity{
     }
     @Override
     protected Fragment createFragment() {
-        return WebViewFragment.newInstance(FlickrApiAuthorizationClient.requestToken());
+        return AuthorizationWebView.newInstance(null);
     }
-
-
 }
 

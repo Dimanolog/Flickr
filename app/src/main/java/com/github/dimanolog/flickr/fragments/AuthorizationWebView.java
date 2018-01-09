@@ -28,24 +28,25 @@ public class AuthorizationWebView extends VisibleFragment {
     private static final String TAG = AuthorizationWebView.class.getSimpleName();
     private static final String ARG_URI = "photo_page_url";
 
-    private Uri mUri;
+   // private Uri mUri;
     private WebView mWebView;
     private ProgressBar mProgressBar;
     private AutheficationManager mAutheficationManager;
 
 
-    public static AuthorizationWebView newInstance(Uri uri) {
+    public static AuthorizationWebView newInstance(Uri pUri) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_URI, uri);
+        args.putParcelable(ARG_URI, pUri);
         AuthorizationWebView fragment = new AuthorizationWebView();
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUri = getArguments().getParcelable(ARG_URI);
+      //  mUri = getArguments().getParcelable(ARG_URI);
         mAutheficationManager = AutheficationManager.getInstance(getActivity());
 
     }
@@ -104,7 +105,8 @@ public class AuthorizationWebView extends VisibleFragment {
 
         });
 
-        mWebView.loadUrl(mUri.toString());
+
+
         WebViewActivity webViewActivity = (WebViewActivity) getActivity();
         webViewActivity.setOnBackPressedListener(new WebViewFragment.OnBackPressedListener() {
             @Override
@@ -133,6 +135,8 @@ public class AuthorizationWebView extends VisibleFragment {
 
             }
         });
+
+        mAutheficationManager.getAuthorizationUri();
 
         return v;
     }
