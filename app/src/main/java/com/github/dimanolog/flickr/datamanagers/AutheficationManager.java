@@ -76,7 +76,7 @@ public class AutheficationManager {
                 if (!mUriResponse.isError()) {
                     mIManagerCallback.onSuccessResult(mUriResponse.getResult());
                 }else {
-
+                    mIManagerCallback.onError(mUriResponse.getError());
                 }
             }
         };

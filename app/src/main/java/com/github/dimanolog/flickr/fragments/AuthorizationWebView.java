@@ -17,21 +17,24 @@ import android.widget.ProgressBar;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.WebViewActivity;
+import com.github.dimanolog.flickr.datamanagers.AutheficationManager;
+import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 
 /**
  * Created by Dimanolog on 07.01.2018.
  */
 
-public class AuthorizationWebView  extends VisibleFragment {
+public class AuthorizationWebView extends VisibleFragment {
     private static final String TAG = AuthorizationWebView.class.getSimpleName();
     private static final String ARG_URI = "photo_page_url";
 
     private Uri mUri;
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private AutheficationManager mAutheficationManager;
 
 
-    public static  AuthorizationWebView newInstance(Uri uri) {
+    public static AuthorizationWebView newInstance(Uri uri) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_URI, uri);
         AuthorizationWebView fragment = new AuthorizationWebView();
@@ -43,6 +46,8 @@ public class AuthorizationWebView  extends VisibleFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUri = getArguments().getParcelable(ARG_URI);
+        mAutheficationManager = AutheficationManager.getInstance(getActivity());
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -56,7 +61,7 @@ public class AuthorizationWebView  extends VisibleFragment {
                 v.findViewById(R.id.fragment_photo_page_progress_bar);
         mProgressBar.setMax(100);
 
-        mWebView =  v.findViewById
+        mWebView = v.findViewById
                 (R.id.fragment_photo_page_web_view);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -101,9 +106,9 @@ public class AuthorizationWebView  extends VisibleFragment {
 
         mWebView.loadUrl(mUri.toString());
         WebViewActivity webViewActivity = (WebViewActivity) getActivity();
-        webViewActivity.setOnBackPressedListener(new   WebViewFragment.OnBackPressedListener() {
+        webViewActivity.setOnBackPressedListener(new WebViewFragment.OnBackPressedListener() {
             @Override
-            public boolean doBack () {
+            public boolean doBack() {
                 if (mWebView.canGoBack()) {
                     mWebView.goBack();
                     return false;
@@ -111,6 +116,24 @@ public class AuthorizationWebView  extends VisibleFragment {
                 return true;
             }
         });
+
+        mAutheficationManager.setIDataProviderCallback(new IManagerCallback<Uri>() {
+            @Override
+            public void onStartLoading() {
+
+            }
+
+            @Override
+            public void onSuccessResult(Uri result) {
+                mWebView.loadUrl(result.toString());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+        });
+
         return v;
     }
 }
