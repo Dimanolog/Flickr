@@ -26,14 +26,5 @@ public class LoginActivity extends WebViewActivity {
     protected Fragment createFragment() {
         return AuthorizationWebView.newInstance(null);
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            AutheficationManager.getInstance(this).onFlickrCallback(uri);
-        }
-    }
 }
 

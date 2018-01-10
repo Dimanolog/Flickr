@@ -33,7 +33,7 @@ public class AutheficationManager {
         return sInstance;
     }
 
-    public void setIDataProviderCallback(IManagerCallback<Uri> pIManagerCallback) {
+    public void setAutheficationMangerCallback(IManagerCallback<Uri> pIManagerCallback) {
         mIManagerCallback = pIManagerCallback;
     }
 
@@ -76,6 +76,7 @@ public class AutheficationManager {
 
             }
         };
+        startLoading(request);
     }
 
 

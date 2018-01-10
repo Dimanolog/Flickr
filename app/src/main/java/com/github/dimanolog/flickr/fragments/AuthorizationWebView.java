@@ -115,7 +115,7 @@ public class AuthorizationWebView extends VisibleFragment {
             }
         });
 
-        mAutheficationManager.setIDataProviderCallback(new IManagerCallback<Uri>() {
+        mAutheficationManager.setAutheficationMangerCallback(new IManagerCallback<Uri>() {
             @Override
             public void onStartLoading() {
 

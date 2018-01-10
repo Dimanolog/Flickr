@@ -25,16 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.PhotoGalleryActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="callback"
-                    android:scheme="flickr"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.WebViewActivity"
@@ -64,6 +55,16 @@
         <service android:name=".services.FlickrPollService"/>
 
         <activity android:name=".activities.AutheficationActivity"/>
+        <activity android:name=".activities.AuthorizationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="callback"
+                    android:scheme="flickr"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
