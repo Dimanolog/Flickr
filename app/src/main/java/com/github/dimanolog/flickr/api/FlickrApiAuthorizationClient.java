@@ -28,9 +28,7 @@ public class FlickrApiAuthorizationClient {
     private static final String VERSION_VALUE = "1.0";
     private static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
-
-
-    public static String getAccesToken(UserSession pUserSession){
+    public static Response<String> getAccesToken(UserSession pUserSession){
         Uri requestAccessUri = Uri.parse(AUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("access_token")
@@ -99,7 +97,6 @@ public class FlickrApiAuthorizationClient {
     }
 
     public static Uri getUserAuthorizationUri(String pOAuthToken) {
-
         return Uri.parse(AUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("authorize")

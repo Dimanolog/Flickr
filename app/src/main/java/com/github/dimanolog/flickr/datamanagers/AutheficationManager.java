@@ -42,14 +42,14 @@ public class AutheficationManager {
         mUserSession = new UserSession();
     }
 
-    public void onFlickrCallback(Uri pUri){
+    public void onFlickrCallback(Uri pUri) {
         String oAuthVerifier = pUri.getQueryParameter("oauth_verifier");
         mUserSession.setOAuthVerifier(oAuthVerifier);
         FlickrApiAuthorizationClient.getAccesToken(mUserSession);
 
     }
 
-    private getAccesToken(){
+    private void getAccesToken() {
         IRequest request = new IRequest() {
 
             private Response<Uri> mUriResponse;
@@ -77,6 +77,13 @@ public class AutheficationManager {
                 } else {
                     mUriResponse = new Response<>(requestToken.getError());
                 }
+            }
+
+            @Override
+            public void onPostRequest() {
+
+            }
+        };
     }
 
 
@@ -94,7 +101,7 @@ public class AutheficationManager {
             public void runRequest() {
                 IResponse<String> requestToken = FlickrApiAuthorizationClient.getRequestToken();
                 if (!requestToken.isError()) {
-                     Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
+                    Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
                     String oAuthToken = paramValuePairs.get("oauth_token");
                     String oAuthTokenSecret = paramValuePairs.get("oauth_token_secret");
 
