@@ -13,7 +13,7 @@ import com.github.dimanolog.flickr.fragments.AuthorizationWebView;
  * Created by Dimanolog on 07.01.2018.
  */
 
-public class LoginActivity extends WebViewActivity{
+public class LoginActivity extends WebViewActivity {
     private static final String AUTH_BASE_URL = "https://www.flickr.com/services/oauth";
 
     public static Intent newIntent(Context context) {
@@ -21,6 +21,7 @@ public class LoginActivity extends WebViewActivity{
 
         return i;
     }
+
     @Override
     protected Fragment createFragment() {
         return AuthorizationWebView.newInstance(null);
@@ -30,8 +31,9 @@ public class LoginActivity extends WebViewActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
-        AutheficationManager.getInstance(this).onFlickrCallback(uri);
-
+        if (uri != null) {
+            AutheficationManager.getInstance(this).onFlickrCallback(uri);
+        }
     }
 }
 
