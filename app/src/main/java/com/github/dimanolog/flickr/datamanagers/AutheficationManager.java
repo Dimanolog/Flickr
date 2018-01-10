@@ -45,37 +45,29 @@ public class AutheficationManager {
     public void onFlickrCallback(Uri pUri) {
         String oAuthVerifier = pUri.getQueryParameter("oauth_verifier");
         mUserSession.setOAuthVerifier(oAuthVerifier);
-        FlickrApiAuthorizationClient.getAccesToken(mUserSession);
+        getAccesToken(mUserSession);
 
     }
 
-    private void getAccesToken() {
+    private void getAccesToken(final UserSession pUserSession) {
         IRequest request = new IRequest() {
 
             private Response<Uri> mUriResponse;
 
             @Override
             public void onPreRequest() {
-                mIManagerCallback.onStartLoading();
+
             }
 
             @Override
             public void runRequest() {
-                IResponse<String> requestToken = FlickrApiAuthorizationClient.getRequestToken();
-                if (!requestToken.isError()) {
-                    Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
-                    String oAuthToken = paramValuePairs.get("oauth_token");
-                    String oAuthTokenSecret = paramValuePairs.get("oauth_token_secret");
-
-                    mUserSession.setOAuthToken(oAuthToken);
-                    mUserSession.setOAuthTokenSecret(oAuthTokenSecret);
-
-                    Uri userAuthorizationUri = FlickrApiAuthorizationClient.getUserAuthorizationUri(oAuthToken);
-
-                    mUriResponse = new Response<>(userAuthorizationUri);
-
-                } else {
-                    mUriResponse = new Response<>(requestToken.getError());
+                IResponse<String> requestAccessToken = FlickrApiAuthorizationClient.getAccesToken(pUserSession);
+                if (!requestAccessToken.isError()) {
+                    Map<String, String> paramToValueMap = parseParametes(requestAccessToken.getResult());
+                    mUserSession.setFullName(paramToValueMap.get("fullname"));
+                    mUserSession.setUsernsid(paramToValueMap.get("user_nsid"));
+                    mUserSession.setUserName(paramToValueMap.get("username"));
+                    mUserSession.setOAuthToken(paramToValueMap.get("oauth_token"));
                 }
             }
 
@@ -115,7 +107,6 @@ public class AutheficationManager {
                 } else {
                     mUriResponse = new Response<>(requestToken.getError());
                 }
-
             }
 
             @Override
@@ -135,7 +126,7 @@ public class AutheficationManager {
         String[] arr = pParameters.split("&");
         for (String s : arr) {
             String[] a = s.split("=");
-            paramNameToValueMap.put(a[0], a[1]);
+            paramNameToValueMap.put(a[0], Uri.decode(a[1]));
         }
         return paramNameToValueMap;
     }
