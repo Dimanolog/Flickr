@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
-import com.github.dimanolog.flickr.ui.customview.ImageViewWithZoom;
+import com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom;
 
 /**
  * Created by Dimanolog on 05.01.2018.

@@ -27,6 +27,7 @@ public class AuthorizationActivity extends AppCompatActivity {
                 @Override
                 public void onSuccessResult(Uri result) {
                     PhotoGalleryActivity.newIntent(AuthorizationActivity.this);
+
                 }
 
                 @Override

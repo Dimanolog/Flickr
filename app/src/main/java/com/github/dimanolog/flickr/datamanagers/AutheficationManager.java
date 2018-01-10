@@ -51,19 +51,18 @@ public class AutheficationManager {
 
     private void getAccesToken(final UserSession pUserSession) {
         IRequest request = new IRequest() {
-
-            private Response<Uri> mUriResponse;
+            private IResponse<String> mResponeAccessToken;
 
             @Override
             public void onPreRequest() {
-
+                mIManagerCallback.onStartLoading();
             }
 
             @Override
             public void runRequest() {
-                IResponse<String> requestAccessToken = FlickrApiAuthorizationClient.getAccesToken(pUserSession);
-                if (!requestAccessToken.isError()) {
-                    Map<String, String> paramToValueMap = parseParametes(requestAccessToken.getResult());
+                mResponeAccessToken = FlickrApiAuthorizationClient.getAccesToken(pUserSession);
+                if (!mResponeAccessToken.isError()) {
+                    Map<String, String> paramToValueMap = parseParametes(mResponeAccessToken.getResult());
                     mUserSession.setFullName(paramToValueMap.get("fullname"));
                     mUserSession.setUsernsid(paramToValueMap.get("user_nsid"));
                     mUserSession.setUserName(paramToValueMap.get("username"));
@@ -73,7 +72,11 @@ public class AutheficationManager {
 
             @Override
             public void onPostRequest() {
-
+                if (!mResponeAccessToken.isError()) {
+                    mIManagerCallback.onSuccessResult(null);
+                } else {
+                    mIManagerCallback.onError(mResponeAccessToken.getError());
+                }
             }
         };
         startLoading(request);
@@ -127,7 +130,7 @@ public class AutheficationManager {
         String[] arr = pParameters.split("&");
         for (String s : arr) {
             String[] a = s.split("=");
-            paramNameToValueMap.put(a[0], Uri.decode(a[1]));
+            paramNameToValueMap.put(a[0], Uri.decode(a[1]).trim());
         }
         return paramNameToValueMap;
     }

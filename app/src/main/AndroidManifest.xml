@@ -54,7 +54,6 @@
 
         <service android:name=".services.FlickrPollService"/>
 
-        <activity android:name=".activities.AutheficationActivity"/>
         <activity android:name=".activities.AuthorizationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

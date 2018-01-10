@@ -1,6 +1,7 @@
 package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.github.dimanolog.flickr.datamanagers.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
@@ -28,26 +29,27 @@ public class FlickrApiAuthorizationClient {
     private static final String VERSION_VALUE = "1.0";
     private static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
-    public static Response<String> getAccesToken(UserSession pUserSession){
+    public static Response<String> getAccesToken(UserSession pUserSession) {
         Uri requestAccessUri = Uri.parse(AUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("access_token")
                 .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
-                .appendQueryParameter("oauth_token", pUserSession.getOAuthToken())
                 .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
-                .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
+                .appendQueryParameter("oauth_token", pUserSession.getOAuthToken())
                 .appendQueryParameter("oauth_verifier", pUserSession.getOAuthVerifier())
+                .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
                 .build();
 
-        String oAuthSignature = getAuthSignature(requestAccessUri);
-        requestAccessUri
+        String oAuthSignature = getAuthSignature(requestAccessUri, pUserSession.getOAuthTokenSecret().trim());
+
+        requestAccessUri = requestAccessUri
                 .buildUpon()
                 .appendQueryParameter(OAUTH_SIGNATURE_PARAM, oAuthSignature)
                 .build();
         try {
-            InputStream inputStream = new HttpClient().request(requestToken().toString());
+            InputStream inputStream = new HttpClient().request(requestAccessUri.toString());
             String result = IOUtils.toString(inputStream);
 
             return new Response<>(result);
@@ -56,8 +58,6 @@ public class FlickrApiAuthorizationClient {
 
             return new Response<>(pE);
         }
-
-
     }
 
     public static Uri requestToken() {
@@ -72,14 +72,13 @@ public class FlickrApiAuthorizationClient {
                 .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
                 .build();
 
-        String oAuthSignature = getAuthSignature(requestTokenUri);
+        String oAuthSignature = getAuthSignature(requestTokenUri, null);
 
         return requestTokenUri
                 .buildUpon()
                 .appendQueryParameter("oauth_signature", oAuthSignature)
                 .build();
     }
-
 
 
     public static Response<String> getRequestToken() {
@@ -104,14 +103,17 @@ public class FlickrApiAuthorizationClient {
                 .build();
     }
 
-    private static String getAuthSignature(Uri pUri) {
+    private static String getAuthSignature(Uri pUri, String pTokenSecret) {
         String parameters = pUri.getEncodedQuery();
 
         parameters = Uri.encode(parameters);
         String path = Uri.encode(pUri.getPath());
         String base = "GET&" + Uri.encode(FLICKR_BASE_URL) + path + "&" + parameters;
-        String key = FlickrApiConstants.SECRET_KEY + "&";
+        StringBuilder keyBuilder = new StringBuilder().append(FlickrApiConstants.SECRET_KEY).append("&");
+        if (!TextUtils.isEmpty(pTokenSecret)) {
+            keyBuilder.append(pTokenSecret);
+        }
 
-        return SecureUtil.encryptByHmacSHA1(base, key);
+        return SecureUtil.encryptByHmacSHA1(base, keyBuilder.toString());
     }
 }
