@@ -37,7 +37,7 @@ public class FlickrApiAuthorizationClient {
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
                 .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
-                .appendQueryParameter("oauth_token", pUserSession.getOAuthToken())
+                .appendQueryParameter(OAUTH_TOKEN, pUserSession.getOAuthToken())
                 .appendQueryParameter("oauth_verifier", pUserSession.getOAuthVerifier())
                 .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
                 .build();
@@ -59,6 +59,13 @@ public class FlickrApiAuthorizationClient {
             return new Response<>(pE);
         }
     }
+
+    //https://api.flickr.com/services/rest/?method=flickr.auth.oauth.checkToken
+    // &api_key=8703fd9d85e590caa23f024664553688
+    // &format=json&nojsoncallback=1
+    // &api_sig=10fe3b3b1ef10a5ca7eb66bdf85377bb
+
+    public boolean checkToken
 
     public static Uri requestToken() {
         Uri requestTokenUri = Uri.parse(AUTH_BASE_URL)
