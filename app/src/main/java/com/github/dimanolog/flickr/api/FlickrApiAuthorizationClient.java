@@ -3,18 +3,22 @@ package com.github.dimanolog.flickr.api;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
+import com.github.dimanolog.flickr.parsers.ResponseStatusParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_BASE_URL;
-
 
 public class FlickrApiAuthorizationClient {
     private static final String AUTH_BASE_URL = "https://www.flickr.com/services/oauth";
@@ -60,12 +64,21 @@ public class FlickrApiAuthorizationClient {
         }
     }
 
-    //https://api.flickr.com/services/rest/?method=flickr.auth.oauth.checkToken
-    // &api_key=8703fd9d85e590caa23f024664553688
-    // &format=json&nojsoncallback=1
-    // &api_sig=10fe3b3b1ef10a5ca7eb66bdf85377bb
+    public static Response<IResponseStatus> checkToken(String pOAuthToken){
+        Uri checkTokenUri = FLICKR_API_URL
+                .buildUpon()
+                .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
+                .build();
+        final IResponse<IResponseStatus> response = new Response<>();
+        new HttpClient().request(checkTokenUri.toString(), new AbstractHttpResponseListener<IResponseStatus>() {
+            @Override
+            protected void responseAction(InputStream pInputStream) {
 
-    public boolean checkToken
+            }
+        }
+
+
+    }
 
     public static Uri requestToken() {
         Uri requestTokenUri = Uri.parse(AUTH_BASE_URL)

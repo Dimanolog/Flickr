@@ -39,8 +39,8 @@ public class FlickAppBackendClient {
             public void run() {
                 new HttpClient().request(url, new HttpClient.ResponseListener() {
                     @Override
-                    public void onResponse(InputStream inputStream) throws IOException {
-                        mVersion = new Gson().fromJson(IOUtils.toString(inputStream), Version.class);
+                    public void onResponse(InputStream pInputStream) throws IOException {
+                        mVersion = new Gson().fromJson(IOUtils.toString(pInputStream), Version.class);
                     }
 
                     @Override

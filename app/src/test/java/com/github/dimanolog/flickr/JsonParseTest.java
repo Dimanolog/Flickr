@@ -86,8 +86,8 @@ public class JsonParseTest {
     public void parseJsonUserPhoto() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException {
-                String jsonString = IOUtils.toString(inputStream);
+            public void onResponse(InputStream pInputStream) throws IOException {
+                String jsonString = IOUtils.toString(pInputStream);
                 try {
                     mPhoto = new PhotoParserFactory()
                             .getJsonParser()
@@ -118,8 +118,8 @@ public class JsonParseTest {
     public void parseJsonPhotoArray() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException{
-                String jsonString = IOUtils.toString(inputStream);
+            public void onResponse(InputStream pInputStream) throws IOException{
+                String jsonString = IOUtils.toString(pInputStream);
                 try {
                     mPhotoList = new PhotoParserFactory()
                             .getJsonParser()
@@ -150,8 +150,8 @@ public class JsonParseTest {
     public void parseGsonUserPhoto() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException {
-                String jsonString = IOUtils.toString(inputStream);
+            public void onResponse(InputStream pInputStream) throws IOException {
+                String jsonString = IOUtils.toString(pInputStream);
                 try {
                     mPhoto = new PhotoParserFactory()
                             .getGsonParser()
@@ -181,8 +181,8 @@ public class JsonParseTest {
     public void parseGsonPhotoArray() {
         HttpClient.ResponseListener listener = new HttpClient.ResponseListener() {
             @Override
-            public void onResponse(InputStream inputStream) throws IOException {
-                String jsonString = IOUtils.toString(inputStream);
+            public void onResponse(InputStream pInputStream) throws IOException {
+                String jsonString = IOUtils.toString(pInputStream);
                 try {
                     mPhotoList = new PhotoParserFactory()
                             .getGsonParser()

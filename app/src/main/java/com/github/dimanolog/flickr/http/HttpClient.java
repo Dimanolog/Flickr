@@ -12,15 +12,16 @@ public class HttpClient implements IHttpClient {
     private static final int CONNECT_TIMEOUT = 5000;
 
     public interface ResponseListener {
-        void onResponse(InputStream inputStream) throws IOException;
+        void onResponse(InputStream pInputStream) throws IOException;
 
         void onError(Throwable t);
     }
 
     @Override
     public void request(String pUrl, ResponseListener pListener) {
+        HttpURLConnection con = null;
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL(pUrl).openConnection();
+            con = (HttpURLConnection) new URL(pUrl).openConnection();
             tuneConnection(con);
             InputStream is = con.getInputStream();
             pListener.onResponse(is);
@@ -28,6 +29,10 @@ public class HttpClient implements IHttpClient {
         } catch (Throwable t) {
             t.printStackTrace();
             pListener.onError(t);
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 

@@ -7,10 +7,13 @@ import com.github.dimanolog.flickr.api.interfaces.IResponse;
  */
 
 public class Response<T> implements IResponse<T> {
+
     private T mResult;
     private Throwable mThrowable;
     private boolean mIsError;
 
+    public Response() {
+    }
     public Response(Throwable mThrowable) {
         this.mThrowable = mThrowable;
         this.mIsError = true;
@@ -33,5 +36,18 @@ public class Response<T> implements IResponse<T> {
     @Override
     public boolean isError() {
         return mIsError;
+    }
+
+    public void setResult(T pResult) {
+        mResult = pResult;
+    }
+
+    public Throwable getThrowable() {
+        return mThrowable;
+    }
+
+    public void setThrowable(Throwable pThrowable) {
+        mIsError = true;
+        mThrowable = pThrowable;
     }
 }
