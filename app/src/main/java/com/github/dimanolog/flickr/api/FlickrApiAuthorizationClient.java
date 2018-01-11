@@ -2,19 +2,19 @@ package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
-import com.github.dimanolog.flickr.parsers.ResponseStatusParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
-
-import org.json.JSONException;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
@@ -73,7 +73,21 @@ public class FlickrApiAuthorizationClient {
         new HttpClient().request(checkTokenUri.toString(), new AbstractHttpResponseListener<IResponseStatus>() {
             @Override
             protected void responseAction(InputStream pInputStream) {
-
+                InputStreamReader inputStreamReader = null;
+                try {
+                    inputStreamReader = new InputStreamReader(pInputStream);
+                    result = new GsonBuilder()
+                            .setLenient()
+                            .create().fromJson(inputStreamReader, Result.class);
+                }catch (Exception e) {
+                    Log.d(TAG, "onResponse() called with: pInputStream = [" + pInputStream + "]");
+                    mThrowable = e;
+                } finally {
+                    if (inputStreamReader != null) {
+                        try {
+                            inputStreamReader.close();
+                        } catch (final Exception ignored) {
+                        }
             }
         }
 
