@@ -12,9 +12,11 @@ class FlickrApiConstants {
             .buildUpon()
             .appendQueryParameter("api_key", API_KEY)
             .appendQueryParameter("format", "json")
+
             .appendQueryParameter("nojsoncallback", "1")
             .build();
 
+    static final String METHOD_PARAM = "method";
 
 
     private FlickrApiConstants() {

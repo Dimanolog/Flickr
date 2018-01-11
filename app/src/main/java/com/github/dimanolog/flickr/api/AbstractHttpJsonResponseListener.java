@@ -10,7 +10,7 @@ import java.io.InputStream;
  * Created by Dimanolog on 11.01.2018.
  */
 
-public abstract class AbstractHttpResponseListener<T> implements HttpClient.ResponseListener {
+public abstract class AbstractHttpJsonResponseListener<T> implements HttpClient.ResponseListener {
     private IResponse<T> mResponse;
 
     @Override
@@ -27,5 +27,9 @@ public abstract class AbstractHttpResponseListener<T> implements HttpClient.Resp
         return mResponse;
     }
 
-    abstract protected void responseAction(InputStream pInputStream);
+    protected void setResponce(T pResult) {
+        mResponse = new Response<>(pResult);
+    }
+
+    abstract protected void responseAction(InputStream pInputStream) throws IOException;
 }

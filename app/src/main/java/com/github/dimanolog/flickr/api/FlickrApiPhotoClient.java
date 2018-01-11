@@ -20,12 +20,11 @@ import java.util.List;
 public class FlickrApiPhotoClient implements IFlickrApiClient {
     private static final String GET_RECENT_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
-    private static final String METHOD = "method";
     private static final String PAGE = "page";
     private static final String SEARCH_TEXT = "text";
     private static final Uri FLICKR_PHOTO_BASE_URL = FlickrApiConstants.FLICKR_API_URL
             .buildUpon()
-            .appendQueryParameter("extras", "date_upload,url_z,url_o")
+            .appendQueryParameter("extras", "date_upload,url_z,url_o,count_faves")
             .build();
 
 
@@ -33,7 +32,7 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
     @Override
     public IResponse<List<IPhoto>> getRecent(int page) {
         String url = FLICKR_PHOTO_BASE_URL .buildUpon()
-                .appendQueryParameter(METHOD, GET_RECENT_METHOD)
+                .appendQueryParameter(FlickrApiConstants.METHOD_PARAM, GET_RECENT_METHOD)
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .build()
                 .toString();
@@ -45,7 +44,7 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
     @Override
     public IResponse<List<IPhoto>> searchPhotos(int page, String search) {
         String url = FLICKR_PHOTO_BASE_URL.buildUpon()
-                .appendQueryParameter(METHOD, SEARCH_METHOD)
+                .appendQueryParameter(FlickrApiConstants.METHOD_PARAM, SEARCH_METHOD)
                 .appendQueryParameter(PAGE, String.valueOf(page))
                 .appendQueryParameter(SEARCH_TEXT, search)
                 .build()

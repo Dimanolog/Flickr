@@ -2,26 +2,28 @@ package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
+import com.github.dimanolog.flickr.parsers.responsestatus.ResponseStatusParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
-import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.UUID;
 
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_BASE_URL;
 
 public class FlickrApiAuthorizationClient {
-    private static final String AUTH_BASE_URL = "https://www.flickr.com/services/oauth";
+    private static final String TAG = FlickrApiAuthorizationClient.class.getSimpleName();
+
+    private static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
     private static final String OAUTH_CALLBACK = "oauth_callback";
     private static final String OAUTH_TOKEN = "oauth_token";
     private static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
@@ -33,8 +35,9 @@ public class FlickrApiAuthorizationClient {
     private static final String VERSION_VALUE = "1.0";
     private static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
+
     public static Response<String> getAccesToken(UserSession pUserSession) {
-        Uri requestAccessUri = Uri.parse(AUTH_BASE_URL)
+        Uri requestAccessUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("access_token")
                 .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
@@ -64,38 +67,36 @@ public class FlickrApiAuthorizationClient {
         }
     }
 
-    public static Response<IResponseStatus> checkToken(String pOAuthToken){
+    public static IResponse<IResponseStatus> checkToken(String pOAuthToken) {
         Uri checkTokenUri = FLICKR_API_URL
                 .buildUpon()
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
                 .build();
-        final IResponse<IResponseStatus> response = new Response<>();
-        new HttpClient().request(checkTokenUri.toString(), new AbstractHttpResponseListener<IResponseStatus>() {
+
+        AbstractHttpJsonResponseListener<IResponseStatus> listener = new AbstractHttpJsonResponseListener<IResponseStatus>() {
             @Override
-            protected void responseAction(InputStream pInputStream) {
-                InputStreamReader inputStreamReader = null;
+            protected void responseAction(InputStream pInputStream) throws IOException {
+                String s = IOUtils.toString(pInputStream);
+                IResponseStatus responseStatus;
                 try {
-                    inputStreamReader = new InputStreamReader(pInputStream);
-                    result = new GsonBuilder()
-                            .setLenient()
-                            .create().fromJson(inputStreamReader, Result.class);
-                }catch (Exception e) {
-                    Log.d(TAG, "onResponse() called with: pInputStream = [" + pInputStream + "]");
-                    mThrowable = e;
-                } finally {
-                    if (inputStreamReader != null) {
-                        try {
-                            inputStreamReader.close();
-                        } catch (final Exception ignored) {
-                        }
+                    responseStatus = new ResponseStatusParserFactory()
+                            .getGsonParser()
+                            .parseObject(s);
+                    setResponce(responseStatus);
+                } catch (JSONException pE) {
+                    pE.printStackTrace();
+                    throw new RuntimeException(pE);
+                }
             }
-        }
+        };
 
+        new HttpClient().request(checkTokenUri.toString(), listener);
 
+        return listener.getResponse();
     }
 
     public static Uri requestToken() {
-        Uri requestTokenUri = Uri.parse(AUTH_BASE_URL)
+        Uri requestTokenUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("request_token")
                 .appendQueryParameter(OAUTH_CALLBACK, "flickr://callback")
@@ -130,7 +131,7 @@ public class FlickrApiAuthorizationClient {
     }
 
     public static Uri getUserAuthorizationUri(String pOAuthToken) {
-        return Uri.parse(AUTH_BASE_URL)
+        return Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("authorize")
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
