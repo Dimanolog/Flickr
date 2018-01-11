@@ -82,7 +82,7 @@ public class WebViewFragment extends VisibleFragment {
                 if (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) {
                     return false;
                 }
-                String str = "7w18YS2bONDPL%2FzgyzP5XTr5af4%3D";
+
                 Intent i = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(i);
                 return true;
