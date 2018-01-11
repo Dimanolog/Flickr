@@ -40,7 +40,7 @@ public class CommentaryManager {
     }
 
     private CommentaryManager(Context pContext) {
-        mContext = pContext;
+        mContext = pContext.getApplicationContext();
     }
 
     private void getCommentsForPhoto(){
