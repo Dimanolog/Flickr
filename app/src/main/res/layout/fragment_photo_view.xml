@@ -6,33 +6,92 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
+
     <com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom
         android:id="@+id/photo_fragment_image_view_with_zoom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="464dp">
     </com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/photo_fragment_additional_info_height"
-        android:background="@drawable/gradient"
+        android:layout_height="89dp"
         android:layout_gravity="bottom"
+        android:background="@drawable/gradient"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
 
         <TextView
             android:id="@+id/photo_fragment_image_name_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#e4e4e4"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.031"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="some image name"/>
+
+        <View
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginEnd="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginLeft="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_fragment_image_name_text_view"/>
+
+        <ImageView
+            android:id="@+id/photo_fragment_imageview_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginLeft="@dimen/fragment_photo_panel_default_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            app:srcCompat="@drawable/ic_comment_grey"
+            android:contentDescription="@string/view_comments"/>
+
+        <TextView
+            android:id="@+id/photo_fragment_number_of_comment_txt_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#e4e4e4"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            android:layout_marginRight="8dp"
+            tools:text="1001 комментариев"
+            />
+
+        <TextView
+            android:id="@+id/photo_fragment_number_of_favor_txt_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#e4e4e4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_fragment_number_of_comment_txt_view"
+            tools:text="100 лайков"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"/>
+
     </android.support.constraint.ConstraintLayout>
 
 

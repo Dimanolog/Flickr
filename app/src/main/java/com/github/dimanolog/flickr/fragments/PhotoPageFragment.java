@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
@@ -16,7 +17,7 @@ import com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom
  * Created by Dimanolog on 05.01.2018.
  */
 
-public class PhotoPageFragmentWithWebView extends VisibleFragment {
+public class PhotoPageFragment extends VisibleFragment {
     public static final String ARG_PHOTO = "photo";
     private static final int MAX_IMAGE_WIDTH = 2048;
     private static final int MAX_IMAGE_HEIGHT = 2048;
@@ -26,10 +27,10 @@ public class PhotoPageFragmentWithWebView extends VisibleFragment {
     private ImageViewWithZoom mImageViewWithZoom;
 
 
-    public static PhotoPageFragmentWithWebView newInstance(IPhoto pPhoto) {
+    public static PhotoPageFragment newInstance(IPhoto pPhoto) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_PHOTO, pPhoto);
-        PhotoPageFragmentWithWebView fragment = new PhotoPageFragmentWithWebView();
+        PhotoPageFragment fragment = new PhotoPageFragment();
         fragment.setArguments(args);
 
         return fragment;
@@ -58,6 +59,11 @@ public class PhotoPageFragmentWithWebView extends VisibleFragment {
 
         mPhotoTittle = v.findViewById(R.id.photo_fragment_image_name_text_view);
         mPhotoTittle.setText(mPhoto.getTittle());
+
+        TextView numberOfCommentsTxtVw = v.findViewById(R.id.photo_fragment_number_of_comment_txt_view);
+        TextView numberFavesTextVw = v.findViewById(R.id.photo_fragment_number_of_favor_txt_view);
+
+        ImageView viewComment = v.findViewById(R.id.photo_fragment_imageview_comments);
 
         return v;
 

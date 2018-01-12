@@ -64,6 +64,7 @@
                     android:scheme="flickr"/>
             </intent-filter>
         </activity>
+        <activity android:name=".activities.CommentsActivity"/>
     </application>
 
 </manifest>

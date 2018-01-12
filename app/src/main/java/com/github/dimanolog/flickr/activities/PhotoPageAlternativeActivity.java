@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.github.dimanolog.flickr.fragments.PhotoPageFragmentWithWebView;
+import com.github.dimanolog.flickr.fragments.PhotoPageFragment;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
 /**
@@ -27,6 +27,6 @@ public class PhotoPageAlternativeActivity extends SingleFragmentActivity {
         Bundle extras = getIntent().getExtras();
         assert extras != null;
         IPhoto photo = (IPhoto) extras.getSerializable(EXTRA_PHOTO);
-        return PhotoPageFragmentWithWebView.newInstance(photo);
+        return PhotoPageFragment.newInstance(photo);
     }
 }

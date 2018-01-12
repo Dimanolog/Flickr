@@ -9,13 +9,14 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_CHECK_VERSION_URL", "\"https://releasecalculator.appspot.com\""
+            buildConfigField "String", "BASE_CHECK_VERSION_URL", "\"https://flickrbackend.com\""
         }
 
         debug {
