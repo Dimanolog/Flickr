@@ -1,5 +1,6 @@
 package com.github.dimanolog.flickr.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +27,8 @@ public class AuthorizationActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccessResult(Uri result) {
-                    PhotoGalleryActivity.newIntent(AuthorizationActivity.this);
-
+                    Intent intent = PhotoGalleryActivity.newIntent(AuthorizationActivity.this);
+                    startActivity(intent);
                 }
 
                 @Override
@@ -36,8 +37,6 @@ public class AuthorizationActivity extends AppCompatActivity {
                 }
             });
             autheficationManager.onFlickrCallback(uri);
-
-
         }
 
     }

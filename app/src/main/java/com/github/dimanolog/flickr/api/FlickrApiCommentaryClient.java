@@ -55,12 +55,12 @@ public class FlickrApiCommentaryClient {
     // &comment_text=123123&format=json&nojsoncallback=1
     // &api_sig=27447e0a2a2bcdd1b57260087891daa4
 
-    public void addComment(Long photoid , String commentText){
+    public void addComment(Long pPhotoId , String pCommentText){
         final Uri addcommenatUri = FLICKR_API_URL
                 .buildUpon()
-                .appendQueryParameter(METHOD_PARAM, "flickr.photos.comments.getList")
-                .appendQueryParameter("photo_id", String.valueOf(photoid))
-                .appendQueryParameter("comment_text",commentText)
+                .appendQueryParameter(METHOD_PARAM, "flickr.photos.comments.addComment")
+                .appendQueryParameter("photo_id", String.valueOf(pPhotoId))
+                .appendQueryParameter("comment_text",pCommentText)
                 .build();
 
         new HttpClient().request(addcommenatUri.toString(), new HttpClient.ResponseListener() {
@@ -74,7 +74,6 @@ public class FlickrApiCommentaryClient {
 
             }
         });
-
     }
 
 

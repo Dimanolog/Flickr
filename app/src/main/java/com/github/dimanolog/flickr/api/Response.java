@@ -14,6 +14,7 @@ public class Response<T> implements IResponse<T> {
 
     public Response() {
     }
+
     public Response(Throwable mThrowable) {
         this.mThrowable = mThrowable;
         this.mIsError = true;

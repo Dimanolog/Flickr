@@ -3,9 +3,9 @@ package com.github.dimanolog.flickr.imageloader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.LogUtil;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,19 +20,20 @@ public class BitmapUtil {
 
     private BitmapUtil() {
     }
-    //TODO is safe use stream  reset?
+
     public static Bitmap getScaledBitmap(InputStream pInputStream, int pWidth, int pHeight) throws IOException {
 
-        InputStream bufferdInputStream = new BufferedInputStream(pInputStream, 8 * 1024 * 1024);
-        bufferdInputStream.mark(2);
+        byte[] bytes = IOUtils.toByteArray(pInputStream);
         final BitmapFactory.Options options = new BitmapFactory.Options();
 
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(bufferdInputStream, null, options);
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
         options.inJustDecodeBounds = false;
         options.inSampleSize = calculateSampleSize(options, pWidth, pHeight);
-        bufferdInputStream.reset();
-        return BitmapFactory.decodeStream(bufferdInputStream, null, options);
+
+
+        return BitmapFactory.decodeByteArray(bytes, 0,bytes.length, options);
 
     }
 
