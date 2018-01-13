@@ -16,10 +16,10 @@ public class CommentsActivity extends SingleFragmentActivity {
     private static final String EXTRA_PHOTO = "com.github.dimanolog.flickr.photo";
 
     public static Intent newIntent(Context pContext, IPhoto pPhoto) {
-        Intent intent = new Intent();
+        Intent intent = new Intent(pContext, CommentsActivity.class);
         intent.putExtra(EXTRA_PHOTO, pPhoto);
 
-        return new Intent(pContext, CommentsActivity.class);
+        return intent;
     }
 
     @Override

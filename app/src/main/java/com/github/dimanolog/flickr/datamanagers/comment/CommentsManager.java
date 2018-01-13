@@ -49,6 +49,7 @@ public class CommentsManager {
     private CommentsManager(Context pContext) {
         mContext = pContext.getApplicationContext();
         mCommentDataService = new CommentDataService(pContext);
+        mFlickrApiCommentaryClient = new FlickrApiCommentaryClient();
     }
 
     public void registerCallback(IManagerCallback<ICustomCursorWrapper<ICommentary>> pCommentaryManagerCallback) {
@@ -56,8 +57,8 @@ public class CommentsManager {
     }
 
     public void getCommentsForPhoto(IPhoto pPhotoId) {
-        IRequest commentsRequest = new CommentsForPhotoRequest( mCommenataryManagerCallback,
-                mFlickrApiCommentaryClient,pPhotoId, mCommentDataService);
+        IRequest commentsRequest = new CommentsForPhotoRequest(mCommenataryManagerCallback,
+                mFlickrApiCommentaryClient, pPhotoId, mCommentDataService);
 
         RequestExecutor.executeRequestSerial(commentsRequest);
 

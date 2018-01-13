@@ -24,7 +24,7 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
     private static final String SEARCH_TEXT = "text";
     private static final Uri FLICKR_PHOTO_BASE_URL = FlickrApiConstants.FLICKR_API_URL
             .buildUpon()
-            .appendQueryParameter("extras", "date_upload,url_z,url_o,count_faves")
+            .appendQueryParameter("extras", "date_upload,url_z,url_o,count_faves, count_comments")
             .build();
 
 

@@ -22,7 +22,7 @@ import java.util.Map;
 public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final String TAG = FlickrDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "Flickr.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
     private static final String NOT_NULL = "NOT NULL";
     private static final String ID = "INTEGER PRIMARY KEY";

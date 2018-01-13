@@ -1,5 +1,6 @@
 package com.github.dimanolog.flickr.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -69,7 +70,8 @@ public class PhotoPageFragment extends VisibleFragment {
         viewComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommentsActivity.newIntent(getActivity(),mPhoto);
+                Intent intent = CommentsActivity.newIntent(getActivity(), mPhoto);
+                startActivity(intent);
             }
         });
 
