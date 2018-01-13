@@ -34,7 +34,7 @@ import static com.github.dimanolog.flickr.db.schema.FlickrDbSchema.PhotoTable;
 @Table(PhotoTable.NAME)
 public class Photo implements IPhoto {
     @SerializedName("id")
-    @Identity(value = PhotoTable.Cols.ID)
+    @Identity(PhotoTable.Cols.ID)
     private Long mId;
     @SerializedName("title")
     @Column(PhotoTable.Cols.TITLE)

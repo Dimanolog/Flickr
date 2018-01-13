@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Table(CommentaryTable.NAME)
 public class Commentary implements ICommentary {
-    private static final String USER_AVATAR_URL_TAMPLATE ="http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
+    private static final String USER_AVATAR_URL_TAMPLATE = "http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
 
     @Identity(CommentaryTable.Cols.ID)
     @SerializedName("id")
@@ -21,19 +21,19 @@ public class Commentary implements ICommentary {
     private String mAuthorName;
     @Column(CommentaryTable.Cols.AUTHOR_IS_DELETED)
     @SerializedName("author_is_deleted")
-    private  Integer mAuthorIsDeleted;
+    private Integer mAuthorIsDeleted;
     @Column(CommentaryTable.Cols.ICON_SERVER)
     @SerializedName("iconserver")
-    private   Integer mIconServer;
+    private Integer mIconServer;
     @Column(CommentaryTable.Cols.ICON_FARM)
     @SerializedName("iconfarm")
-    private   Integer mIconFarm;
+    private Integer mIconFarm;
     @Column(CommentaryTable.Cols.DATE_CREATE)
     @SerializedName("datecreate")
-    private   Long mDateCreate;
+    private Long mDateCreate;
     @Column(CommentaryTable.Cols.PERMALINK)
     @SerializedName("permalink")
-    private  String mPermalink;
+    private String mPermalink;
     @Column(CommentaryTable.Cols.PATH_ALIAS)
     @SerializedName("path_alias")
     private String mPathAlias;
@@ -158,7 +158,7 @@ public class Commentary implements ICommentary {
     }
 
     @Override
-    public String getAvatarUrl(){
+    public String getAvatarUrl() {
         return String.format(USER_AVATAR_URL_TAMPLATE, mIconFarm, mIconServer, mid);
     }
 }

@@ -27,7 +27,7 @@ public class CommentDataService {
 
     private void setPhotoIdsToComments(Collection<ICommentary> pComments, IPhoto pPhoto) {
         for (ICommentary comment : pComments) {
-            comment.setId(pPhoto.getId());
+            comment.setPhotoID(pPhoto.getId());
         }
     }
 }
