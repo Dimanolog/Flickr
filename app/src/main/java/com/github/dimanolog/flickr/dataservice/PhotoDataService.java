@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.db;
+package com.github.dimanolog.flickr.dataservice;
 
 import android.content.Context;
 
@@ -16,13 +16,13 @@ import java.util.List;
  * Created by Dimanolog on 02.01.2018.
  */
 
-public class PhotoService {
+public class PhotoDataService {
 
     private PhotoDAO mPhotoDAO;
     private SearchQueryDAO mSearchQueryDAO;
     private SearchQueryToPhotoDAO mSearchQueryToPhotoDAO;
 
-    public PhotoService(Context pContext) {
+    public PhotoDataService(Context pContext) {
         mPhotoDAO = new PhotoDAO(pContext);
         mSearchQueryDAO = new SearchQueryDAO(pContext);
         mSearchQueryToPhotoDAO = new SearchQueryToPhotoDAO(pContext);

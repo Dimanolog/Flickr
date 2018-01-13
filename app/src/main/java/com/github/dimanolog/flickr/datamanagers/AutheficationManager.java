@@ -2,12 +2,12 @@ package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class AutheficationManager {
                 }
             }
         };
-        startLoading(request);
+        RequestExecutor.executeRequestSerial(request);
     }
 
 
@@ -122,7 +122,7 @@ public class AutheficationManager {
                 }
             }
         };
-        startLoading(request);
+        RequestExecutor.executeRequestSerial(request);
     }
 
     private Map<String, String> parseParametes(String pParameters) {
@@ -133,11 +133,6 @@ public class AutheficationManager {
             paramNameToValueMap.put(a[0], Uri.decode(a[1]).trim());
         }
         return paramNameToValueMap;
-    }
-
-    private void startLoading(@NonNull IRequest pRequest) {
-        RequestTask requestTask = new RequestTask(pRequest);
-        requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, null);
     }
 
 }

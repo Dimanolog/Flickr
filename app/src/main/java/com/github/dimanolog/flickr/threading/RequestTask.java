@@ -1,6 +1,8 @@
-package com.github.dimanolog.flickr.datamanagers;
+package com.github.dimanolog.flickr.threading;
 
 import android.os.AsyncTask;
+
+import com.github.dimanolog.flickr.datamanagers.IRequest;
 
 /**
  * Created by Dimanolog on 08.01.2018.
@@ -8,7 +10,7 @@ import android.os.AsyncTask;
 class RequestTask extends AsyncTask<Void, Void, Void> {
     private IRequest mIRequest;
 
-    public RequestTask(IRequest pIRequest) {
+    RequestTask(IRequest pIRequest) {
         mIRequest = pIRequest;
     }
 

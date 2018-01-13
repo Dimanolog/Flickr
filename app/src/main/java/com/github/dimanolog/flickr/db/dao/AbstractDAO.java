@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Dimanolog on 10.12.2017.
  */
-public abstract class AbstractDAO<T> {
+public abstract class AbstractDAO<T>{
     private static final String ENTITY_DONT_HAVE_ANNOTATION_TABLE = "Entity dont have annotation @Table";
     private final Class<? extends T> mClass;
 
@@ -35,6 +35,7 @@ public abstract class AbstractDAO<T> {
             throw new RuntimeException(ENTITY_DONT_HAVE_ANNOTATION_TABLE);
         }
     }
+
 
     public ICustomCursorWrapper<T> rawQuery(final String sql, @Nullable final String... args) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
@@ -59,9 +60,11 @@ public abstract class AbstractDAO<T> {
         return wrapCursor(cursor);
     }
 
+
     public ICustomCursorWrapper<T> getAll() {
         return rawQuery("select * from " + mTableName, null);
     }
+
 
 
     public Long insert(final T pEntity) {
@@ -84,6 +87,7 @@ public abstract class AbstractDAO<T> {
         return null;
     }
 
+
     public Integer bulkInsert(final Collection<T> pEntities) {
         List<ContentValues> valuesList = entityCollectionToContentValues(pEntities);
         if (!valuesList.isEmpty()) {
@@ -105,6 +109,7 @@ public abstract class AbstractDAO<T> {
         }
         return null;
     }
+
 
 
     public int delete(final String sql, final String[] args) {

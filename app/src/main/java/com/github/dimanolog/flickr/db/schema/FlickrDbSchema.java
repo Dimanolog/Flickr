@@ -33,20 +33,21 @@ public class FlickrDbSchema {
         }
     }
 
-    public static final class CommentaryTable{
+    public static final class CommentaryTable {
         public static final String NAME = "comment";
 
         public static final class Cols {
             public static final String ID = "_ID";
             public static final String AUTHOR_NAME = "search_query_id";
             public static final String AUTHOR_IS_DELETED = "author_is_deleted";
-            public static final String ICON_SERVER= "iconserver";
+            public static final String ICON_SERVER = "iconserver";
             public static final String ICON_FARM = "iconfarm";
             public static final String DATE_CREATE = "datecreate";
             public static final String PERMALINK = "permalink";
             public static final String PATH_ALIAS = "path_alias";
             public static final String REAL_NAME = "real_name";
             public static final String CONTENT = "content";
+            public static final String PHOTO_ID = "photo_id";
         }
     }
 }

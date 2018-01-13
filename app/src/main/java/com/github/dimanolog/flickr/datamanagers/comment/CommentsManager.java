@@ -10,17 +10,18 @@
  * with FORS.
  */
 
-package com.github.dimanolog.flickr.datamanagers;
+package com.github.dimanolog.flickr.datamanagers.comment;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiCommentaryClient;
-import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
+import com.github.dimanolog.flickr.datamanagers.IRequest;
+import com.github.dimanolog.flickr.dataservice.CommentDataService;
+import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
-
-import java.util.List;
 
 /**
  * Created by dimanolog on 11.01.18.
@@ -29,8 +30,9 @@ import java.util.List;
 public class CommentsManager {
     private static CommentsManager sInstance;
     private Context mContext;
-    private IManagerCallback<ICommentary> mCommenataryManagerCallback;
+    private IManagerCallback<ICustomCursorWrapper<ICommentary>> mCommenataryManagerCallback;
     private FlickrApiCommentaryClient mFlickrApiCommentaryClient;
+    private CommentDataService mCommentDataService;
 
     public static CommentsManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
@@ -45,37 +47,17 @@ public class CommentsManager {
 
     private CommentsManager(Context pContext) {
         mContext = pContext.getApplicationContext();
+        mCommentDataService = new CommentDataService(pContext);
     }
 
-    public void registerCallback(IManagerCallback<ICommentary> pCommentaryManagerCallback) {
+    public void registerCallback(IManagerCallback<ICustomCursorWrapper<ICommentary>> pCommentaryManagerCallback) {
         mCommenataryManagerCallback = pCommentaryManagerCallback;
     }
 
-    private void getCommentsForPhoto() {
+    private void getCommentsForPhoto(IPhoto pPhotoId) {
+        IRequest commentsRequest = new CommentsForPhotoRequest( mCommenataryManagerCallback,
+                mFlickrApiCommentaryClient,pPhotoId, mCommentDataService);
 
     }
 
-    public static class CommentsForPhotoRequest implements IRequest {
-        private IManagerCallback<ICommentary> mCommenataryManagerCallback;
-        private FlickrApiCommentaryClient mFlickrApiCommentaryClient;
-        private IPhoto mPhoto;
-        private IResponse<List<ICommentary>> mCommentResponse;
-
-        @Override
-        public void onPreRequest() {
-            mCommenataryManagerCallback.onStartLoading();
-        }
-
-        @Override
-        public void runRequest() {
-            mCommentResponse = mFlickrApiCommentaryClient.getListOfCommentByPhoto(mPhoto);
-        }
-
-        @Override
-        public void onPostRequest() {
-            if(mCommentResponse.isError()){
-
-            }
-        }
-    }
 }

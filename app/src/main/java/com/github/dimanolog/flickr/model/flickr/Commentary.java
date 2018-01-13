@@ -1,49 +1,61 @@
-
-
 package com.github.dimanolog.flickr.model.flickr;
 
-
 import com.github.dimanolog.flickr.db.annotations.Column;
+import com.github.dimanolog.flickr.db.annotations.ForeignKey;
 import com.github.dimanolog.flickr.db.annotations.Identity;
 import com.github.dimanolog.flickr.db.annotations.Table;
-import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema.CommentaryTable;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema.PhotoTable;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.google.gson.annotations.SerializedName;
 
-@Table(FlickrDbSchema.CommentaryTable.NAME)
+@Table(CommentaryTable.NAME)
 public class Commentary implements ICommentary {
     private static final String USER_AVATAR_URL_TAMPLATE ="http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
 
-    @Identity(FlickrDbSchema.CommentaryTable.Cols.ID)
+    @Identity(CommentaryTable.Cols.ID)
     @SerializedName("id")
     private Long mid;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.AUTHOR_NAME)
+    @Column(CommentaryTable.Cols.AUTHOR_NAME)
     @SerializedName("authorname")
     private String mAuthorName;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.AUTHOR_IS_DELETED)
+    @Column(CommentaryTable.Cols.AUTHOR_IS_DELETED)
     @SerializedName("author_is_deleted")
     private  Integer mAuthorIsDeleted;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.ICON_SERVER)
+    @Column(CommentaryTable.Cols.ICON_SERVER)
     @SerializedName("iconserver")
     private   Integer mIconServer;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.ICON_FARM)
+    @Column(CommentaryTable.Cols.ICON_FARM)
     @SerializedName("iconfarm")
     private   Integer mIconFarm;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.DATE_CREATE)
+    @Column(CommentaryTable.Cols.DATE_CREATE)
     @SerializedName("datecreate")
     private   Long mDateCreate;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.PERMALINK)
+    @Column(CommentaryTable.Cols.PERMALINK)
     @SerializedName("permalink")
     private  String mPermalink;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.PATH_ALIAS)
+    @Column(CommentaryTable.Cols.PATH_ALIAS)
     @SerializedName("path_alias")
     private String mPathAlias;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.REAL_NAME)
+    @Column(CommentaryTable.Cols.REAL_NAME)
     @SerializedName("realname")
     private String mRealName;
-    @Column(FlickrDbSchema.CommentaryTable.Cols.CONTENT)
+    @Column(CommentaryTable.Cols.CONTENT)
     @SerializedName("_content")
     private String mContent;
+    @Column(CommentaryTable.Cols.PHOTO_ID)
+    @ForeignKey(table = PhotoTable.NAME, column = PhotoTable.Cols.ID)
+    private Long mPhotoID;
+
+    @Override
+    public Long getPhotoID() {
+        return mPhotoID;
+    }
+
+    @Override
+    public void setPhotoID(Long pPhotoID) {
+        mPhotoID = pPhotoID;
+    }
 
     @Override
     public Long getId() {

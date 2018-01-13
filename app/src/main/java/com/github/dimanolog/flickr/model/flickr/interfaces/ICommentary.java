@@ -57,5 +57,9 @@ public interface ICommentary {
 
     void setContent(String pContent);
 
+    Long getPhotoID();
+
+    void setPhotoID(Long pPhotoID);
+
     String getAvatarUrl();
 }

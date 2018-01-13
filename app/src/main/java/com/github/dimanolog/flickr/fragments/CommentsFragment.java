@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
-import com.github.dimanolog.flickr.datamanagers.CommentsManager;
+import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;

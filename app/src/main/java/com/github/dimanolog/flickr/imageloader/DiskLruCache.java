@@ -41,7 +41,7 @@ public class DiskLruCache {
     private volatile Long mCurrentCacheSize;
 
     public DiskLruCache(Context pContext) {
-        this.mCacheDir = pContext.getCacheDir();
+        mCacheDir = pContext.getCacheDir();
         if (!mCacheDir.exists()) {
             boolean mkdir = this.mCacheDir.mkdirs();
             if (!mkdir) {
@@ -49,13 +49,13 @@ public class DiskLruCache {
             }
 
         }
-        this.mCacheDir.setWritable(true);
+        mCacheDir.setWritable(true);
 
-        if (!this.mCacheDir.canWrite()) {
+        if (!mCacheDir.canWrite()) {
             throw new IllegalStateException("Can't write into dir for images");
         }
 
-        mCacheSize = calculateDiskCacheSize(this.mCacheDir);
+        mCacheSize = calculateDiskCacheSize(mCacheDir);
         mExecutorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
         freeSpaceIfRequired();
     }

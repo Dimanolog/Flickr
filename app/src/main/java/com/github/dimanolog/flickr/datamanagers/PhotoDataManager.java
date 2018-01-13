@@ -1,16 +1,16 @@
 package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiPhotoClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.db.PhotoService;
+import com.github.dimanolog.flickr.dataservice.PhotoDataService;
 import com.github.dimanolog.flickr.db.dao.PhotoDAO;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
+import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PhotoDataManager {
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiPhotoClient();
     private IManagerCallback<ICustomCursorWrapper<IPhoto>> mIManagerCallback;
     private PhotoDAO mPhotoDAO;
-    private PhotoService mPhotoService;
+    private PhotoDataService mPhotoDataService;
 
 
     public static PhotoDataManager getInstance(@NonNull Context context) {
@@ -39,7 +39,7 @@ public class PhotoDataManager {
     private PhotoDataManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mPhotoDAO = new PhotoDAO(pContext);
-        mPhotoService = new PhotoService(pContext);
+        mPhotoDataService = new PhotoDataService(pContext);
     }
 
     public void searchPhotos(final int pPage, final String pQuery) {
@@ -58,8 +58,8 @@ public class PhotoDataManager {
             public void runRequest() {
                 mResponse = mIFlickrApiClient.searchPhotos(pPage, pQuery);
                 if (!mResponse.isError()) {
-                    Long id = mPhotoService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
-                    mSearchPhotosFromDb = mPhotoService.getSearchQueryResult(id);
+                    Long id = mPhotoDataService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
+                    mSearchPhotosFromDb = mPhotoDataService.getSearchQueryResult(id);
                 }
             }
 
@@ -73,11 +73,11 @@ public class PhotoDataManager {
             }
         };
 
-        startLoading(request);
+        RequestExecutor.executeRequestSerial(request);
     }
 
     public void getRecent(final int pPage) {
-        startLoading(new GetRecentRequest(pPage));
+        RequestExecutor.executeRequestSerial(new GetRecentRequest(pPage));
     }
 
     public void registerCallback(@NonNull IManagerCallback<ICustomCursorWrapper<IPhoto>> pCallback) {
@@ -88,10 +88,7 @@ public class PhotoDataManager {
         mIManagerCallback = null;
     }
 
-    private void startLoading(@NonNull IRequest pRequest) {
-        RequestTask requestTask = new RequestTask(pRequest);
-        requestTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, null);
-    }
+
 
 
     private Integer addResultToDb(List<IPhoto> pPhotoList) {
@@ -103,7 +100,7 @@ public class PhotoDataManager {
     }
 
 
-    private static class GetRecentRequest implements IRequest {
+    private  class GetRecentRequest implements IRequest {
 
         private final int mPage;
         private IResponse<List<IPhoto>> mResponse;
