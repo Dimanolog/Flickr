@@ -49,9 +49,9 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
                 " WHERE " +
                 PhotoTable.Cols.ID +
                 " IN ( SELECT " +
-                SearchQueryToPhotoTable.Cols.photoId +
+                SearchQueryToPhotoTable.Cols.PHOTO_ID +
                 " FROM " + SearchQueryToPhotoTable.NAME +
-                " WHERE " + SearchQueryToPhotoTable.Cols.searchQueryId +
+                " WHERE " + SearchQueryToPhotoTable.Cols.SEARCH_QUERY_ID +
                 "=" +
                 id +
                 " )";

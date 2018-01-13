@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 @Table(FlickrDbSchema.PhotoTable.NAME)
 public class Photo implements IPhoto {
     @SerializedName("id")
-    @Identity(value = FlickrDbSchema.PhotoTable.Cols.ID, autoincrement = false)
+    @Identity(value = FlickrDbSchema.PhotoTable.Cols.ID)
     private Long mId;
     @SerializedName("title")
     @Column(FlickrDbSchema.PhotoTable.Cols.TITLE)

@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 public @interface Identity {
     String value();
 
-    boolean autoincrement();
+    boolean autoincrement() default false;
 }

@@ -72,11 +72,11 @@ public class CommentsFragment extends Fragment {
     private  class CommentHolder extends RecyclerView.ViewHolder {
         private TextView mCommentTittleTxtVw;
         private TextView mCommentContentTxtVw;
-        private ImageView mUserAvatatImgVw;
+        private ImageView mUserAvatarImgVw;
 
         CommentHolder(View pItemView) {
             super(pItemView);
-            mUserAvatatImgVw = pItemView.findViewById(R.id.comments_fragment_item_user_avatar_image_view);
+            mUserAvatarImgVw = pItemView.findViewById(R.id.comments_fragment_item_user_avatar_image_view);
             mCommentContentTxtVw=pItemView.findViewById(R.id.comments_fragment_item_user_coment_text_view);
             mCommentTittleTxtVw=pItemView.findViewById(R.id.comments_fragment_item_user_name_text_view);
         }
@@ -87,7 +87,7 @@ public class CommentsFragment extends Fragment {
             VanGogh.with(getActivity())
                     .load(pCommentary.getAvatarUrl())
                     .placeHolder(R.drawable.no_photo)
-                    .into(mUserAvatatImgVw);
+                    .into(mUserAvatarImgVw);
         }
 
     }

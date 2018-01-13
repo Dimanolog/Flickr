@@ -38,8 +38,8 @@ public class SearchQueryToPhotoDAO extends AbstractDAO<SearchQueryToPhoto> {
         List<ContentValues> valuesList = new LinkedList<>();
         for (IPhoto photo : pIPhotos) {
             values=new ContentValues();
-            values.put(FlickrDbSchema.SearchQueryToPhotoTable.Cols.photoId, photo.getId());
-            values.put(FlickrDbSchema.SearchQueryToPhotoTable.Cols.searchQueryId, pSearchQueryId);
+            values.put(FlickrDbSchema.SearchQueryToPhotoTable.Cols.PHOTO_ID, photo.getId());
+            values.put(FlickrDbSchema.SearchQueryToPhotoTable.Cols.SEARCH_QUERY_ID, pSearchQueryId);
             valuesList.add(values);
         }
         if (!valuesList.isEmpty()) {

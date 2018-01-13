@@ -3,31 +3,45 @@
 package com.github.dimanolog.flickr.model.flickr;
 
 
+import com.github.dimanolog.flickr.db.annotations.Column;
+import com.github.dimanolog.flickr.db.annotations.Identity;
+import com.github.dimanolog.flickr.db.annotations.Table;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.google.gson.annotations.SerializedName;
 
+@Table(FlickrDbSchema.CommentaryTable.NAME)
 public class Commentary implements ICommentary {
-    private static final String USER_AVATAR_URL_TAMPLATE =
-            "http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
+    private static final String USER_AVATAR_URL_TAMPLATE ="http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
 
+    @Identity(FlickrDbSchema.CommentaryTable.Cols.ID)
     @SerializedName("id")
     private Long mid;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.AUTHOR_NAME)
     @SerializedName("authorname")
     private String mAuthorName;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.AUTHOR_IS_DELETED)
     @SerializedName("author_is_deleted")
     private  Integer mAuthorIsDeleted;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.ICON_SERVER)
     @SerializedName("iconserver")
     private   Integer mIconServer;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.ICON_FARM)
     @SerializedName("iconfarm")
     private   Integer mIconFarm;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.DATE_CREATE)
     @SerializedName("datecreate")
     private   Long mDateCreate;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.PERMALINK)
     @SerializedName("permalink")
     private  String mPermalink;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.PATH_ALIAS)
     @SerializedName("path_alias")
     private String mPathAlias;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.REAL_NAME)
     @SerializedName("realname")
     private String mRealName;
+    @Column(FlickrDbSchema.CommentaryTable.Cols.CONTENT)
     @SerializedName("_content")
     private String mContent;
 

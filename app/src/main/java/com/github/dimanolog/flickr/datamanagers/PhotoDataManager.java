@@ -103,7 +103,7 @@ public class PhotoDataManager {
     }
 
 
-    private class GetRecentRequest implements IRequest {
+    private static class GetRecentRequest implements IRequest {
 
         private final int mPage;
         private IResponse<List<IPhoto>> mResponse;

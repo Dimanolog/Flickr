@@ -1,5 +1,6 @@
 package com.github.dimanolog.flickr.db;
 
+import com.github.dimanolog.flickr.model.flickr.Commentary;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 import com.github.dimanolog.flickr.model.flickr.SearchQuery;
 import com.github.dimanolog.flickr.model.flickr.SearchQueryToPhoto;
@@ -22,7 +23,8 @@ class DbUtil {
         return new Class[]{
                 Photo.class,
                 SearchQuery.class,
-                SearchQueryToPhoto.class
+                SearchQueryToPhoto.class,
+                Commentary.class
         };
     }
 

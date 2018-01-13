@@ -7,10 +7,6 @@ import com.github.dimanolog.flickr.db.schema.FlickrDbSchema;
 import com.github.dimanolog.flickr.model.flickr.Photo;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
-/**
- * Created by Dimanolog on 17.12.2017.
- */
-
 public class PhotoCursorWrapper extends CursorWrapper implements ICustomCursorWrapper<IPhoto> {
 
     public PhotoCursorWrapper(Cursor cursor) {
