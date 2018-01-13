@@ -66,6 +66,5 @@ public class PhotoPageFragment extends VisibleFragment {
         ImageView viewComment = v.findViewById(R.id.photo_fragment_imageview_comments);
 
         return v;
-
     }
 }

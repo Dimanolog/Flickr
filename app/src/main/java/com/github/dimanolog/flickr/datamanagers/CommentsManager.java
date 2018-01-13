@@ -13,36 +13,37 @@
 package com.github.dimanolog.flickr.datamanagers;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.github.dimanolog.flickr.model.flickr.Commentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 
 /**
  * Created by dimanolog on 11.01.18.
  */
 
-public class CommentaryManager {
-    private static CommentaryManager sInstance;
+public class CommentsManager {
+    private static CommentsManager sInstance;
     private Context mContext;
-    private IManagerCallback<ICommentary> mIManagerCallback;
+    private IManagerCallback<ICommentary> mCommenataryManagerCallback;
 
-    public static CommentaryManager getInstance(@NonNull Context context) {
+    public static CommentsManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
-            synchronized (CommentaryManager.class) {
+            synchronized (CommentsManager.class) {
                 if (sInstance == null) {
-                    sInstance = new CommentaryManager(context);
+                    sInstance = new CommentsManager(context);
                 }
             }
         }
         return sInstance;
     }
 
-    private CommentaryManager(Context pContext) {
+    private CommentsManager(Context pContext) {
         mContext = pContext.getApplicationContext();
     }
 
+    public void registerCallback(IManagerCallback<ICommentary> pCommentaryManagerCallback){
+        mCommenataryManagerCallback=pCommentaryManagerCallback;
+    }
     private void getCommentsForPhoto(){
 
     }

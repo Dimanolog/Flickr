@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/divider2"
+    android:layout_width="match_parent"
+    android:layout_height="0.2dp"
+    android:layout_weight="0"
+    android:background="#605f5f"
+    tools:showIn="@layout/comments_fragment"/>

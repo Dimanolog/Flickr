@@ -3,7 +3,6 @@ package com.github.dimanolog.flickr.imageloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.StatFs;
-import android.util.Log;
 
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.LogUtil;
@@ -74,18 +73,18 @@ public class DiskLruCache {
         if (files != null && files.length == 1) {
             File imageFile = files[0];
             imageFile.setLastModified(System.currentTimeMillis());
-            Log.d(TAG, String.format("success return file from cache: %s, %s", imageFile.getName(), pImageUri));
+            LogUtil.d(TAG, String.format("success return file from cache: %s, %s", imageFile.getName(), pImageUri));
             return imageFile;
         }
         return null;
     }
 
 
-    public void add(final String imageUri, final Bitmap bitmap) {
+    public void add(final String pImageUri, final Bitmap pBitmap) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                addToDisk(imageUri, bitmap);
+                addToDisk(pImageUri, pBitmap);
             }
         };
         mExecutorService.execute(runnable);
@@ -167,7 +166,7 @@ public class DiskLruCache {
     }
 
 
-    private static long calculateDiskCacheSize(File pDir) {
+    private long calculateDiskCacheSize(File pDir) {
         long size = MIN_DISK_CACHE_SIZE;
         try {
             StatFs statFs = new StatFs(pDir.getAbsolutePath());

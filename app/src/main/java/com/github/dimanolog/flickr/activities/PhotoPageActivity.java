@@ -12,12 +12,12 @@ import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
  * Created by Dimanolog on 05.01.2018.
  */
 
-public class PhotoPageAlternativeActivity extends SingleFragmentActivity {
+public class PhotoPageActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_PHOTO ="com.github.dimanolog.flickr.photo";
 
     public static Intent newIntent(Context context, IPhoto pPhoto) {
-        Intent i = new Intent(context, PhotoPageAlternativeActivity.class);
+        Intent i = new Intent(context, PhotoPageActivity.class);
         i.putExtra(EXTRA_PHOTO, pPhoto);
         return i;
     }

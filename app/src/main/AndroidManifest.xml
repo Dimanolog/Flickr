@@ -30,7 +30,7 @@
         <activity
             android:name=".activities.WebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".activities.PhotoPageAlternativeActivity"/>
+        <activity android:name=".activities.PhotoPageActivity"/>
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

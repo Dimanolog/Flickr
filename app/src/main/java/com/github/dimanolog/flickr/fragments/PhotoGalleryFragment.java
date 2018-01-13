@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.github.dimanolog.flickr.R;
-import com.github.dimanolog.flickr.activities.PhotoPageAlternativeActivity;
+import com.github.dimanolog.flickr.activities.PhotoPageActivity;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.PhotoDataManager;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
@@ -222,7 +222,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
 
         @Override
         public void onClick(View v) {
-            Intent i = PhotoPageAlternativeActivity
+            Intent i = PhotoPageActivity
                     .newIntent(getActivity(), mPhoto);
             startActivity(i);
         }
