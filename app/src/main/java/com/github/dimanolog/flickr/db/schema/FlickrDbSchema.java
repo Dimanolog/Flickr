@@ -11,6 +11,8 @@ public class FlickrDbSchema {
             public static final String OWNER = "owner";
             public static final String SMALL_IMAGE_URL = "small_url";
             public static final String ORIGINAL_IMAGE_URL = "original_url";
+            public static final String COUNT_FAVES = "count_faves";
+            public static final String COUNT_COMMENTS ="count_comments";
         }
     }
 

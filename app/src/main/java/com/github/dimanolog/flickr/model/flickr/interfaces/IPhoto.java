@@ -28,7 +28,15 @@ public interface IPhoto extends Serializable {
 
     void setUploadDate(Long uploadDate);
 
-    public String getOriginalUrl();
+    String getOriginalUrl();
 
-    public void setOriginalUrl(String pOriginalUrl);
+    void setOriginalUrl(String pOriginalUrl);
+
+    Integer getCountComments();
+
+    void setCountComments(Integer pCountComments);
+
+    Integer getCountFaves();
+
+    void setCountFaves(Integer pCountFaves);
 }

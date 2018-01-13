@@ -39,6 +39,8 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
         values.put(PhotoTable.Cols.UPLOAD_DATE, pEntity.getUploadDate());
         values.put(PhotoTable.Cols.SMALL_IMAGE_URL, pEntity.getSmallUrl());
         values.put(PhotoTable.Cols.ORIGINAL_IMAGE_URL, pEntity.getOriginalUrl());
+        values.put(PhotoTable.Cols.COUNT_COMMENTS, pEntity.getCountComments());
+        values.put(PhotoTable.Cols.COUNT_FAVES,pEntity.getCountFaves());
 
         return values;
     }
