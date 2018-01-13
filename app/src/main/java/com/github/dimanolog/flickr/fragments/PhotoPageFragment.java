@@ -59,11 +59,17 @@ public class PhotoPageFragment extends VisibleFragment {
                 .resize(MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                 .into(mImageViewWithZoom);
 
+
         mPhotoTittle = v.findViewById(R.id.photo_fragment_image_name_text_view);
+
         mPhotoTittle.setText(mPhoto.getTittle());
 
         TextView numberOfCommentsTxtVw = v.findViewById(R.id.photo_fragment_number_of_comment_txt_view);
+        String countComments = String.valueOf(mPhoto.getCountComments());
+        numberOfCommentsTxtVw.setText(countComments);
         TextView numberFavesTextVw = v.findViewById(R.id.photo_fragment_number_of_favor_txt_view);
+        String countFaves = String.valueOf(mPhoto.getCountFaves());
+        numberFavesTextVw.setText(countFaves);
 
         ImageView viewComment = v.findViewById(R.id.photo_fragment_imageview_comments);
 

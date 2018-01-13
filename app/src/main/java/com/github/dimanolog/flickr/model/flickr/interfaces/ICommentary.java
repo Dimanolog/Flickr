@@ -17,9 +17,9 @@ package com.github.dimanolog.flickr.model.flickr.interfaces;
  */
 
 public interface ICommentary {
-    Long getId();
+    String getId();
 
-    void setId(Long pId);
+    void setId(String pId);
 
     String getAuthorName();
 

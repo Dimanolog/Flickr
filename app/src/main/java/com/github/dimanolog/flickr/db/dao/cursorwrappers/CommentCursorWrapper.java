@@ -20,7 +20,7 @@ public class CommentCursorWrapper extends CursorWrapper implements ICustomCursor
     @Override
     public ICommentary get() {
         ICommentary commentary = new Commentary();
-        commentary.setId(getLong(getColumnIndex(CommentaryTable.Cols.ID)));
+        commentary.setId(getString(getColumnIndex(CommentaryTable.Cols.ID)));
         commentary.setAuthorName(getString(getColumnIndex(CommentaryTable.Cols.AUTHOR_NAME)));
         commentary.setAuthorIsDeleted(getInt(getColumnIndex(CommentaryTable.Cols.AUTHOR_IS_DELETED)));
         commentary.setIconServer(getInt(getColumnIndex(CommentaryTable.Cols.ICON_SERVER)));

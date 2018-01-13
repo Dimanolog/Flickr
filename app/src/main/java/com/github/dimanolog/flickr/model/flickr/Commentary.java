@@ -15,7 +15,7 @@ public class Commentary implements ICommentary {
 
     @Identity(CommentaryTable.Cols.ID)
     @SerializedName("id")
-    private Long mid;
+    private String mid;
     @Column(CommentaryTable.Cols.AUTHOR_NAME)
     @SerializedName("authorname")
     private String mAuthorName;
@@ -58,12 +58,12 @@ public class Commentary implements ICommentary {
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return mid;
     }
 
     @Override
-    public void setId(Long pId) {
+    public void setId(String pId) {
         mid = pId;
     }
 
