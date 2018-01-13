@@ -22,6 +22,7 @@ import com.github.dimanolog.flickr.dataservice.CommentDataService;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
+import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 /**
  * Created by dimanolog on 11.01.18.
@@ -54,9 +55,11 @@ public class CommentsManager {
         mCommenataryManagerCallback = pCommentaryManagerCallback;
     }
 
-    private void getCommentsForPhoto(IPhoto pPhotoId) {
+    public void getCommentsForPhoto(IPhoto pPhotoId) {
         IRequest commentsRequest = new CommentsForPhotoRequest( mCommenataryManagerCallback,
                 mFlickrApiCommentaryClient,pPhotoId, mCommentDataService);
+
+        RequestExecutor.executeRequestSerial(commentsRequest);
 
     }
 

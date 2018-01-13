@@ -13,42 +13,59 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
-import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
+import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
 
 public class CommentsFragment extends Fragment {
     private static final String TAG = CommentsFragment.class.getSimpleName();
+    private static final String ARG_PHOTO = "photo";
 
+    private IPhoto mPhoto;
     private CommentsManager mCommentsManager;
+    private RecyclerView mCommentsRecyclerView;
+    private TextView mNumberOfCommentsTxtVw;
+    private EditText mWriteCommentryEditTxt;
+    private ImageView mSendCommenataryBtn;
+    private boolean mUpdating;
 
-    public static CommentsFragment newInstance(long photoId) {
-        return new CommentsFragment();
+    public static CommentsFragment newInstance(IPhoto pPhoto) {
+
+        CommentsFragment commentsFragment = new CommentsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PHOTO, pPhoto);
+        commentsFragment.setArguments(args);
+
+        return commentsFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPhoto = (IPhoto) getArguments().getSerializable(ARG_PHOTO);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
+
         mCommentsManager = CommentsManager.getInstance(getActivity());
-        mCommentsManager.registerCallback(new IManagerCallback<ICommentary>() {
+        mCommentsManager.registerCallback(new IManagerCallback<ICustomCursorWrapper<ICommentary>>() {
+
             @Override
             public void onStartLoading() {
-
+                loading(true);
             }
 
             @Override
-            public void onSuccessResult(ICommentary result) {
-
+            public void onSuccessResult(ICustomCursorWrapper<ICommentary> pResult) {
+                setupOrUpdateAdapter(pResult);
+                loading(false);
             }
 
             @Override
             public void onError(Throwable t) {
-
+                loading(false);
             }
         });
     }
@@ -56,20 +73,39 @@ public class CommentsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.comments_fragment
-                , container, false);
-        RecyclerView commentsRecyclerView = v.findViewById(R.id.comments_fragment_recycler_view);
-        TextView numberOfComments = v.findViewById(R.id.comments_fragment_number_of_commets_text_view);
-        EditText writeCommentry = v.findViewById(R.id.comments_fragment_write_comment_text);
-        ImageView sendCommenatary = v.findViewById(R.id.comments_fragment_send_comment);
+        View v = inflater.inflate(R.layout.comments_fragment, container, false);
+
+        mCommentsRecyclerView = v.findViewById(R.id.comments_fragment_recycler_view);
+        mNumberOfCommentsTxtVw = v.findViewById(R.id.comments_fragment_number_of_commets_text_view);
+        mWriteCommentryEditTxt = v.findViewById(R.id.comments_fragment_write_comment_text);
+        mSendCommenataryBtn = v.findViewById(R.id.comments_fragment_send_comment);
+
+        updateItems();
 
         return v;
     }
 
+    private void updateItems() {
+        mCommentsManager.getCommentsForPhoto(mPhoto);
+    }
 
+    private void setupOrUpdateAdapter(ICustomCursorWrapper<ICommentary> pResult) {
+        if (isAdded()) {
+            if (!mUpdating) {
+                mCommentsRecyclerView.setAdapter(new CommentsAdapter(pResult));
+                mUpdating = true;
+            } else {
+                CommentsAdapter commentsAdapter = (CommentsAdapter) mCommentsRecyclerView.getAdapter();
+                commentsAdapter.swapCursor(pResult);
+            }
+        }
+    }
 
+    private void loading(boolean pB) {
 
-    private  class CommentHolder extends RecyclerView.ViewHolder {
+    }
+
+    private class CommentHolder extends RecyclerView.ViewHolder {
         private TextView mCommentTittleTxtVw;
         private TextView mCommentContentTxtVw;
         private ImageView mUserAvatarImgVw;
@@ -77,8 +113,8 @@ public class CommentsFragment extends Fragment {
         CommentHolder(View pItemView) {
             super(pItemView);
             mUserAvatarImgVw = pItemView.findViewById(R.id.comments_fragment_item_user_avatar_image_view);
-            mCommentContentTxtVw=pItemView.findViewById(R.id.comments_fragment_item_user_coment_text_view);
-            mCommentTittleTxtVw=pItemView.findViewById(R.id.comments_fragment_item_user_name_text_view);
+            mCommentContentTxtVw = pItemView.findViewById(R.id.comments_fragment_item_user_coment_text_view);
+            mCommentTittleTxtVw = pItemView.findViewById(R.id.comments_fragment_item_user_name_text_view);
         }
 
         void bindCommentaryItem(ICommentary pCommentary) {
@@ -91,7 +127,8 @@ public class CommentsFragment extends Fragment {
         }
 
     }
-    private  class CommentsAdapter extends RecyclerView.Adapter<CommentHolder> {
+
+    private class CommentsAdapter extends RecyclerView.Adapter<CommentHolder> {
 
         private ICustomCursorWrapper<ICommentary> mCommentsCursor;
 
@@ -115,10 +152,10 @@ public class CommentsFragment extends Fragment {
         }
 
         public void swapCursor(ICustomCursorWrapper<ICommentary> pCommentsCursor) {
-            if ( pCommentsCursor != null) {
+            if (pCommentsCursor != null) {
                 mCommentsCursor.close();
             }
-            mCommentsCursor =  pCommentsCursor;
+            mCommentsCursor = pCommentsCursor;
             notifyDataSetChanged();
         }
 

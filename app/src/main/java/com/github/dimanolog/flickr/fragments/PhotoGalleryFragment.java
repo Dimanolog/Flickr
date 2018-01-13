@@ -61,8 +61,10 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mProgressBar = v.findViewById(R.id.progressBar);
-        mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mImagePreView = v.findViewById(R.id.fragment_photo_gallery_image_view);
+
+        mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
+
 
         mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -153,7 +155,6 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
     }
 
     private void updateItems() {
-        loading(true);
         String query = QueryPreferences.getStoredQuery(getActivity());
         if (TextUtils.isEmpty(query)) {
             mPhotoDataProvider.getRecent(mCurrentPage);
@@ -195,7 +196,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
     //TODO handle error
     @Override
     public void onError(Throwable t) {
-
+        loading(false);
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
@@ -251,40 +252,40 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
     }
 
 
-        private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
+    private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
 
-            private ICustomCursorWrapper<IPhoto> mPhotoCursor;
+        private ICustomCursorWrapper<IPhoto> mPhotoCursor;
 
-            PhotoAdapter(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
-                mPhotoCursor = pPhotoCursor;
+        PhotoAdapter(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
+            mPhotoCursor = pPhotoCursor;
+        }
+
+        @Override
+        public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.gallery_item, viewGroup,
+                    false);
+            return new PhotoHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(PhotoHolder photoHolder, int position) {
+            mPhotoCursor.moveToPosition(position);
+            IPhoto photoItem = mPhotoCursor.get();
+            photoHolder.bindPhotoItem(photoItem);
+        }
+
+        public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
+            if (pPhotoCursor != null) {
+                mPhotoCursor.close();
             }
+            mPhotoCursor = pPhotoCursor;
+            notifyDataSetChanged();
+        }
 
-            @Override
-            public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-                LayoutInflater inflater = LayoutInflater.from(getActivity());
-                View view = inflater.inflate(R.layout.gallery_item, viewGroup,
-                        false);
-                return new PhotoHolder(view);
-            }
-
-            @Override
-            public void onBindViewHolder(PhotoHolder photoHolder, int position) {
-                mPhotoCursor.moveToPosition(position);
-                IPhoto photoItem = mPhotoCursor.get();
-                photoHolder.bindPhotoItem(photoItem);
-            }
-
-            public void swapCursor(ICustomCursorWrapper<IPhoto> pPhotoCursor) {
-                if (pPhotoCursor != null) {
-                    mPhotoCursor.close();
-                }
-                mPhotoCursor = pPhotoCursor;
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public int getItemCount() {
-                return mPhotoCursor.getCount();
-            }
+        @Override
+        public int getItemCount() {
+            return mPhotoCursor.getCount();
         }
     }
+}

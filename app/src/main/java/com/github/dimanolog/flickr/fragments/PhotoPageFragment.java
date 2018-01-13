@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
+import com.github.dimanolog.flickr.activities.CommentsActivity;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom;
@@ -64,6 +65,13 @@ public class PhotoPageFragment extends VisibleFragment {
         TextView numberFavesTextVw = v.findViewById(R.id.photo_fragment_number_of_favor_txt_view);
 
         ImageView viewComment = v.findViewById(R.id.photo_fragment_imageview_comments);
+
+        viewComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommentsActivity.newIntent(getActivity(),mPhoto);
+            }
+        });
 
         return v;
     }
