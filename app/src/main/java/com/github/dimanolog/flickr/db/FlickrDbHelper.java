@@ -22,10 +22,10 @@ import java.util.Map;
 public class FlickrDbHelper extends SQLiteOpenHelper {
     private static final String TAG = FlickrDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "Flickr.db";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 18;
     private static final String TABLE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s) ";
     private static final String NOT_NULL = "NOT NULL";
-    private static final String ID = "INTEGER PRIMARY KEY";
+    private static final String PRIMARY_KEY = "PRIMARY KEY";
     private static final String AUTOINCREMENT = "AUTOINCREMENT";
     private static final String DELETE_TABLE_TEMPLATE = "DROP TABLE IF EXISTS '%s'";
     private static final String FOREIGN_KEY_TEMPLATE = "FOREIGN KEY (%s) REFERENCES %s (%s)";
@@ -111,7 +111,9 @@ public class FlickrDbHelper extends SQLiteOpenHelper {
                 if (sqlType != null) {
                     pStringBuilder.append(identity.value())
                             .append(' ')
-                            .append(ID);
+                            .append(sqlType)
+                            .append(' ')
+                            .append(PRIMARY_KEY);
                     if (identity.autoincrement()) {
                         pStringBuilder.append(' ')
                                 .append(AUTOINCREMENT);

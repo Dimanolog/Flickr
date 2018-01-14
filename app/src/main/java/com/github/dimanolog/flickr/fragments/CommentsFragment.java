@@ -4,6 +4,7 @@ package com.github.dimanolog.flickr.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +77,7 @@ public class CommentsFragment extends Fragment {
         View v = inflater.inflate(R.layout.comments_fragment, container, false);
 
         mCommentsRecyclerView = v.findViewById(R.id.comments_fragment_recycler_view);
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNumberOfCommentsTxtVw = v.findViewById(R.id.comments_fragment_number_of_commets_text_view);
         mWriteCommentryEditTxt = v.findViewById(R.id.comments_fragment_write_comment_text);
         mSendCommenataryBtn = v.findViewById(R.id.comments_fragment_send_comment);
@@ -139,7 +141,7 @@ public class CommentsFragment extends Fragment {
         @Override
         public CommentHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.gallery_item, viewGroup,
+            View view = inflater.inflate(R.layout.comments_item, viewGroup,
                     false);
             return new CommentHolder(view);
         }

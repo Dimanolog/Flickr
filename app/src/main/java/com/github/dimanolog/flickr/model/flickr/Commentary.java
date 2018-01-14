@@ -13,6 +13,32 @@ import com.google.gson.annotations.SerializedName;
 public class Commentary implements ICommentary {
     private static final String USER_AVATAR_URL_TAMPLATE = "http://farm%s.staticflickr.com/%s/buddyicons/%s.jpg";
 
+    /*"comments":{
+        "photo_id":"23866933877",
+                "comment":[{
+            "id":"20982972-23866933877-72157690293150635",
+                    "author":"133297307@N02",
+                    "author_is_deleted":0,
+                    "authorname":"ronniemillpool43",
+                    "iconserver":"1483",
+                    "iconfarm":2,
+                    "datecreate": "1511996334",
+                    "permalink":"https:\/\/www.flickr.com\/photos\/21028294@N06\/23866933877\/#comment72157690293150635",
+                    "path_alias":null,
+                    "realname":"Veronica George",
+                    "_content":"A stunning shot, wonderful colours. Looks oh so beautiful enlarged. Nature is wonderful."},*/
+
+    //CREATE TABLE comment
+    // (author_is_deleted INTEGER,
+    // author_name TEXT,content TEXT,
+    // datecreate INTEGER,
+    // iconfarm INTEGER,
+    // iconserver INTEGER,
+    // path_alias TEXT,permalink TEXT,
+    // photo_id INTEGER,
+    // real_name TEXT,
+    // _ID INTEGER PRIMARY KEY NOT NULL,
+    // FOREIGN KEY (photo_id) REFERENCES photo (_ID))
     @Identity(CommentaryTable.Cols.ID)
     @SerializedName("id")
     private String mid;
