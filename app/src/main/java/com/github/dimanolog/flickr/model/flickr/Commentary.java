@@ -41,10 +41,13 @@ public class Commentary implements ICommentary {
     // FOREIGN KEY (photo_id) REFERENCES photo (_ID))
     @Identity(CommentaryTable.Cols.ID)
     @SerializedName("id")
-    private String mid;
+    private String mId;
     @Column(CommentaryTable.Cols.AUTHOR_NAME)
     @SerializedName("authorname")
     private String mAuthorName;
+    @Column(CommentaryTable.Cols.AUTHOR_ID)
+    @SerializedName("author")
+    private String mAuthorID;
     @Column(CommentaryTable.Cols.AUTHOR_IS_DELETED)
     @SerializedName("author_is_deleted")
     private Integer mAuthorIsDeleted;
@@ -85,12 +88,12 @@ public class Commentary implements ICommentary {
 
     @Override
     public String getId() {
-        return mid;
+        return mId;
     }
 
     @Override
     public void setId(String pId) {
-        mid = pId;
+        mId = pId;
     }
 
     @Override
@@ -183,9 +186,17 @@ public class Commentary implements ICommentary {
         mContent = pContent;
     }
 
+    public String getAuthorID() {
+        return mAuthorID;
+    }
+
+    public void setAuthorID(String pAuthorID) {
+        mAuthorID = pAuthorID;
+    }
+
     @Override
     public String getAvatarUrl() {
-        return String.format(USER_AVATAR_URL_TAMPLATE, mIconFarm, mIconServer, mid);
+        return String.format(USER_AVATAR_URL_TAMPLATE, mIconFarm, mIconServer, mAuthorID);
     }
 }
 

@@ -1,6 +1,10 @@
 package com.github.dimanolog.flickr.util;
 
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Base64;
+
+import com.github.dimanolog.flickr.api.FlickrApiConstants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,5 +53,20 @@ public class SecureUtil {
         } catch (Exception pE) {
             throw new RuntimeException("cant encrypt string");
         }
+    }
+
+    public static String getAuthSignature(Uri pUri, String pTokenSecret) {
+        String parameters = pUri.getEncodedQuery();
+
+        parameters = Uri.encode(parameters);
+        String baseUrl = Uri.encode(pUri.getScheme() + "://" + pUri.getAuthority());
+        String path = Uri.encode(pUri.getPath());
+        String base = "GET&" + baseUrl + path + "&" + parameters;
+        StringBuilder keyBuilder = new StringBuilder().append(FlickrApiConstants.SECRET_KEY).append("&");
+        if (!TextUtils.isEmpty(pTokenSecret)) {
+            keyBuilder.append(pTokenSecret);
+        }
+
+        return encryptByHmacSHA1(base, keyBuilder.toString());
     }
 }

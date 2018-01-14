@@ -20,6 +20,10 @@ import java.util.List;
  */
 public abstract class AbstractDAO<T>{
     private static final String ENTITY_DONT_HAVE_ANNOTATION_TABLE = "Entity dont have annotation @Table";
+
+    public static final String DESC = "DESC";
+    public static final String ASC = "ASC";
+
     private final Class<? extends T> mClass;
 
     protected final String mTableName;
@@ -45,16 +49,20 @@ public abstract class AbstractDAO<T>{
         return wrapCursor(cursor);
     }
 
-    protected ICustomCursorWrapper<T> query(String whereClause, String[] whereArgs) {
+    protected ICustomCursorWrapper<T> query(String pWhereClause, String[] pWhereArgs){
+        return query(pWhereClause, pWhereArgs, null);
+    }
+
+    protected ICustomCursorWrapper<T> query(String pWhereClause, String[] pWhereArgs, String pOrderBy) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 mTableName,
                 null,
-                whereClause,
-                whereArgs,
+                pWhereClause,
+                pWhereArgs,
                 null,
                 null,
-                null
+                pOrderBy
         );
 
         return wrapCursor(cursor);

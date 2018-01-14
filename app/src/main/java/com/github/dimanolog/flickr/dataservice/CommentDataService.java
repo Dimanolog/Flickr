@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.github.dimanolog.flickr.db.dao.CommentDAO;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema.CommentaryTable;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
@@ -22,7 +23,7 @@ public class CommentDataService {
         setPhotoIdsToComments(pComments, pPhoto);
         mCommentDAO.bulkInsert(pComments);
 
-        return mCommentDAO.getCommentsByPhoto(pPhoto);
+        return mCommentDAO.getCommentsByPhoto(pPhoto, CommentaryTable.Cols.DATE_CREATE,CommentDAO.DESC);
     }
 
     private void setPhotoIdsToComments(Collection<ICommentary> pComments, IPhoto pPhoto) {

@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class AutheficationManager {
     private static AutheficationManager sInstance;
-    private IManagerCallback<Uri> mIManagerCallback;
+    private IManagerCallback<Uri> mManagerCallback;
     private UserSession mUserSession;
     private Context mContext;
 
@@ -34,7 +34,7 @@ public class AutheficationManager {
     }
 
     public void setAutheficationMangerCallback(IManagerCallback<Uri> pIManagerCallback) {
-        mIManagerCallback = pIManagerCallback;
+        mManagerCallback = pIManagerCallback;
     }
 
     private AutheficationManager(@NonNull Context pContext) {
@@ -55,7 +55,7 @@ public class AutheficationManager {
 
             @Override
             public void onPreRequest() {
-                mIManagerCallback.onStartLoading();
+                mManagerCallback.onStartLoading();
             }
 
             @Override
@@ -67,15 +67,16 @@ public class AutheficationManager {
                     mUserSession.setUsernsid(paramToValueMap.get("user_nsid"));
                     mUserSession.setUserName(paramToValueMap.get("username"));
                     mUserSession.setOAuthToken(paramToValueMap.get("oauth_token"));
+                    mUserSession.setOAuthTokenSecret(paramToValueMap.get("oauth_token_secret"));
                 }
             }
 
             @Override
             public void onPostRequest() {
                 if (!mResponeAccessToken.isError()) {
-                    mIManagerCallback.onSuccessResult(null);
+                    mManagerCallback.onSuccessResult(null);
                 } else {
-                    mIManagerCallback.onError(mResponeAccessToken.getError());
+                    mManagerCallback.onError(mResponeAccessToken.getError());
                 }
             }
         };
@@ -90,7 +91,7 @@ public class AutheficationManager {
 
             @Override
             public void onPreRequest() {
-                mIManagerCallback.onStartLoading();
+                mManagerCallback.onStartLoading();
             }
 
             @Override
@@ -116,15 +117,18 @@ public class AutheficationManager {
             @Override
             public void onPostRequest() {
                 if (!mUriResponse.isError()) {
-                    mIManagerCallback.onSuccessResult(mUriResponse.getResult());
+                    mManagerCallback.onSuccessResult(mUriResponse.getResult());
                 } else {
-                    mIManagerCallback.onError(mUriResponse.getError());
+                    mManagerCallback.onError(mUriResponse.getError());
                 }
             }
         };
         RequestExecutor.executeRequestSerial(request);
     }
 
+    public UserSession getUserSession() {
+        return mUserSession;
+    }
     private Map<String, String> parseParametes(String pParameters) {
         Map<String, String> paramNameToValueMap = new HashMap<>();
         String[] arr = pParameters.split("&");

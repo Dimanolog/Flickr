@@ -1,7 +1,6 @@
 package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.UserSession;
@@ -18,22 +17,21 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
-import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_BASE_URL;
 
 public class FlickrApiAuthorizationClient {
     private static final String TAG = FlickrApiAuthorizationClient.class.getSimpleName();
 
-    private static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
-    private static final String OAUTH_CALLBACK = "oauth_callback";
-    private static final String OAUTH_TOKEN = "oauth_token";
-    private static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
-    private static final String OAUTH_NONCE = "oauth_nonce";
-    private static final String OAUTH_SIGNATURE_METHOD = "oauth_signature_method";
-    private static final String OAUTH_TIMESTAMP = "oauth_timestamp";
-    private static final String OAUTH_VERSION = "oauth_version";
-    private static final String SIGNATURE_METHOD_VALUE = "HMAC-SHA1";
-    private static final String VERSION_VALUE = "1.0";
-    private static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
+    static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
+    static final String OAUTH_CALLBACK = "oauth_callback";
+    static final String OAUTH_TOKEN = "oauth_token";
+    static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
+    static final String OAUTH_NONCE = "oauth_nonce";
+    static final String OAUTH_SIGNATURE_METHOD = "oauth_signature_method";
+    static final String OAUTH_TIMESTAMP = "oauth_timestamp";
+    static final String OAUTH_VERSION = "oauth_version";
+    static final String SIGNATURE_METHOD_VALUE = "HMAC-SHA1";
+    static final String VERSION_VALUE = "1.0";
+    static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
 
     public static Response<String> getAccesToken(UserSession pUserSession) {
@@ -49,7 +47,7 @@ public class FlickrApiAuthorizationClient {
                 .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
                 .build();
 
-        String oAuthSignature = getAuthSignature(requestAccessUri, pUserSession.getOAuthTokenSecret().trim());
+        String oAuthSignature = SecureUtil.getAuthSignature(requestAccessUri, pUserSession.getOAuthTokenSecret().trim());
 
         requestAccessUri = requestAccessUri
                 .buildUpon()
@@ -107,7 +105,7 @@ public class FlickrApiAuthorizationClient {
                 .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
                 .build();
 
-        String oAuthSignature = getAuthSignature(requestTokenUri, null);
+        String oAuthSignature = SecureUtil.getAuthSignature(requestTokenUri, null);
 
         return requestTokenUri
                 .buildUpon()
@@ -136,19 +134,5 @@ public class FlickrApiAuthorizationClient {
                 .appendPath("authorize")
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
                 .build();
-    }
-
-    private static String getAuthSignature(Uri pUri, String pTokenSecret) {
-        String parameters = pUri.getEncodedQuery();
-
-        parameters = Uri.encode(parameters);
-        String path = Uri.encode(pUri.getPath());
-        String base = "GET&" + Uri.encode(FLICKR_BASE_URL) + path + "&" + parameters;
-        StringBuilder keyBuilder = new StringBuilder().append(FlickrApiConstants.SECRET_KEY).append("&");
-        if (!TextUtils.isEmpty(pTokenSecret)) {
-            keyBuilder.append(pTokenSecret);
-        }
-
-        return SecureUtil.encryptByHmacSHA1(base, keyBuilder.toString());
     }
 }

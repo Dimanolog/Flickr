@@ -17,9 +17,11 @@ public class CommentDAO extends AbstractDAO<ICommentary> {
         super(pContext, Commentary.class);
     }
 
-    public ICustomCursorWrapper<ICommentary> getCommentsByPhoto(IPhoto pPhoto){
+    public ICustomCursorWrapper<ICommentary> getCommentsByPhoto(IPhoto pPhoto, String pOrderByColumn, String pOrderType){
         String photoIdStr = String.valueOf(pPhoto.getId());
-        return super.query(CommentaryTable.Cols.PHOTO_ID + " = ?", new String[]{photoIdStr});
+        String orderBy = pOrderByColumn + pOrderType;
+        return super.query(CommentaryTable.Cols.PHOTO_ID + " = ?",
+                new String[]{photoIdStr}, pOrderByColumn);
     }
 
     @Override
@@ -42,6 +44,7 @@ public class CommentDAO extends AbstractDAO<ICommentary> {
         values.put(CommentaryTable.Cols.REAL_NAME, pEntity.getRealName());
         values.put(CommentaryTable.Cols.CONTENT, pEntity.getContent());
         values.put(CommentaryTable.Cols.PHOTO_ID, pEntity.getPhotoID());
+        values.put(CommentaryTable.Cols.AUTHOR_ID, pEntity.getAuthorID());
 
         return values;
     }

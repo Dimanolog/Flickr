@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.dimanolog.flickr.R;
+import com.github.dimanolog.flickr.api.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
@@ -82,10 +85,40 @@ public class CommentsFragment extends Fragment {
         mWriteCommentryEditTxt = v.findViewById(R.id.comments_fragment_write_comment_text);
         mSendCommenataryBtn = v.findViewById(R.id.comments_fragment_send_comment);
 
+        mSendCommenataryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSendCommentClick();
+            }
+        });
+
         updateItems();
 
         return v;
     }
+
+    void onSendCommentClick() {
+        String comment = mWriteCommentryEditTxt.getText().toString();
+        if (!TextUtils.isEmpty(comment)) {
+            mCommentsManager.addCommentToPhoto(mPhoto, comment, new IManagerCallback<IResponseStatus>() {
+                @Override
+                public void onStartLoading() {
+
+                }
+
+                @Override
+                public void onSuccessResult(IResponseStatus result) {
+
+                }
+
+                @Override
+                public void onError(Throwable t) {
+
+                }
+            });
+        }
+    }
+
 
     private void updateItems() {
         mCommentsManager.getCommentsForPhoto(mPhoto);
@@ -114,6 +147,7 @@ public class CommentsFragment extends Fragment {
 
         CommentHolder(View pItemView) {
             super(pItemView);
+
             mUserAvatarImgVw = pItemView.findViewById(R.id.comments_fragment_item_user_avatar_image_view);
             mCommentContentTxtVw = pItemView.findViewById(R.id.comments_fragment_item_user_coment_text_view);
             mCommentTittleTxtVw = pItemView.findViewById(R.id.comments_fragment_item_user_name_text_view);
@@ -121,13 +155,13 @@ public class CommentsFragment extends Fragment {
 
         void bindCommentaryItem(ICommentary pCommentary) {
             mCommentTittleTxtVw.setText(pCommentary.getAuthorName());
-            mCommentContentTxtVw.setText(pCommentary.getContent());
+            mCommentContentTxtVw.setText(Html.fromHtml(pCommentary.getContent()));
+
             VanGogh.with(getActivity())
                     .load(pCommentary.getAvatarUrl())
                     .placeHolder(R.drawable.no_photo)
                     .into(mUserAvatarImgVw);
         }
-
     }
 
     private class CommentsAdapter extends RecyclerView.Adapter<CommentHolder> {

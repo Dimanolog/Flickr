@@ -62,4 +62,8 @@ public interface ICommentary {
     void setPhotoID(Long pPhotoID);
 
     String getAvatarUrl();
+
+     String getAuthorID();
+
+     void setAuthorID(String pAuthorID);
 }

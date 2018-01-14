@@ -30,6 +30,7 @@ public class CommentCursorWrapper extends CursorWrapper implements ICustomCursor
         commentary.setPathAlias(getString(getColumnIndex(CommentaryTable.Cols.PATH_ALIAS)));
         commentary.setRealName(getString(getColumnIndex(CommentaryTable.Cols.REAL_NAME)));
         commentary.setContent(getString(getColumnIndex(CommentaryTable.Cols.CONTENT)));
+        commentary.setAuthorID(getString(getColumnIndex(CommentaryTable.Cols.AUTHOR_ID)));
 
         return commentary;
     }
