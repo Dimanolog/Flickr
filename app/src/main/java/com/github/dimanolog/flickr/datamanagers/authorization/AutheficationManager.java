@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.datamanagers;
+package com.github.dimanolog.flickr.datamanagers.authorization;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
+import com.github.dimanolog.flickr.datamanagers.IRequest;
+import com.github.dimanolog.flickr.datamanagers.PhotoDataManager;
 import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 import java.util.HashMap;
@@ -49,7 +52,9 @@ public class AutheficationManager {
 
     }
 
-    private void getAccesToken(final UserSession pUserSession) {
+
+
+    public void getAccesToken(final UserSession pUserSession) {
         IRequest request = new IRequest() {
             private IResponse<String> mResponeAccessToken;
 

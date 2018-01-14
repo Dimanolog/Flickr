@@ -13,20 +13,20 @@
         style="@android:style/Widget.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
+        android:id="@+id/photo_fragment_progressbar"
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"/>
-`
+
     <ImageView
-        android:id="@+id/fragment_photo_gallery_image_view"
+        android:id="@+id/fragment_gallery_image_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:contentDescription="@string/current_image"
         android:background="#cc1a1a1a"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         />
 
 </FrameLayout>

@@ -48,7 +48,7 @@ public class WebViewFragment extends VisibleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_photo_page, container,
+        View v = inflater.inflate(R.layout.photo_page_fragment, container,
                 false);
 
         mProgressBar =

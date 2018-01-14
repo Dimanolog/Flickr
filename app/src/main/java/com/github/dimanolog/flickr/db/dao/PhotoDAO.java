@@ -45,18 +45,17 @@ public class PhotoDAO extends AbstractDAO<IPhoto> {
         return values;
     }
 
-    public ICustomCursorWrapper<IPhoto> getPhotosBySearchId(long id, String pOrderBy, String pOrderType) {
+    public ICustomCursorWrapper<IPhoto> getPhotosBySearchId(long id, String pOrderByColumn, String pOrderType) {
         String s = "SELECT * FROM " +
                 PhotoTable.NAME +
-                " WHERE " +
-                PhotoTable.Cols.ID +
+                " WHERE " + PhotoTable.Cols.ID +
                 " IN ( SELECT " +
                 SearchQueryToPhotoTable.Cols.PHOTO_ID +
                 " FROM " + SearchQueryToPhotoTable.NAME +
                 " WHERE " + SearchQueryToPhotoTable.Cols.SEARCH_QUERY_ID +
-                "=" +
-                id +
-                " )";
+                "=" +  id +" )" +
+                " ORDER BY " + pOrderByColumn + " " +pOrderType;
+
         LogUtil.d(TAG, "getPhotosBySearchId: " + s);
         return rawQuery(s, null);
     }

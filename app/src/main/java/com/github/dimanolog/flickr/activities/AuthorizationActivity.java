@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.github.dimanolog.flickr.datamanagers.AutheficationManager;
+import com.github.dimanolog.flickr.datamanagers.authorization.AutheficationManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 
 /**
@@ -38,6 +38,5 @@ public class AuthorizationActivity extends AppCompatActivity {
             });
             autheficationManager.onFlickrCallback(uri);
         }
-
     }
 }

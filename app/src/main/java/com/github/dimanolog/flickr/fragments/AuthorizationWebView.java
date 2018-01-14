@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.WebViewActivity;
-import com.github.dimanolog.flickr.datamanagers.AutheficationManager;
+import com.github.dimanolog.flickr.datamanagers.authorization.AutheficationManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 
 /**
@@ -55,7 +55,7 @@ public class AuthorizationWebView extends VisibleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_photo_page, container,
+        View v = inflater.inflate(R.layout.photo_page_fragment, container,
                 false);
 
         mProgressBar =

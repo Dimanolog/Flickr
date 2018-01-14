@@ -11,8 +11,6 @@ import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.parsers.photo.PhotoParserFactory;
 import com.github.dimanolog.flickr.util.IOUtils;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -81,13 +79,9 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
         }
 
         private List<IPhoto> parseJson(String pJsonString) {
-            try {
                 return new PhotoParserFactory()
                         .getGsonParser()
                         .parseArray(pJsonString);
-            } catch (JSONException pE) {
-                throw new RuntimeException(pE);
-            }
         }
     }
 }

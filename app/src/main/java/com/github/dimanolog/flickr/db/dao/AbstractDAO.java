@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Dimanolog on 10.12.2017.
  */
-public abstract class AbstractDAO<T>{
+public abstract class AbstractDAO<T> {
     private static final String ENTITY_DONT_HAVE_ANNOTATION_TABLE = "Entity dont have annotation @Table";
 
     public static final String DESC = "DESC";
@@ -44,12 +44,12 @@ public abstract class AbstractDAO<T>{
     public ICustomCursorWrapper<T> rawQuery(final String sql, @Nullable final String... args) {
         SQLiteDatabase db = mFlickrDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, args);
-        LogUtil.d(mClass.getSimpleName(), "getPhotosBySearchId: " + sql);
+        LogUtil.d(mClass.getSimpleName(), "perform Query: " + sql);
 
         return wrapCursor(cursor);
     }
 
-    protected ICustomCursorWrapper<T> query(String pWhereClause, String[] pWhereArgs){
+    protected ICustomCursorWrapper<T> query(String pWhereClause, String[] pWhereArgs) {
         return query(pWhereClause, pWhereArgs, null);
     }
 
@@ -69,10 +69,9 @@ public abstract class AbstractDAO<T>{
     }
 
 
-    public ICustomCursorWrapper<T> getAll() {
-        return rawQuery("select * from " + mTableName, null);
+    public ICustomCursorWrapper<T> getAll(String pOrderColumn, String pOrderType) {
+        return query(null, null, pOrderColumn + " " + pOrderType);
     }
-
 
 
     public Long insert(final T pEntity) {
@@ -83,7 +82,7 @@ public abstract class AbstractDAO<T>{
             try {
                 db.beginTransaction();
 
-                id = db.insert(mTableName, null, values);
+                id = db.insertWithOnConflict(mTableName, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
                 db.setTransactionSuccessful();
             } finally {
@@ -105,7 +104,7 @@ public abstract class AbstractDAO<T>{
                 db.beginTransaction();
 
                 for (final ContentValues value : valuesList) {
-                    db.insert(mTableName, null, value);
+                    db.insertWithOnConflict(mTableName, null, value, SQLiteDatabase.CONFLICT_IGNORE);
                     count++;
                 }
 
@@ -117,7 +116,6 @@ public abstract class AbstractDAO<T>{
         }
         return null;
     }
-
 
 
     public int delete(final String sql, final String[] args) {

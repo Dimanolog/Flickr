@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.support.annotation.WorkerThread;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.datamanagers.UserSession;
+import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
@@ -13,8 +13,6 @@ import com.github.dimanolog.flickr.parsers.commentary.CommenataryParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +35,6 @@ import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
 
 public class FlickrApiCommentaryClient {
 
-    /* https://api.flickr.com/services/rest/?method=flickr.photos.comments.getList&api_key=90269d7b8d7762c26bb29b2860d08ea9
-          // &photo_id=109722179&format=json&nojsoncallback=1&api_sig=3e547cfa09162d84cd53d83c0e245930*/
     @WorkerThread
     public IResponse<List<ICommentary>> getListOfCommentByPhoto(IPhoto pPhoto) {
         final Uri commenatsUri = FLICKR_API_URL
@@ -51,13 +47,8 @@ public class FlickrApiCommentaryClient {
             @Override
             protected void responseAction(InputStream pInputStream) throws IOException {
                 String jsonString = IOUtils.toString(pInputStream);
-                try {
-                    List<ICommentary> commentaries = new CommenataryParserFactory().getGsonParser().parseArray(jsonString);
-                    setResponce(commentaries);
-                } catch (JSONException pE) {
-                    throw new RuntimeException(pE);
-                }
-
+                List<ICommentary> commentaries = new CommenataryParserFactory().getGsonParser().parseArray(jsonString);
+                setResponce(commentaries);
             }
         };
         new HttpClient().request(commenatsUri.toString(), listener);
@@ -65,11 +56,6 @@ public class FlickrApiCommentaryClient {
         return listener.getResponse();
 
     }
-
-    // https://api.flickr.com/services/rest/?method=flickr.photos.comments.addComment
-    // &api_key=90269d7b8d7762c26bb29b2860d08ea9&photo_id=24761471527
-    // &comment_text=123123&format=json&nojsoncallback=1
-    // &api_sig=27447e0a2a2bcdd1b57260087891daa4
 
     @WorkerThread
     public IResponse<ResponseStatus> addComment(Long pPhotoId, String pCommentText, UserSession pUserSession) {

@@ -7,7 +7,6 @@ import com.github.dimanolog.flickr.api.FlickrApiPhotoClient;
 import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.dataservice.PhotoDataService;
-import com.github.dimanolog.flickr.db.dao.PhotoDAO;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.threading.RequestExecutor;
@@ -21,7 +20,6 @@ public class PhotoDataManager {
     private Context mContext;
     private IFlickrApiClient mIFlickrApiClient = new FlickrApiPhotoClient();
     private IManagerCallback<ICustomCursorWrapper<IPhoto>> mIManagerCallback;
-    private PhotoDAO mPhotoDAO;
     private PhotoDataService mPhotoDataService;
 
 
@@ -38,7 +36,6 @@ public class PhotoDataManager {
 
     private PhotoDataManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
-        mPhotoDAO = new PhotoDAO(pContext);
         mPhotoDataService = new PhotoDataService(pContext);
     }
 
@@ -58,8 +55,7 @@ public class PhotoDataManager {
             public void runRequest() {
                 mResponse = mIFlickrApiClient.searchPhotos(pPage, pQuery);
                 if (!mResponse.isError()) {
-                    Long id = mPhotoDataService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
-                    mSearchPhotosFromDb = mPhotoDataService.getSearchQueryResult(id);
+                    mSearchPhotosFromDb = mPhotoDataService.addSearchQueryResultToDb(mResponse.getResult(), pQuery);
                 }
             }
 
@@ -89,18 +85,7 @@ public class PhotoDataManager {
     }
 
 
-
-
-    private Integer addResultToDb(List<IPhoto> pPhotoList) {
-        return mPhotoDAO.bulkInsert(pPhotoList);
-    }
-
-    private ICustomCursorWrapper<IPhoto> getAllPhotosFromDb() {
-        return mPhotoDAO.getAll();
-    }
-
-
-    private  class GetRecentRequest implements IRequest {
+    private class GetRecentRequest implements IRequest {
 
         private final int mPage;
         private IResponse<List<IPhoto>> mResponse;
@@ -121,8 +106,7 @@ public class PhotoDataManager {
         public void runRequest() {
             mResponse = mIFlickrApiClient.getRecent(mPage);
             if (!mResponse.isError()) {
-                addResultToDb(mResponse.getResult());
-                mAllPhotosFromDb = getAllPhotosFromDb();
+                mAllPhotosFromDb = mPhotoDataService.getRecent();
             }
         }
 

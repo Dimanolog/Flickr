@@ -1,7 +1,5 @@
 package com.github.dimanolog.flickr.parsers.interfaces;
 
-import org.json.JSONException;
-
 import java.util.List;
 
 /**
@@ -9,6 +7,6 @@ import java.util.List;
  */
 
 public interface IParser<T> {
-     T parseObject(String jsonString) throws JSONException;
-     List<T> parseArray(String jsonArray) throws JSONException;
+     T parseObject(String jsonString);
+     List<T> parseArray(String jsonArray);
 }

@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
         boolean isNeedUpdate = mVersion != null && mVersion.getVersion() != null && mVersion.getVersion() > currentVersion;
 
         if (isNeedUpdate) {
-            updateOnNewVerionAlertDialog(mVersion.gethardUpdate());
+            updateOnNewVersionAlertDialog(mVersion.gethardUpdate());
         }
     }
 
-    private void updateOnNewVerionAlertDialog(boolean cancelable) {
+    private void updateOnNewVersionAlertDialog(boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
         builder.setTitle(R.string.new_version)
                 .setMessage(R.string.new_version_msg)

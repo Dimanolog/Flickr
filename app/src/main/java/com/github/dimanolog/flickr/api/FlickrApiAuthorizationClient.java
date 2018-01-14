@@ -3,14 +3,12 @@ package com.github.dimanolog.flickr.api;
 import android.net.Uri;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.datamanagers.UserSession;
+import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.parsers.responsestatus.ResponseStatusParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,15 +74,10 @@ public class FlickrApiAuthorizationClient {
             protected void responseAction(InputStream pInputStream) throws IOException {
                 String s = IOUtils.toString(pInputStream);
                 IResponseStatus responseStatus;
-                try {
-                    responseStatus = new ResponseStatusParserFactory()
-                            .getGsonParser()
-                            .parseObject(s);
-                    setResponce(responseStatus);
-                } catch (JSONException pE) {
-                    pE.printStackTrace();
-                    throw new RuntimeException(pE);
-                }
+                responseStatus = new ResponseStatusParserFactory()
+                        .getGsonParser()
+                        .parseObject(s);
+                setResponce(responseStatus);
             }
         };
 

@@ -6,6 +6,7 @@ import com.github.dimanolog.flickr.db.dao.PhotoDAO;
 import com.github.dimanolog.flickr.db.dao.SearchQueryDAO;
 import com.github.dimanolog.flickr.db.dao.SearchQueryToPhotoDAO;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.db.schema.FlickrDbSchema.PhotoTable;
 import com.github.dimanolog.flickr.model.flickr.SearchQuery;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ISearchQuery;
@@ -28,17 +29,26 @@ public class PhotoDataService {
         mSearchQueryToPhotoDAO = new SearchQueryToPhotoDAO(pContext);
     }
 
-    public Long addSearchQueryResultToDb(List<IPhoto> pPhotoList, String pSearchQuery) {
+    public ICustomCursorWrapper<IPhoto> addSearchQueryResultToDb(List<IPhoto> pPhotoList, String pSearchQuery) {
         mPhotoDAO.bulkInsert(pPhotoList);
         Long id = getQueryId(pSearchQuery);
         if (id != null) {
             mSearchQueryToPhotoDAO.addConnection(pPhotoList, id);
         }
-        return id;
+        return getSearchQueryResult(id);
+    }
+
+    public ICustomCursorWrapper<IPhoto> addRecent(List<IPhoto> pPhotoList) {
+        mPhotoDAO.bulkInsert(pPhotoList);
+        return getRecent();
+    }
+
+    public ICustomCursorWrapper<IPhoto> getRecent() {
+        return mPhotoDAO.getAll(PhotoTable.Cols.ID, PhotoDAO.DESC);
     }
 
     public ICustomCursorWrapper<IPhoto> getSearchQueryResult(Long pSearchQueryId) {
-        return mPhotoDAO.getPhotosBySearchId(pSearchQueryId);
+        return mPhotoDAO.getPhotosBySearchId(pSearchQueryId, PhotoTable.Cols.ID, PhotoDAO.DESC);
     }
 
     private Long getQueryId(String pSearchQuery) {

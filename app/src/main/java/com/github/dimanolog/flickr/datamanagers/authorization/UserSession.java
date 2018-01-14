@@ -1,15 +1,23 @@
-package com.github.dimanolog.flickr.datamanagers;
+package com.github.dimanolog.flickr.datamanagers.authorization;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Dimanolog on 09.01.2018.
  */
 
 public class UserSession {
+    @SerializedName("user_nsid")
     private String mUsernsid;
+    @SerializedName("full_name")
     private String mFullName;
+    @SerializedName("oauth_token")
     private String mOAuthToken;
+    @SerializedName("oauth_token_secret")
     private String mOAuthTokenSecret;
+    @SerializedName("oauth_verifier")
     private String mOAuthVerifier;
+    @SerializedName("user_name")
     private String mUserName;
 
     public String getUsernsid() {
