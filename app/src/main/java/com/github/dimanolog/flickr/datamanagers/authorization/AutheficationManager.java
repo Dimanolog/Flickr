@@ -5,11 +5,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
+import com.github.dimanolog.flickr.api.IResponseStatus;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
 import com.github.dimanolog.flickr.datamanagers.PhotoDataManager;
+import com.github.dimanolog.flickr.preferences.AuthorizationPreferences;
 import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class AutheficationManager {
     private IManagerCallback<Uri> mManagerCallback;
     private UserSession mUserSession;
     private Context mContext;
+    private FlickrApiAuthorizationClient mFlickrApiAuthorizationClient;
 
     public static AutheficationManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
@@ -42,19 +45,46 @@ public class AutheficationManager {
 
     private AutheficationManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
-        mUserSession = new UserSession();
+        mUserSession = AuthorizationPreferences.getStoredUserSession(mContext);
+        mFlickrApiAuthorizationClient = new FlickrApiAuthorizationClient();
     }
 
-    public void onFlickrCallback(Uri pUri) {
+    public void onFlickrCallback(Uri pUri, IManagerCallback<Void> pResponseStatusCallback) {
         String oAuthVerifier = pUri.getQueryParameter("oauth_verifier");
         mUserSession.setOAuthVerifier(oAuthVerifier);
-        getAccesToken(mUserSession);
+        getAccesToken(mUserSession, pResponseStatusCallback);
 
     }
 
+    public void checkToken(final IManagerCallback<IResponseStatus> pResponseStatusCallback) {
+        final IRequest request = new IRequest() {
+            private IResponse<IResponseStatus> mStatusResponse;
+
+            @Override
+            public void onPreRequest() {
+                pResponseStatusCallback.onStartLoading();
+            }
+
+            @Override
+            public void runRequest() {
+                mStatusResponse = mFlickrApiAuthorizationClient.checkToken(mUserSession.getOAuthToken());
+
+            }
+
+            @Override
+            public void onPostRequest() {
+                if (mStatusResponse.isError()) {
+                    pResponseStatusCallback.onError(mStatusResponse.getError());
+                } else {
+                    pResponseStatusCallback.onSuccessResult(mStatusResponse.getResult());
+                }
+            }
+        };
+        RequestExecutor.executeRequestSerial(request);
+    }
 
 
-    public void getAccesToken(final UserSession pUserSession) {
+    public void getAccesToken(final UserSession pUserSession, final IManagerCallback<Void> pManagerCallback) {
         IRequest request = new IRequest() {
             private IResponse<String> mResponeAccessToken;
 
@@ -65,7 +95,7 @@ public class AutheficationManager {
 
             @Override
             public void runRequest() {
-                mResponeAccessToken = FlickrApiAuthorizationClient.getAccesToken(pUserSession);
+                mResponeAccessToken = mFlickrApiAuthorizationClient.getAccesToken(pUserSession);
                 if (!mResponeAccessToken.isError()) {
                     Map<String, String> paramToValueMap = parseParametes(mResponeAccessToken.getResult());
                     mUserSession.setFullName(paramToValueMap.get("fullname"));
@@ -79,9 +109,9 @@ public class AutheficationManager {
             @Override
             public void onPostRequest() {
                 if (!mResponeAccessToken.isError()) {
-                    mManagerCallback.onSuccessResult(null);
+                    pManagerCallback.onSuccessResult(null);
                 } else {
-                    mManagerCallback.onError(mResponeAccessToken.getError());
+                    pManagerCallback.onError(mResponeAccessToken.getError());
                 }
             }
         };
@@ -101,7 +131,7 @@ public class AutheficationManager {
 
             @Override
             public void runRequest() {
-                IResponse<String> requestToken = FlickrApiAuthorizationClient.getRequestToken();
+                IResponse<String> requestToken = mFlickrApiAuthorizationClient.getRequestToken();
                 if (!requestToken.isError()) {
                     Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
                     String oAuthToken = paramValuePairs.get("oauth_token");
@@ -110,7 +140,7 @@ public class AutheficationManager {
                     mUserSession.setOAuthToken(oAuthToken);
                     mUserSession.setOAuthTokenSecret(oAuthTokenSecret);
 
-                    Uri userAuthorizationUri = FlickrApiAuthorizationClient.getUserAuthorizationUri(oAuthToken);
+                    Uri userAuthorizationUri = mFlickrApiAuthorizationClient.getUserAuthorizationUri(oAuthToken);
 
                     mUriResponse = new Response<>(userAuthorizationUri);
 
@@ -134,6 +164,11 @@ public class AutheficationManager {
     public UserSession getUserSession() {
         return mUserSession;
     }
+
+    public boolean checkUserSession() {
+        return mUserSession != null;
+    }
+
     private Map<String, String> parseParametes(String pParameters) {
         Map<String, String> paramNameToValueMap = new HashMap<>();
         String[] arr = pParameters.split("&");

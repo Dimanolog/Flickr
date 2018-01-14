@@ -53,7 +53,7 @@
 
         <service android:name=".services.FlickrPollService"/>
 
-        <activity android:name=".activities.AuthorizationActivity">
+        <activity android:name=".activities.FlickrCallbackActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>

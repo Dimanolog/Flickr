@@ -32,7 +32,7 @@ public class FlickrApiAuthorizationClient {
     static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
 
-    public static Response<String> getAccesToken(UserSession pUserSession) {
+    public Response<String> getAccesToken(UserSession pUserSession) {
         Uri requestAccessUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("access_token")
@@ -63,7 +63,7 @@ public class FlickrApiAuthorizationClient {
         }
     }
 
-    public static IResponse<IResponseStatus> checkToken(String pOAuthToken) {
+    public IResponse<IResponseStatus> checkToken(String pOAuthToken) {
         Uri checkTokenUri = FLICKR_API_URL
                 .buildUpon()
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
@@ -86,7 +86,7 @@ public class FlickrApiAuthorizationClient {
         return listener.getResponse();
     }
 
-    public static Uri requestToken() {
+    public Uri requestToken() {
         Uri requestTokenUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("request_token")
@@ -107,7 +107,7 @@ public class FlickrApiAuthorizationClient {
     }
 
 
-    public static Response<String> getRequestToken() {
+    public Response<String> getRequestToken() {
 
         try {
             InputStream inputStream = new HttpClient().request(requestToken().toString());
@@ -121,7 +121,7 @@ public class FlickrApiAuthorizationClient {
         }
     }
 
-    public static Uri getUserAuthorizationUri(String pOAuthToken) {
+    public Uri getUserAuthorizationUri(String pOAuthToken) {
         return Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("authorize")

@@ -12,22 +12,22 @@ import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
  * Created by dimanolog on 10.01.18.
  */
 
-public class AuthorizationActivity extends AppCompatActivity {
+public class FlickrCallbackActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
         if (uri != null) {
             AutheficationManager autheficationManager = AutheficationManager.getInstance(this);
-            autheficationManager.setAutheficationMangerCallback(new IManagerCallback<Uri>() {
+            IManagerCallback<Void> iManagerCallback = new IManagerCallback<Void>() {
                 @Override
                 public void onStartLoading() {
 
                 }
 
                 @Override
-                public void onSuccessResult(Uri result) {
-                    Intent intent = PhotoGalleryActivity.newIntent(AuthorizationActivity.this);
+                public void onSuccessResult(Void result) {
+                    Intent intent = PhotoGalleryActivity.newIntent(FlickrCallbackActivity.this);
                     startActivity(intent);
                 }
 
@@ -35,8 +35,9 @@ public class AuthorizationActivity extends AppCompatActivity {
                 public void onError(Throwable t) {
 
                 }
-            });
-            autheficationManager.onFlickrCallback(uri);
+            };
+
+            autheficationManager.onFlickrCallback(uri, iManagerCallback);
         }
     }
 }

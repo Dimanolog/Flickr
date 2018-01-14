@@ -14,7 +14,7 @@ public class AuthorizationPreferences {
 
     private static final String PREF_USER_SESSION = "user_session";
 
-    public static UserSession getStoredUserSession(Context pContext, UserSession pUserSession) {
+    public static UserSession getStoredUserSession(Context pContext) {
         String sessionJson = PreferenceManager.getDefaultSharedPreferences(pContext)
                 .getString(PREF_USER_SESSION, null);
         if (sessionJson != null) {
