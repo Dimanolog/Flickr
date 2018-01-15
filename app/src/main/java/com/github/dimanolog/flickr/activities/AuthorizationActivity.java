@@ -59,6 +59,7 @@ public class AuthorizationActivity extends AppCompatActivity {
             @Override
             public void onSuccessResult(Uri pResult) {
                 Intent intent = WebViewActivity.newIntent(AuthorizationActivity.this, pResult);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
 

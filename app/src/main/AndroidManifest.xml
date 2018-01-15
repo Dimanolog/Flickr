@@ -24,18 +24,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.PhotoGalleryActivity">
+        <activity android:name=".activities.PhotoGalleryActivity"/>
 
+        <activity android:name=".activities.FlickrCallbackActivity"
+                  android:noHistory="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="callback"
+                    android:scheme="flickr"/>
+            </intent-filter>
         </activity>
+        <activity android:name=".activities.CommentsActivity"/>
+        <activity android:name=".activities.AuthorizationActivity"
+                  android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".activities.WebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <activity android:name=".activities.PhotoPageActivity"/>
-
-        <activity android:name=".activities.LoginActivity">
-
-        </activity>
 
         <receiver android:name="receviers.StartupReceiver">
             <intent-filter>
@@ -52,23 +69,6 @@
 
         <service android:name=".services.FlickrPollService"/>
 
-        <activity android:name=".activities.FlickrCallbackActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="callback"
-                    android:scheme="flickr"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.CommentsActivity"/>
-        <activity android:name=".activities.AuthorizationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
