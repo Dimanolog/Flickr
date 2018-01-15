@@ -8,4 +8,6 @@
     <color name="grey_background">#d6d6d6</color>
     <color name="photo_page_text_color">#e4e4e4</color>
     <color name="transparent_grey">#cc1a1a1a</color>
+    <color name="little_gray">#ebebeb</color>
+    <color name="black_blue_or_something">#3b3e83</color>
 </resources>

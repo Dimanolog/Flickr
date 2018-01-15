@@ -13,7 +13,7 @@
     <string name="current_image">Текущее изображение</string>
     <string name="view_comments">Просмотреть комментарии</string>
     <string name="some_images">Изображения</string>
-    <string name="add_a_comment_here">Add a comment here</string>
+    <string name="add_a_comment_here">Введите комментарий</string>
     <string name="add_comment_error_message">Ошибка при добавлении комментария</string>
     <string name="need_aithorization_message">Для отпрвления комментария требуется авторизоваться</string>
     <string name="commentary_send_message">комментарий отправлен</string>

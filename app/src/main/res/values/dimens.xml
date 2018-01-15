@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="card_veiw_layout_width">200dp</dimen>
-    <dimen name="card_view_layout_height">200dp</dimen>
     <dimen name="card_view_corner_radius">2dp</dimen>
     <dimen name="photo_gallery_cardview_margin">5dp</dimen>
     <dimen name="photo_fragment_additional_info_height">60dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fragment_photo_panel_default_margin">8dp</dimen>
     <dimen name="default_drawable_padding">5dp</dimen>
+    <dimen name="defualt_corner_radius">4dp</dimen>
+    <dimen name="defult_elevation">2dp</dimen>
+    <dimen name="default_avatar_size">50dp</dimen>
+
+    <!--Text sizes -->
+    <dimen name="default_small_text_size">12sp</dimen>
+    <dimen name="default_medium_text_size">16sp</dimen>
+
 </resources>

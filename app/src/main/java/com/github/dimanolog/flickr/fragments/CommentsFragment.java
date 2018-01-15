@@ -35,12 +35,14 @@ public class CommentsFragment extends Fragment {
     private static final String ARG_PHOTO = "photo";
 
     private IPhoto mPhoto;
-    private CommentsManager mCommentsManager;
+
     private RecyclerView mCommentsRecyclerView;
-    private TextView mNumberOfCommentsTxtVw;
     private EditText mWriteCommentryEditTxt;
-    private ImageView mSendCommenataryBtn;
+    private View mSendCommenataryBtn;
+
     private boolean mUpdating;
+
+    private CommentsManager mCommentsManager;
     private AuthorizationManager mAuthorizationManager;
 
     public static CommentsFragment newInstance(IPhoto pPhoto) {
@@ -87,7 +89,6 @@ public class CommentsFragment extends Fragment {
 
         mCommentsRecyclerView = v.findViewById(R.id.comments_fragment_recycler_view);
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mNumberOfCommentsTxtVw = v.findViewById(R.id.comments_fragment_number_of_commets_text_view);
         mWriteCommentryEditTxt = v.findViewById(R.id.comments_fragment_write_comment_text);
         mSendCommenataryBtn = v.findViewById(R.id.comments_fragment_send_comment);
 
@@ -110,24 +111,24 @@ public class CommentsFragment extends Fragment {
     void onSendCommentClick() {
         String comment = mWriteCommentryEditTxt.getText().toString();
 
-        if(!mAuthorizationManager.checkUserSession()){
-            Toast.makeText(getActivity(), R.string.need_aithorization_message , Toast.LENGTH_SHORT).show();
+        if (!mAuthorizationManager.checkUserSession()) {
+            Toast.makeText(getActivity(), R.string.need_aithorization_message, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!TextUtils.isEmpty(comment)) {
             UserSession userSession = mAuthorizationManager.getUserSession();
-            mCommentsManager.addCommentToPhoto(mPhoto, comment, userSession,new IManagerCallback<IResponseStatus>() {
+            mCommentsManager.addCommentToPhoto(mPhoto, comment, userSession, new IManagerCallback<IResponseStatus>() {
                 @Override
                 public void onStartLoading() {
-                    Toast.makeText(getActivity(), R.string.commentary_send_message , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.commentary_send_message, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onSuccessResult(IResponseStatus result) {
-                        if(result.isSuccess()){
-                            updateItems();
-                        }
+                    if (result.isSuccess()) {
+                        updateItems();
+                    }
                 }
 
                 @Override
@@ -137,8 +138,6 @@ public class CommentsFragment extends Fragment {
             });
         }
     }
-
-
 
 
     private void updateItems() {

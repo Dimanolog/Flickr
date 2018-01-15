@@ -19,9 +19,9 @@ public class CommentDAO extends AbstractDAO<ICommentary> {
 
     public ICustomCursorWrapper<ICommentary> getCommentsByPhoto(IPhoto pPhoto, String pOrderByColumn, String pOrderType){
         String photoIdStr = String.valueOf(pPhoto.getId());
-        String orderBy = pOrderByColumn + pOrderType;
+        String orderBy = pOrderByColumn + " " + pOrderType;
         return super.query(CommentaryTable.Cols.PHOTO_ID + " = ?",
-                new String[]{photoIdStr}, pOrderByColumn);
+                new String[]{photoIdStr}, orderBy);
     }
 
     @Override

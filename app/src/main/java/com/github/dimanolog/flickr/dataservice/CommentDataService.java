@@ -23,7 +23,7 @@ public class CommentDataService {
         setPhotoIdsToComments(pComments, pPhoto);
         mCommentDAO.bulkInsert(pComments);
 
-        return mCommentDAO.getCommentsByPhoto(pPhoto, CommentaryTable.Cols.DATE_CREATE,CommentDAO.DESC);
+        return mCommentDAO.getCommentsByPhoto(pPhoto, CommentaryTable.Cols.DATE_CREATE,CommentDAO.ASC);
     }
 
     private void setPhotoIdsToComments(Collection<ICommentary> pComments, IPhoto pPhoto) {
