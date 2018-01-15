@@ -82,15 +82,6 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             mSuppMatrix.postTranslate(dx, dy);
             checkAndDisplayMatrix();
 
-        /*
-         * Here we decide whether to let the ImageView's parent to start taking
-         * over the touch event.
-         *
-         * First we check whether this function is enabled. We never want the
-         * parent to take over if we're scaling. We then check the edge we're
-         * on, and the direction of the scroll (i.e. if we're pulling against
-         * the edge, aka 'overscrolling', let the parent take over).
-         */
             ViewParent parent = mImageView.getParent();
             if (mAllowParentInterceptOnEdge && !mScaleDragDetector.isScaling() && !mBlockParentIntercept) {
                 if (mScrollEdge == EDGE_BOTH
@@ -138,12 +129,10 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
         mBaseRotation = 0.0f;
 
-        // Create Gesture Detectors...
+
         mScaleDragDetector = new CustomGestureDetector(imageView.getContext(), onGestureListener);
 
         mGestureDetector = new GestureDetector(imageView.getContext(), new GestureDetector.SimpleOnGestureListener() {
-
-            // forward long click listener
             @Override
             public void onLongPress(MotionEvent e) {
                 if (mLongClickListener != null) {
