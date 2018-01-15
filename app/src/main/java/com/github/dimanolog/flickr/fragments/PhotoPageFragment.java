@@ -57,7 +57,7 @@ public class PhotoPageFragment extends VisibleFragment {
 
         VanGogh.with(getActivity())
                 .load(mPhoto.getOriginalUrl())
-                .placeHolder(R.drawable.no_photo)
+                .placeHolder(R.drawable.default_avtar)
                 .resize(MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                 .into(mImageViewWithZoom);
 
