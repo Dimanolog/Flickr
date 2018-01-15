@@ -26,36 +26,39 @@ public class FlickrPollService extends IntentService {
     private static final String TAG = FlickrPollService.class.getSimpleName();
 
     private static final long POLL_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public static final String ACTION_SHOW_NOTIFICATION =
+            "com.github.dimanolog.flickr.SHOW_NOTIFICATION";
+    public static final String PERM_PRIVATE =
+            "com.github.dimanolog.flickr.PRIVATE";
+    public static final String REQUEST_CODE = "REQUEST_CODE";
+    public static final String NOTIFICATION = "NOTIFICATION";
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, PollJobService.class);
+        return new Intent(context, FlickrPollService.class);
     }
 
-    public static void setServiceAlarm(Context context, boolean isOn) {
-        Intent i = PollJobService.newIntent(context);
+    public static void setServiceAlarm(Context pContext, boolean pIsOn) {
+        Intent i = FlickrPollService.newIntent(pContext);
         PendingIntent pi = PendingIntent.getService(
-                context, 0, i, 0);
+                pContext, 0, i, 0);
 
         AlarmManager alarmManager = (AlarmManager)
-                context.getSystemService(Context.ALARM_SERVICE);
+                pContext.getSystemService(Context.ALARM_SERVICE);
+        assert alarmManager != null;
+        if (pIsOn) {
 
-        if (alarmManager != null) {
-            if (isOn) {
-                {
-                    alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                            SystemClock.elapsedRealtime(), POLL_INTERVAL, pi);
-                }
-            } else {
-                alarmManager.cancel(pi);
-                pi.cancel();
-            }
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime(), POLL_INTERVAL, pi);
+        } else {
+            alarmManager.cancel(pi);
+            pi.cancel();
         }
     }
 
-    public static boolean isServiceAlarmOn(Context context) {
-        Intent i = PollJobService.newIntent(context);
+    public static boolean isServiceAlarmOn(Context pContext) {
+        Intent i = FlickrPollService.newIntent(pContext);
         PendingIntent pi = PendingIntent
-                .getService(context, 0, i, PendingIntent.FLAG_NO_CREATE);
+                .getService(pContext, 0, i, PendingIntent.FLAG_NO_CREATE);
         return pi != null;
     }
 
@@ -64,7 +67,7 @@ public class FlickrPollService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(Intent pIntent) {
         checkFlickrUpdates();
     }
 

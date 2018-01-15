@@ -6,9 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
-import com.github.dimanolog.flickr.services.PollJobService;
+import com.github.dimanolog.flickr.services.FlickrPollService;
+import com.github.dimanolog.flickr.util.LogUtil;
 
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -16,12 +16,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context c, Intent i) {
-        Log.i(TAG, "received result: " + getResultCode());
+        LogUtil.d(TAG, "received result: " + getResultCode());
         if (getResultCode() != Activity.RESULT_OK) {
             return;
         }
-        int requestCode = i.getIntExtra(PollJobService.REQUEST_CODE, 0);
-        Notification notification = i.getParcelableExtra(PollJobService.NOTIFICATION);
+        int requestCode = i.getIntExtra(FlickrPollService.REQUEST_CODE, 0);
+        Notification notification = i.getParcelableExtra(FlickrPollService.NOTIFICATION);
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(c);
         notificationManager.notify(requestCode, notification);
