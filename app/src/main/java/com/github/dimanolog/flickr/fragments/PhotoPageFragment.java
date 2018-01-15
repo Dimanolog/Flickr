@@ -21,8 +21,8 @@ import com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom
 
 public class PhotoPageFragment extends VisibleFragment {
     public static final String ARG_PHOTO = "photo";
-    private static final int MAX_IMAGE_WIDTH = 2048;
-    private static final int MAX_IMAGE_HEIGHT = 2048;
+    private static final int MAX_IMAGE_WIDTH = 1600;
+    private static final int MAX_IMAGE_HEIGHT = 1600;
 
     private IPhoto mPhoto;
     private TextView mPhotoTittle;
