@@ -3,6 +3,8 @@ package com.github.dimanolog.flickr.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,6 @@ import com.github.dimanolog.flickr.activities.CommentsActivity;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom;
-
-/**
- * Created by Dimanolog on 05.01.2018.
- */
 
 public class PhotoPageFragment extends VisibleFragment {
     public static final String ARG_PHOTO = "photo";
@@ -52,9 +50,16 @@ public class PhotoPageFragment extends VisibleFragment {
         View v = inflater.inflate(R.layout.fragment_photo_view, container, false);
 
         mImageViewWithZoom = v.findViewById(R.id.photo_fragment_image_view_with_zoom);
+        String loadingUrl;
+
+        if (mPhoto.getOriginalUrl() != null) {
+            loadingUrl = mPhoto.getOriginalUrl();
+        } else {
+            loadingUrl = mPhoto.getSmallUrl();
+        }
 
         VanGogh.with(getActivity())
-                .load(mPhoto.getOriginalUrl())
+                .load(loadingUrl)
                 .placeHolder(R.drawable.no_photo)
                 .resize(MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                 .into(mImageViewWithZoom);
@@ -80,6 +85,10 @@ public class PhotoPageFragment extends VisibleFragment {
                 startActivity(intent);
             }
         });
+
+        ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert supportActionBar != null;
+        supportActionBar.hide();
 
         return v;
     }
