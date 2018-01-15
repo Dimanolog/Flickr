@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.api.interfaces;
+package com.github.dimanolog.flickr.model.flickr.interfaces;
 
 /**
  * Created by Dimanolog on 11.01.2018.
@@ -16,4 +16,6 @@ public interface IResponseStatus {
     String getMessage();
 
     void setMessage(String pMessage);
+
+    boolean isSuccess();
 }

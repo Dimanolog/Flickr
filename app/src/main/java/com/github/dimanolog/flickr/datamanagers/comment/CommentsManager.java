@@ -16,12 +16,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiCommentaryClient;
-import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
-import com.github.dimanolog.flickr.api.ResponseStatus;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
+import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.dataservice.CommentDataService;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
@@ -69,7 +68,7 @@ public class CommentsManager {
         final UserSession userSession = AuthorizationManager.getInstance(mContext)
                 .getUserSession();
         IRequest addCommentRequest = new IRequest() {
-            private IResponse<ResponseStatus> mResponseStatusResponse;
+            private IResponse<IResponseStatus> mResponseStatusResponse;
             @Override
             public void onPreRequest() {
                 pManagerCallback.onStartLoading();

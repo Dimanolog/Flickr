@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.parsers.responsestatus.ResponseStatusParserFactory;
@@ -17,14 +17,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_BASE_URL;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_PARAM;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_VALUE;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.NOJSONCALLBACK;
 
 public class FlickrApiAuthorizationClient {
     private static final String TAG = FlickrApiAuthorizationClient.class.getSimpleName();
 
-    static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
-    static final String OAUTH_CALLBACK = "oauth_callback";
+    private static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
+    private static final String OAUTH_CALLBACK = "oauth_callback";
+    private static final String FLICKR_CALLBACK = "flickr://callback";
+    private static final String OAUTH_CHECK_TOKEN_METHOD = "flickr.auth.oauth.checkToken";
+    private static final String REQUEST_TOKEN_PATH = "request_token";
+    private static final String ACCESS_TOKEN_PATH = "access_token";
+    private static final String AUTHORIZE_PATH = "authorize";
+
     static final String OAUTH_TOKEN = "oauth_token";
     static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
     static final String OAUTH_NONCE = "oauth_nonce";
@@ -34,14 +43,15 @@ public class FlickrApiAuthorizationClient {
     static final String SIGNATURE_METHOD_VALUE = "HMAC-SHA1";
     static final String VERSION_VALUE = "1.0";
     static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
-    private static final String FLICKR_CALLBACK = "flickr://callback";
+
+
 
     @WorkerThread
     public Response<String> getAccesToken(@NonNull UserSession pUserSession) {
         Uri requestAccessUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
-                .appendPath("access_token")
-                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
+                .appendPath(ACCESS_TOKEN_PATH)
+                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY_VALUE)
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
                 .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
@@ -68,11 +78,25 @@ public class FlickrApiAuthorizationClient {
         }
     }
     @WorkerThread
-    public IResponse<IResponseStatus> checkToken(@NonNull String pOAuthToken) {
-        Uri checkTokenUri = FLICKR_API_URL
+    public IResponse<IResponseStatus> checkToken(@NonNull UserSession pUserSession ) {
+        Uri checkTokenUri = Uri.parse(FLICKR_API_BASE_URL)
                 .buildUpon()
-                .appendQueryParameter(METHOD_PARAM, "flickr.auth.oauth.checkToken")
-                .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
+                .appendQueryParameter(FORMAT_PARAM, FORMAT_VALUE)
+                .appendQueryParameter(METHOD_PARAM, OAUTH_CHECK_TOKEN_METHOD)
+                .appendQueryParameter(NOJSONCALLBACK, "1")
+                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY_VALUE)
+                .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
+                .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
+                .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
+                .appendQueryParameter(OAUTH_TOKEN, pUserSession.getOAuthToken())
+                .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
+                .build();
+
+        String oAuthSignature = SecureUtil.getAuthSignature(checkTokenUri, pUserSession.getOAuthTokenSecret().trim());
+
+        checkTokenUri = checkTokenUri
+                .buildUpon()
+                .appendQueryParameter(OAUTH_SIGNATURE_PARAM, oAuthSignature)
                 .build();
 
         AbstractHttpJsonResponseListener<IResponseStatus> listener = new AbstractHttpJsonResponseListener<IResponseStatus>() {
@@ -95,9 +119,9 @@ public class FlickrApiAuthorizationClient {
     public Uri requestToken() {
         Uri requestTokenUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
-                .appendPath("request_token")
+                .appendPath(REQUEST_TOKEN_PATH)
                 .appendQueryParameter(OAUTH_CALLBACK, FLICKR_CALLBACK)
-                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
+                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY_VALUE)
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
                 .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
@@ -108,7 +132,7 @@ public class FlickrApiAuthorizationClient {
 
         return requestTokenUri
                 .buildUpon()
-                .appendQueryParameter("oauth_signature", oAuthSignature)
+                .appendQueryParameter(OAUTH_SIGNATURE_PARAM, oAuthSignature)
                 .build();
     }
 
@@ -130,7 +154,7 @@ public class FlickrApiAuthorizationClient {
     public Uri getUserAuthorizationUri(String pOAuthToken) {
         return Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
-                .appendPath("authorize")
+                .appendPath(AUTHORIZE_PATH)
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
                 .build();
     }

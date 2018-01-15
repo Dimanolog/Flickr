@@ -1,9 +1,11 @@
-package com.github.dimanolog.flickr.api;
+package com.github.dimanolog.flickr.model.flickr;
 
-import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseStatus implements IResponseStatus {
+    private static final String OK = "ok";
+
     @SerializedName("stat")
     private String mStat;
     @SerializedName("code")
@@ -39,6 +41,10 @@ public class ResponseStatus implements IResponseStatus {
     @Override
     public void setMessage(String pMessage) {
         message = pMessage;
+    }
+
+    public boolean isSuccess() {
+       return OK.equals(mStat);
     }
 }
 

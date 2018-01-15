@@ -5,11 +5,13 @@ import android.net.Uri;
 import android.support.annotation.WorkerThread;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.parsers.commentary.CommenataryParserFactory;
+import com.github.dimanolog.flickr.parsers.responsestatus.ResponseStatusParserFactory;
 import com.github.dimanolog.flickr.util.DateTimeUtil;
 import com.github.dimanolog.flickr.util.IOUtils;
 import com.github.dimanolog.flickr.util.SecureUtil;
@@ -30,16 +32,24 @@ import static com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient.SIGNA
 import static com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient.VERSION_VALUE;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_BASE_URL;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_PARAM;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_VALUE;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.NOJSONCALLBACK;
 
 
 public class FlickrApiCommentaryClient {
+
+    private static final String COMMENTS_GET_LIST_METHOD = "flickr.photos.comments.getList";
+    private static final String COMMENTS_ADD_COMMENT_METHOD = "flickr.photos.comments.addComment";
+    private static final String COMMENT_TEXT_PARAM = "comment_text";
+    private static final String PHOTO_ID_PARAM = "photo_id";
 
     @WorkerThread
     public IResponse<List<ICommentary>> getListOfCommentByPhoto(IPhoto pPhoto) {
         final Uri commenatsUri = FLICKR_API_URL
                 .buildUpon()
-                .appendQueryParameter(METHOD_PARAM, "flickr.photos.comments.getList")
+                .appendQueryParameter(METHOD_PARAM, COMMENTS_GET_LIST_METHOD)
                 .appendQueryParameter("photo_id", String.valueOf(pPhoto.getId()))
                 .build();
 
@@ -57,22 +67,26 @@ public class FlickrApiCommentaryClient {
 
     }
 
+
     @WorkerThread
-    public IResponse<ResponseStatus> addComment(Long pPhotoId, String pCommentText, UserSession pUserSession) {
+    public IResponse<IResponseStatus> addComment(Long pPhotoId, String pCommentText, UserSession pUserSession) {
         Uri addcommenatUri = Uri.parse(FLICKR_API_BASE_URL)
                 .buildUpon()
-                .appendQueryParameter("comment_text", pCommentText)
-                .appendQueryParameter(METHOD_PARAM, "flickr.photos.comments.addComment")
-                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
+                .appendQueryParameter(COMMENT_TEXT_PARAM, pCommentText)
+                .appendQueryParameter(FORMAT_PARAM, FORMAT_VALUE)
+                .appendQueryParameter(METHOD_PARAM, COMMENTS_ADD_COMMENT_METHOD)
+                .appendQueryParameter(NOJSONCALLBACK, "1")
+                .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY_VALUE)
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)
                 .appendQueryParameter(OAUTH_TIMESTAMP, DateTimeUtil.getCurrentTimeStampString())
                 .appendQueryParameter(OAUTH_TOKEN, pUserSession.getOAuthToken())
-                .appendQueryParameter("oauth_verifier", pUserSession.getOAuthVerifier())
                 .appendQueryParameter(OAUTH_VERSION, VERSION_VALUE)
-                .appendQueryParameter("photo_id", String.valueOf(pPhotoId))
+                .appendQueryParameter(PHOTO_ID_PARAM, String.valueOf(pPhotoId))
 
                 .build();
+
+
 
         String oAuthSignature = SecureUtil.getAuthSignature(addcommenatUri, pUserSession.getOAuthTokenSecret().trim());
 
@@ -82,10 +96,12 @@ public class FlickrApiCommentaryClient {
                 .build();
 
 
-        AbstractHttpJsonResponseListener<ResponseStatus> listener = new AbstractHttpJsonResponseListener<ResponseStatus>() {
+        AbstractHttpJsonResponseListener<IResponseStatus> listener = new AbstractHttpJsonResponseListener<IResponseStatus>() {
             @Override
             protected void responseAction(InputStream pInputStream) throws IOException {
-                String s = IOUtils.toString(pInputStream);
+                String jsonStr = IOUtils.toString(pInputStream);
+                IResponseStatus responseStatus = new ResponseStatusParserFactory().getGsonParser().parseObject(jsonStr);
+                setResponce(responseStatus);
             }
         };
         new HttpClient().request(addcommenatUri.toString(), listener);

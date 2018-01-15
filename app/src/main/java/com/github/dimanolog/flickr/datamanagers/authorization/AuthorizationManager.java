@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
 import com.github.dimanolog.flickr.datamanagers.PhotoDataManager;
@@ -63,7 +63,7 @@ public class AuthorizationManager {
 
             @Override
             public void runRequest() {
-                mStatusResponse = mFlickrApiAuthorizationClient.checkToken(mUserSession.getOAuthToken());
+                mStatusResponse = mFlickrApiAuthorizationClient.checkToken(mUserSession);
 
             }
 

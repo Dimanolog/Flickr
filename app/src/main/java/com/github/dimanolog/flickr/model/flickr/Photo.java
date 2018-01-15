@@ -10,27 +10,6 @@ import com.google.gson.annotations.SerializedName;
 
 import static com.github.dimanolog.flickr.db.schema.FlickrDbSchema.PhotoTable;
 
-//{"photos":{"page":1,"pages":3812,"perpage":100,"total":"381192","photo":
-// [{"id":"38772749375",
-// "owner":"137903414@N03",
-// "secret":"70b6dc4d31",
-// "server":"4707",
-// "farm":5,"
-// title": "Faulty Destination Display | Stagecoach Cambridge [AE10 BXA] 19589",
-// "ispublic":1,
-// "isfriend":0,
-// "isfamily":0,
-// "dateupload":"1515869448",
-// "count_faves":"0",
-// "count_comments":"0",
-// "url_z":
-// "https:\/\/farm5.staticflickr.com\/4707\/38772749375_70b6dc4d31_z.jpg",
-// "height_z":"427",
-// "width_z":"640",
-// "url_o":
-// "https:\/\/farm5.staticflickr.com\/4707\/38772749375_c9f1bf248d_o.jpg",
-// "height_o":"3456",
-// "width_o":"5184"}
 @Table(PhotoTable.NAME)
 public class Photo implements IPhoto {
     @SerializedName("id")
