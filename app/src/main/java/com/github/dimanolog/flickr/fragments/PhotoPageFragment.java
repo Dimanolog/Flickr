@@ -3,6 +3,8 @@ package com.github.dimanolog.flickr.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +82,10 @@ public class PhotoPageFragment extends VisibleFragment {
                 startActivity(intent);
             }
         });
+
+        ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert supportActionBar != null;
+        supportActionBar.hide();
 
         return v;
     }

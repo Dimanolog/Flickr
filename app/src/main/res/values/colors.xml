@@ -3,6 +3,9 @@
     <color name="colorPrimary">#9e9e9e</color>
     <color name="colorPrimaryDark">#0d0d0d</color>
     <color name="colorAccent">#f10254</color>
+
     <color name="icon_color">#eeeeee</color>
     <color name="grey_background">#d6d6d6</color>
+    <color name="photo_page_text_color">#e4e4e4</color>
+    <color name="transparent_grey">#cc1a1a1a</color>
 </resources>

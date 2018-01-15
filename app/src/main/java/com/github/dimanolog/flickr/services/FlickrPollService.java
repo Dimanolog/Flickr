@@ -95,7 +95,8 @@ public class FlickrPollService extends IntentService {
             Resources resources = getResources();
             Intent i = PhotoGalleryActivity.newIntent(this);
             PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
-            Notification notification = new android.support.v4.app.NotificationCompat.Builder(this, NotificationChannel.DEFAULT_CHANNEL_ID)
+            Notification notification = new
+                    android.support.v4.app.NotificationCompat.Builder(this, NotificationChannel.DEFAULT_CHANNEL_ID)
                     .setTicker(resources.getString(R.string.new_pictures_title))
                     .setSmallIcon(android.R.drawable.ic_menu_report_image)
                     .setContentTitle(resources.getString(R.string.new_pictures_title))

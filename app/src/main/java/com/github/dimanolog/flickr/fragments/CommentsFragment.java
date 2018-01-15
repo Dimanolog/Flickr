@@ -4,6 +4,8 @@ package com.github.dimanolog.flickr.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -17,15 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.dimanolog.flickr.R;
+import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
-import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
-import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.imageloader.VanGogh;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 
 
 public class CommentsFragment extends Fragment {
@@ -95,6 +97,10 @@ public class CommentsFragment extends Fragment {
                 onSendCommentClick();
             }
         });
+
+        ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert supportActionBar != null;
+        supportActionBar.hide();
 
         updateItems();
 

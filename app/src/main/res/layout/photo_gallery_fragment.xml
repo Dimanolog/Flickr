@@ -19,13 +19,13 @@
         android:visibility="gone"/>
 
     <ImageView
-        android:id="@+id/fragment_gallery_image_view"
+        android:id="@+id/gallery_fragment_image_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:contentDescription="@string/current_image"
-        android:background="#cc1a1a1a"
+        android:background="@color/transparent_grey"
         android:scaleType="centerInside"
         />
 

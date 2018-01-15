@@ -10,7 +10,8 @@
     <com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom
         android:id="@+id/photo_fragment_image_view_with_zoom"
         android:layout_width="match_parent"
-        android:layout_height="464dp">
+        android:layout_height="match_parent"
+        android:scaleType="centerInside">
     </com.github.dimanolog.flickr.ui.customview.zoomimageview.ImageViewWithZoom>
 
     <android.support.constraint.ConstraintLayout
@@ -31,7 +32,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#e4e4e4"
+            android:textColor="@color/photo_page_text_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,8 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:layout_marginEnd="@dimen/fragment_photo_panel_default_margin"
-            android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
             android:layout_marginLeft="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
             android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
             android:background="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,41 +57,45 @@
             android:id="@+id/photo_fragment_imageview_comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_photo_panel_default_margin"
             android:layout_marginStart="@dimen/fragment_photo_panel_default_margin"
             android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
-            android:layout_marginLeft="@dimen/fragment_photo_panel_default_margin"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/view_comments"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2"
-            app:srcCompat="@drawable/ic_comment_grey"
-            android:contentDescription="@string/view_comments"/>
+            app:srcCompat="@drawable/ic_comment_grey"/>
 
         <TextView
             android:id="@+id/photo_fragment_number_of_comment_txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginRight="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginTop="@dimen/fragment_photo_panel_default_margin"
+            android:drawableEnd="@drawable/ic_comment_white_oval_bubble"
+            android:drawablePadding="@dimen/default_drawable_padding"
+            android:drawableRight="@drawable/ic_comment_white_oval_bubble"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#e4e4e4"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
+            android:textColor="@color/photo_page_text_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2"
-            android:layout_marginRight="8dp"
-            tools:text="1001 комментариев"
-            />
+            tools:text="1001 комментариев"/>
 
         <TextView
             android:id="@+id/photo_fragment_number_of_favor_txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/fragment_photo_panel_default_margin"
+            android:layout_marginRight="16dp"
+            android:drawableEnd="@drawable/ic_thumb_up"
+            android:drawablePadding="@dimen/default_drawable_padding"
+            android:drawableRight="@drawable/ic_thumb_up"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#e4e4e4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/photo_fragment_number_of_comment_txt_view"
-            tools:text="100 лайков"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            app:layout_constraintEnd_toStartOf="@+id/photo_fragment_number_of_comment_txt_view"
+            app:layout_constraintTop_toTopOf="@+id/photo_fragment_number_of_comment_txt_view"
+            tools:text="100 лайков"/>
 
     </android.support.constraint.ConstraintLayout>
 

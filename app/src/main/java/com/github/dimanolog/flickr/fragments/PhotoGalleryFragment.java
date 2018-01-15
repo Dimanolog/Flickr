@@ -62,7 +62,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.photo_gallery_fragment, container, false);
         mProgressBar = v.findViewById(R.id.photo_fragment_progressbar);
-        mImagePreView = v.findViewById(R.id.fragment_gallery_image_view);
+        mImagePreView = v.findViewById(R.id.gallery_fragment_image_view);
 
         mPhotoRecyclerView = v.findViewById(R.id.fragment_photo_gallery_recycler_view);
 
@@ -88,7 +88,8 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
                 }
             }
         });
-        updateItems();
+
+      updateItems();
 
         return v;
     }
@@ -208,7 +209,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
 
         PhotoHolder(View itemView) {
             super(itemView);
-            mPhotoImageVw = itemView.findViewById(R.id.fragment_gallery_image_view);
+            mPhotoImageVw = itemView.findViewById(R.id.gallery_fragment_image_view);
             mPhotoImageVw.setOnClickListener(this);
             mPhotoImageVw.setOnTouchListener(this);
             mPhotoImageVw.setOnLongClickListener(this);
