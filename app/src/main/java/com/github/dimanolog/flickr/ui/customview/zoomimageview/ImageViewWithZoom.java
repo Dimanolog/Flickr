@@ -1,15 +1,3 @@
-/*
- * Copyright (c) 2018 FORS Development Center
- * Trifonovskiy tup. 3, Moscow, 129272, Russian Federation
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * FORS Development Center ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with FORS.
- */
-
 package com.github.dimanolog.flickr.ui.customview.zoomimageview;
 
 
@@ -20,10 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-
-/**
- * Created by Dimanolog on 06.01.2018.
- */
 
 public class ImageViewWithZoom extends android.support.v7.widget.AppCompatImageView {
     private PhotoViewAttacher attacher;
@@ -45,10 +29,9 @@ public class ImageViewWithZoom extends android.support.v7.widget.AppCompatImageV
 
     private void init() {
         attacher = new PhotoViewAttacher(this);
-        //We always pose as a Matrix scale type, though we can change to another scale type
-        //via the attacher
+
         super.setScaleType(ScaleType.MATRIX);
-        //apply the previously applied scale type
+
         if (pendingScaleType != null) {
             setScaleType(pendingScaleType);
             pendingScaleType = null;

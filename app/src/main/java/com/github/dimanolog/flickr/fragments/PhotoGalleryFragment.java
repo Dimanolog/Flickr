@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.dimanolog.flickr.R;
 import com.github.dimanolog.flickr.activities.PhotoPageActivity;
@@ -95,7 +96,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
     @Override
     public void onDetach() {
         super.onDetach();
-        mUpdating = false;
+       // mUpdating = false;
     }
 
     @Override
@@ -193,10 +194,11 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
         loading(false);
     }
 
-    //TODO handle error
+
     @Override
     public void onError(Throwable t) {
         loading(false);
+        Toast.makeText(getActivity(), getString(R.string.photo_load_error), Toast.LENGTH_SHORT).show();
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
