@@ -29,7 +29,7 @@ import com.github.dimanolog.flickr.preferences.QueryPreferences;
 import com.github.dimanolog.flickr.services.FlickrPollService;
 import com.github.dimanolog.flickr.util.LogUtil;
 
-//TODO add russian and english localization
+
 public class PhotoGalleryFragment extends VisibleFragment implements IManagerCallback<ICustomCursorWrapper<IPhoto>> {
 
     private static final String TAG = PhotoGalleryFragment.class.getSimpleName();

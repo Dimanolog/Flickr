@@ -17,15 +17,14 @@ import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiCommentaryClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
-import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.dataservice.CommentDataService;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
+import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.threading.RequestExecutor;
 
 public class CommentsManager {
@@ -64,26 +63,29 @@ public class CommentsManager {
 
     }
 
-    public void addCommentToPhoto(final IPhoto pPhoto, final String pComment, final IManagerCallback<IResponseStatus> pManagerCallback){
-        final UserSession userSession = AuthorizationManager.getInstance(mContext)
-                .getUserSession();
+    public void addCommentToPhoto(final IPhoto pPhoto, final String pComment,
+                                  final UserSession pUserSession,
+                                  final IManagerCallback<IResponseStatus> pManagerCallback ) {
+
         IRequest addCommentRequest = new IRequest() {
             private IResponse<IResponseStatus> mResponseStatusResponse;
+
             @Override
             public void onPreRequest() {
                 pManagerCallback.onStartLoading();
             }
+
             @Override
             public void runRequest() {
-                mResponseStatusResponse = mFlickrApiCommentaryClient.addComment(pPhoto.getId(), pComment, userSession);
+                mResponseStatusResponse = mFlickrApiCommentaryClient.addComment(pPhoto.getId(), pComment, pUserSession);
 
             }
+
             @Override
             public void onPostRequest() {
-                if(mResponseStatusResponse.isError()) {
+                if (mResponseStatusResponse.isError()) {
                     pManagerCallback.onError(mResponseStatusResponse.getError());
-                }
-               else {
+                } else {
                     pManagerCallback.onSuccessResult(mResponseStatusResponse.getResult());
                 }
             }

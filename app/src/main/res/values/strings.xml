@@ -14,5 +14,8 @@
     <string name="view_comments">view comments</string>
     <string name="some_images">some images</string>
     <string name="add_a_comment_here">Add a comment here</string>
+    <string name="add_comment_error_message">Ошибка при добавлении комментраия</string>
+    <string name="need_aithorization_message">Для отпрвления комментария требуется авторизоваться</string>
+    <string name="commentary_send_message">комментарий отправлен</string>
 
 </resources>

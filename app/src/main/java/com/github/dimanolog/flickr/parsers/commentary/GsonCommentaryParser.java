@@ -27,6 +27,8 @@ import java.util.List;
 
 public class GsonCommentaryParser implements IParser<ICommentary> {
 
+    private static final String COMMENTS = "comments";
+    private static final String COMMENT = "comment";
     private final Gson mGson;
 
     GsonCommentaryParser() {
@@ -44,8 +46,8 @@ public class GsonCommentaryParser implements IParser<ICommentary> {
     public List<ICommentary> parseArray(String pJsonString) {
         JsonParser parser = new JsonParser();
         JsonObject jsonBody = parser.parse(pJsonString).getAsJsonObject();
-        JsonObject jsonObjComments = jsonBody.getAsJsonObject("comments");
-        JsonArray jsonArrayComments = jsonObjComments.getAsJsonArray("comment");
+        JsonObject jsonObjComments = jsonBody.getAsJsonObject(COMMENTS);
+        JsonArray jsonArrayComments = jsonObjComments.getAsJsonArray(COMMENT);
         ICommentary[] commentaries = mGson.fromJson(jsonArrayComments, Commentary[].class);
         if (commentaries != null) {
             return Arrays.asList(commentaries);

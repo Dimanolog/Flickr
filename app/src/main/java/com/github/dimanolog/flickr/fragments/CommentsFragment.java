@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.dimanolog.flickr.R;
+import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
+import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.comment.CommentsManager;
@@ -36,6 +39,7 @@ public class CommentsFragment extends Fragment {
     private EditText mWriteCommentryEditTxt;
     private ImageView mSendCommenataryBtn;
     private boolean mUpdating;
+    private AuthorizationManager mAuthorizationManager;
 
     public static CommentsFragment newInstance(IPhoto pPhoto) {
 
@@ -52,7 +56,7 @@ public class CommentsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPhoto = (IPhoto) getArguments().getSerializable(ARG_PHOTO);
         setRetainInstance(true);
-
+        mAuthorizationManager = AuthorizationManager.getInstance(getActivity());
         mCommentsManager = CommentsManager.getInstance(getActivity());
         mCommentsManager.registerCallback(new IManagerCallback<ICustomCursorWrapper<ICommentary>>() {
 
@@ -99,25 +103,36 @@ public class CommentsFragment extends Fragment {
 
     void onSendCommentClick() {
         String comment = mWriteCommentryEditTxt.getText().toString();
+
+        if(!mAuthorizationManager.checkUserSession()){
+            Toast.makeText(getActivity(), R.string.need_aithorization_message , Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!TextUtils.isEmpty(comment)) {
-            mCommentsManager.addCommentToPhoto(mPhoto, comment, new IManagerCallback<IResponseStatus>() {
+            UserSession userSession = mAuthorizationManager.getUserSession();
+            mCommentsManager.addCommentToPhoto(mPhoto, comment, userSession,new IManagerCallback<IResponseStatus>() {
                 @Override
                 public void onStartLoading() {
-
+                    Toast.makeText(getActivity(), R.string.commentary_send_message , Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onSuccessResult(IResponseStatus result) {
-
+                        if(result.isSuccess()){
+                            updateItems();
+                        }
                 }
 
                 @Override
                 public void onError(Throwable t) {
-
+                    Toast.makeText(getActivity(), R.string.add_comment_error_message, Toast.LENGTH_LONG).show();
                 }
             });
         }
     }
+
+
 
 
     private void updateItems() {
