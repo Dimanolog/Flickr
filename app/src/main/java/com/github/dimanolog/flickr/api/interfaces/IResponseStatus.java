@@ -1,4 +1,4 @@
-package com.github.dimanolog.flickr.api;
+package com.github.dimanolog.flickr.api.interfaces;
 
 /**
  * Created by Dimanolog on 11.01.2018.

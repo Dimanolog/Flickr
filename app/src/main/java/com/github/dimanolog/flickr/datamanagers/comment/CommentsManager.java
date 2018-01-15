@@ -16,10 +16,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiCommentaryClient;
-import com.github.dimanolog.flickr.api.IResponseStatus;
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.api.ResponseStatus;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
-import com.github.dimanolog.flickr.datamanagers.authorization.AutheficationManager;
+import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
@@ -66,7 +66,7 @@ public class CommentsManager {
     }
 
     public void addCommentToPhoto(final IPhoto pPhoto, final String pComment, final IManagerCallback<IResponseStatus> pManagerCallback){
-        final UserSession userSession = AutheficationManager.getInstance(mContext)
+        final UserSession userSession = AuthorizationManager.getInstance(mContext)
                 .getUserSession();
         IRequest addCommentRequest = new IRequest() {
             private IResponse<ResponseStatus> mResponseStatusResponse;

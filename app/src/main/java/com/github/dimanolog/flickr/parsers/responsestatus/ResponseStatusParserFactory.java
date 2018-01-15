@@ -12,7 +12,7 @@
 
 package com.github.dimanolog.flickr.parsers.responsestatus;
 
-import com.github.dimanolog.flickr.api.IResponseStatus;
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.parsers.interfaces.IParser;
 
 /**

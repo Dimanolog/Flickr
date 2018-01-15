@@ -5,12 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.github.dimanolog.flickr.datamanagers.authorization.AutheficationManager;
+import com.github.dimanolog.flickr.datamanagers.authorization.AuthorizationManager;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
-
-/**
- * Created by dimanolog on 10.01.18.
- */
 
 public class FlickrCallbackActivity extends AppCompatActivity {
     @Override
@@ -18,7 +14,8 @@ public class FlickrCallbackActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
         if (uri != null) {
-            AutheficationManager autheficationManager = AutheficationManager.getInstance(this);
+            AuthorizationManager authorizationManager = AuthorizationManager.getInstance(this);
+
             IManagerCallback<Void> iManagerCallback = new IManagerCallback<Void>() {
                 @Override
                 public void onStartLoading() {
@@ -37,7 +34,7 @@ public class FlickrCallbackActivity extends AppCompatActivity {
                 }
             };
 
-            autheficationManager.onFlickrCallback(uri, iManagerCallback);
+            authorizationManager.onFlickrCallback(uri, iManagerCallback);
         }
     }
 }

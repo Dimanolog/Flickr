@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
-import com.github.dimanolog.flickr.api.IResponseStatus;
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
@@ -21,31 +21,30 @@ import java.util.Map;
  * Created by Dimanolog on 08.01.2018.
  */
 
-public class AutheficationManager {
-    private static AutheficationManager sInstance;
-    private IManagerCallback<Uri> mManagerCallback;
+public class AuthorizationManager {
+    private static AuthorizationManager sInstance;
+
     private UserSession mUserSession;
     private Context mContext;
     private FlickrApiAuthorizationClient mFlickrApiAuthorizationClient;
 
-    public static AutheficationManager getInstance(@NonNull Context context) {
+    public static AuthorizationManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
             synchronized (PhotoDataManager.class) {
                 if (sInstance == null) {
-                    sInstance = new AutheficationManager(context);
+                    sInstance = new AuthorizationManager(context);
                 }
             }
         }
         return sInstance;
     }
 
-    public void setAutheficationMangerCallback(IManagerCallback<Uri> pIManagerCallback) {
-        mManagerCallback = pIManagerCallback;
-    }
-
-    private AutheficationManager(@NonNull Context pContext) {
+    private AuthorizationManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mUserSession = AuthorizationPreferences.getStoredUserSession(mContext);
+        if(mUserSession==null){
+            mUserSession = new UserSession();
+        }
         mFlickrApiAuthorizationClient = new FlickrApiAuthorizationClient();
     }
 
@@ -90,7 +89,7 @@ public class AutheficationManager {
 
             @Override
             public void onPreRequest() {
-                mManagerCallback.onStartLoading();
+                pManagerCallback.onStartLoading();
             }
 
             @Override
@@ -103,6 +102,8 @@ public class AutheficationManager {
                     mUserSession.setUserName(paramToValueMap.get("username"));
                     mUserSession.setOAuthToken(paramToValueMap.get("oauth_token"));
                     mUserSession.setOAuthTokenSecret(paramToValueMap.get("oauth_token_secret"));
+                    AuthorizationPreferences.setUserSession(mContext, mUserSession);
+
                 }
             }
 
@@ -119,14 +120,14 @@ public class AutheficationManager {
     }
 
 
-    public void getAuthorizationUri() {
+    public void getAuthorizationUri(final IManagerCallback<Uri> pManagerCallback) {
         IRequest request = new IRequest() {
 
             private Response<Uri> mUriResponse;
 
             @Override
             public void onPreRequest() {
-                mManagerCallback.onStartLoading();
+                pManagerCallback.onStartLoading();
             }
 
             @Override
@@ -152,9 +153,9 @@ public class AutheficationManager {
             @Override
             public void onPostRequest() {
                 if (!mUriResponse.isError()) {
-                    mManagerCallback.onSuccessResult(mUriResponse.getResult());
+                    pManagerCallback.onSuccessResult(mUriResponse.getResult());
                 } else {
-                    mManagerCallback.onError(mUriResponse.getError());
+                    pManagerCallback.onError(mUriResponse.getError());
                 }
             }
         };

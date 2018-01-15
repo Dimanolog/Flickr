@@ -1,10 +1,7 @@
 package com.github.dimanolog.flickr.api;
 
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by Dimanolog on 10.01.2018.
- */
 
 public class ResponseStatus implements IResponseStatus {
     @SerializedName("stat")

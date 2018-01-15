@@ -3,6 +3,7 @@ package com.github.dimanolog.flickr.api;
 import android.net.Uri;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.parsers.responsestatus.ResponseStatusParserFactory;

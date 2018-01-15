@@ -20,7 +20,7 @@ import com.github.dimanolog.flickr.util.LogUtil;
 
 public class WebViewFragment extends VisibleFragment {
     private static final String TAG = WebViewFragment.class.getSimpleName();
-    private static final String ARG_URI = "photo_page_url";
+    private static final String ARG_URI = "URI";
 
     private Uri mUri;
     private WebView mWebView;

@@ -26,7 +26,7 @@
         android:visibility="gone"
         android:contentDescription="@string/current_image"
         android:background="#cc1a1a1a"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         />
 
 </FrameLayout>
