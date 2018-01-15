@@ -18,6 +18,7 @@ public class PhotoPageActivity extends SingleFragmentActivity {
 
     public static Intent newIntent(Context context, IPhoto pPhoto) {
         Intent i = new Intent(context, PhotoPageActivity.class);
+
         i.putExtra(EXTRA_PHOTO, pPhoto);
         return i;
     }
@@ -27,6 +28,7 @@ public class PhotoPageActivity extends SingleFragmentActivity {
         Bundle extras = getIntent().getExtras();
         assert extras != null;
         IPhoto photo = (IPhoto) extras.getSerializable(EXTRA_PHOTO);
+
         return PhotoPageFragment.newInstance(photo);
     }
 }

@@ -139,6 +139,12 @@ public class CommentsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mUpdating = false;
+    }
+
 
     private void updateItems() {
         mCommentsManager.getCommentsForPhoto(mPhoto);
@@ -179,7 +185,7 @@ public class CommentsFragment extends Fragment {
 
             VanGogh.with(getActivity())
                     .load(pCommentary.getAvatarUrl())
-                    .placeHolder(R.drawable.no_photo)
+                    .placeHolder(R.drawable.default_avtar)
                     .into(mUserAvatarImgVw);
         }
     }

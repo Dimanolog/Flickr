@@ -18,5 +18,6 @@
     <string name="need_aithorization_message">Для отпрвления комментария требуется авторизоваться</string>
     <string name="commentary_send_message">комментарий отправлен</string>
     <string name="photo_load_error">ошибка при загрузке изображений</string>
+    <string name="comment_avatar">аватар комментатора</string>
 
 </resources>

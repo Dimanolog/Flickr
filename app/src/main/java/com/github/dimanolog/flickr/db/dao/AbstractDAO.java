@@ -104,7 +104,7 @@ public abstract class AbstractDAO<T> {
                 db.beginTransaction();
 
                 for (final ContentValues value : valuesList) {
-                    db.insertWithOnConflict(mTableName, null, value, SQLiteDatabase.CONFLICT_IGNORE);
+                    db.insertWithOnConflict(mTableName, null, value, SQLiteDatabase.CONFLICT_REPLACE);
                     count++;
                 }
 

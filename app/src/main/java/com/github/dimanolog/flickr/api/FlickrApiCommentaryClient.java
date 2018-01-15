@@ -4,6 +4,7 @@ package com.github.dimanolog.flickr.api;
 import android.net.Uri;
 import android.support.annotation.WorkerThread;
 
+import com.github.dimanolog.flickr.api.interfaces.IFlickrApiCommentaryClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
@@ -38,13 +39,14 @@ import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.NOJSONCALLBACK;
 
 
-public class FlickrApiCommentaryClient {
+public class FlickrApiCommentaryClient implements IFlickrApiCommentaryClient {
 
     private static final String COMMENTS_GET_LIST_METHOD = "flickr.photos.comments.getList";
     private static final String COMMENTS_ADD_COMMENT_METHOD = "flickr.photos.comments.addComment";
     private static final String COMMENT_TEXT_PARAM = "comment_text";
     private static final String PHOTO_ID_PARAM = "photo_id";
 
+    @Override
     @WorkerThread
     public IResponse<List<ICommentary>> getListOfCommentByPhoto(IPhoto pPhoto) {
         final Uri commenatsUri = FLICKR_API_URL
@@ -68,6 +70,7 @@ public class FlickrApiCommentaryClient {
     }
 
 
+    @Override
     @WorkerThread
     public IResponse<IResponseStatus> addComment(Long pPhotoId, String pCommentText, UserSession pUserSession) {
         Uri addcommenatUri = Uri.parse(FLICKR_API_BASE_URL)

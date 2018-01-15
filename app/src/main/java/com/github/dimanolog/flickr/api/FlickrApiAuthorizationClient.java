@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
+import com.github.dimanolog.flickr.api.interfaces.IFlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
@@ -23,7 +24,7 @@ import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_VALUE;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.NOJSONCALLBACK;
 
-public class FlickrApiAuthorizationClient {
+public class FlickrApiAuthorizationClient implements IFlickrApiAuthorizationClient {
     private static final String TAG = FlickrApiAuthorizationClient.class.getSimpleName();
 
     private static final String OAUTH_BASE_URL = "https://www.flickr.com/services/oauth";
@@ -46,6 +47,7 @@ public class FlickrApiAuthorizationClient {
 
 
 
+    @Override
     @WorkerThread
     public Response<String> getAccesToken(@NonNull UserSession pUserSession) {
         Uri requestAccessUri = Uri.parse(OAUTH_BASE_URL)
@@ -77,8 +79,9 @@ public class FlickrApiAuthorizationClient {
             return new Response<>(pE);
         }
     }
+    @Override
     @WorkerThread
-    public IResponse<IResponseStatus> checkToken(@NonNull UserSession pUserSession ) {
+    public IResponse<IResponseStatus> checkToken(@NonNull UserSession pUserSession) {
         Uri checkTokenUri = Uri.parse(FLICKR_API_BASE_URL)
                 .buildUpon()
                 .appendQueryParameter(FORMAT_PARAM, FORMAT_VALUE)
@@ -116,6 +119,7 @@ public class FlickrApiAuthorizationClient {
         return listener.getResponse();
     }
 
+    @Override
     public Uri requestToken() {
         Uri requestTokenUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
@@ -137,6 +141,7 @@ public class FlickrApiAuthorizationClient {
     }
 
 
+    @Override
     public Response<String> getRequestToken() {
 
         try {
@@ -151,6 +156,7 @@ public class FlickrApiAuthorizationClient {
         }
     }
 
+    @Override
     public Uri getUserAuthorizationUri(String pOAuthToken) {
         return Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()

@@ -97,7 +97,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
     @Override
     public void onDetach() {
         super.onDetach();
-       // mUpdating = false;
+        mUpdating = false;
     }
 
     @Override
@@ -228,6 +228,7 @@ public class PhotoGalleryFragment extends VisibleFragment implements IManagerCal
         public void onClick(View v) {
             Intent i = PhotoPageActivity
                     .newIntent(getActivity(), mPhoto);
+
             startActivity(i);
         }
 
