@@ -5,9 +5,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
-import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
 import com.github.dimanolog.flickr.datamanagers.PhotoDataManager;
@@ -42,9 +42,6 @@ public class AuthorizationManager {
     private AuthorizationManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mUserSession = AuthorizationPreferences.getStoredUserSession(mContext);
-        if(mUserSession==null){
-            mUserSession = new UserSession();
-        }
         mFlickrApiAuthorizationClient = new FlickrApiAuthorizationClient();
     }
 
@@ -103,7 +100,6 @@ public class AuthorizationManager {
                     mUserSession.setOAuthToken(paramToValueMap.get("oauth_token"));
                     mUserSession.setOAuthTokenSecret(paramToValueMap.get("oauth_token_secret"));
                     AuthorizationPreferences.setUserSession(mContext, mUserSession);
-
                 }
             }
 
@@ -137,7 +133,7 @@ public class AuthorizationManager {
                     Map<String, String> paramValuePairs = parseParametes(requestToken.getResult());
                     String oAuthToken = paramValuePairs.get("oauth_token");
                     String oAuthTokenSecret = paramValuePairs.get("oauth_token_secret");
-
+                    mUserSession = new UserSession();
                     mUserSession.setOAuthToken(oAuthToken);
                     mUserSession.setOAuthTokenSecret(oAuthTokenSecret);
 

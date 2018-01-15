@@ -18,7 +18,7 @@ public class AuthorizationActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuthorizationManager = AuthorizationManager.getInstance(this);
-        if(!mAuthorizationManager.checkUserSession()) {
+        if(mAuthorizationManager.checkUserSession()) {
             mAuthorizationManager.checkToken(new IManagerCallback<IResponseStatus>() {
                 @Override
                 public void onStartLoading() {

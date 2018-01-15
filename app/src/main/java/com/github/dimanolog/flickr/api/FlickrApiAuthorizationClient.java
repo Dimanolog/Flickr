@@ -1,6 +1,8 @@
 package com.github.dimanolog.flickr.api;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.api.interfaces.IResponseStatus;
@@ -16,6 +18,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_URL;
+import static com.github.dimanolog.flickr.api.FlickrApiConstants.METHOD_PARAM;
 
 public class FlickrApiAuthorizationClient {
     private static final String TAG = FlickrApiAuthorizationClient.class.getSimpleName();
@@ -31,9 +34,10 @@ public class FlickrApiAuthorizationClient {
     static final String SIGNATURE_METHOD_VALUE = "HMAC-SHA1";
     static final String VERSION_VALUE = "1.0";
     static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
+    private static final String FLICKR_CALLBACK = "flickr://callback";
 
-
-    public Response<String> getAccesToken(UserSession pUserSession) {
+    @WorkerThread
+    public Response<String> getAccesToken(@NonNull UserSession pUserSession) {
         Uri requestAccessUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("access_token")
@@ -63,10 +67,11 @@ public class FlickrApiAuthorizationClient {
             return new Response<>(pE);
         }
     }
-
-    public IResponse<IResponseStatus> checkToken(String pOAuthToken) {
+    @WorkerThread
+    public IResponse<IResponseStatus> checkToken(@NonNull String pOAuthToken) {
         Uri checkTokenUri = FLICKR_API_URL
                 .buildUpon()
+                .appendQueryParameter(METHOD_PARAM, "flickr.auth.oauth.checkToken")
                 .appendQueryParameter(OAUTH_TOKEN, pOAuthToken)
                 .build();
 
@@ -91,7 +96,7 @@ public class FlickrApiAuthorizationClient {
         Uri requestTokenUri = Uri.parse(OAUTH_BASE_URL)
                 .buildUpon()
                 .appendPath("request_token")
-                .appendQueryParameter(OAUTH_CALLBACK, "flickr://callback")
+                .appendQueryParameter(OAUTH_CALLBACK, FLICKR_CALLBACK)
                 .appendQueryParameter(OAUTH_CONSUMER_KEY, FlickrApiConstants.API_KEY)
                 .appendQueryParameter(OAUTH_NONCE, UUID.randomUUID().toString())
                 .appendQueryParameter(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD_VALUE)

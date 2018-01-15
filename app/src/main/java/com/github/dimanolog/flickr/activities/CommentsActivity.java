@@ -8,10 +8,6 @@ import android.support.v4.app.Fragment;
 import com.github.dimanolog.flickr.fragments.CommentsFragment;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 
-/**
- * Created by Dimanolog on 12.01.2018.
- */
-
 public class CommentsActivity extends SingleFragmentActivity {
     private static final String EXTRA_PHOTO = "com.github.dimanolog.flickr.photo";
 

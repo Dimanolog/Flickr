@@ -6,10 +6,6 @@ import com.github.dimanolog.flickr.http.HttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by Dimanolog on 11.01.2018.
- */
-
 public abstract class AbstractHttpJsonResponseListener<T> implements HttpClient.ResponseListener {
     private IResponse<T> mResponse;
 
