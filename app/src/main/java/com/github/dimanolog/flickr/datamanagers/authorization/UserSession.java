@@ -24,7 +24,7 @@ public class UserSession {
         return mUsernsid;
     }
 
-    public void setUsernsid(String pUsernsid) {
+    void setUsernsid(String pUsernsid) {
         mUsernsid = pUsernsid;
     }
 
@@ -32,7 +32,7 @@ public class UserSession {
         return mFullName;
     }
 
-    public void setFullName(String pFullName) {
+    void setFullName(String pFullName) {
         mFullName = pFullName;
     }
 
@@ -40,7 +40,7 @@ public class UserSession {
         return mOAuthToken;
     }
 
-    public void setOAuthToken(String pOAuthToken) {
+    void setOAuthToken(String pOAuthToken) {
         mOAuthToken = pOAuthToken;
     }
 
@@ -48,7 +48,7 @@ public class UserSession {
         return mOAuthTokenSecret;
     }
 
-    public void setOAuthTokenSecret(String pOAuthTokenSecret) {
+    void setOAuthTokenSecret(String pOAuthTokenSecret) {
         mOAuthTokenSecret = pOAuthTokenSecret;
     }
 
@@ -56,7 +56,7 @@ public class UserSession {
         return mOAuthVerifier;
     }
 
-    public void setOAuthVerifier(String pOAuthVerifier) {
+    void setOAuthVerifier(String pOAuthVerifier) {
         mOAuthVerifier = pOAuthVerifier;
     }
 
@@ -64,7 +64,7 @@ public class UserSession {
         return mUserName;
     }
 
-    public void setUserName(String pUserName) {
+    void setUserName(String pUserName) {
         mUserName = pUserName;
     }
 }

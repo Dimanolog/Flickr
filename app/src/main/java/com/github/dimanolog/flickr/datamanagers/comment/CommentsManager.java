@@ -22,16 +22,21 @@ import com.github.dimanolog.flickr.datamanagers.IRequest;
 import com.github.dimanolog.flickr.datamanagers.authorization.UserSession;
 import com.github.dimanolog.flickr.dataservice.CommentDataService;
 import com.github.dimanolog.flickr.db.dao.cursorwrappers.ICustomCursorWrapper;
+import com.github.dimanolog.flickr.depencyInjection.component.ApiComponent;
+import com.github.dimanolog.flickr.depencyInjection.component.DaggerApiComponent;
 import com.github.dimanolog.flickr.model.flickr.interfaces.ICommentary;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IPhoto;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.threading.RequestExecutor;
 
+import javax.inject.Inject;
+
 public class CommentsManager {
     private static CommentsManager sInstance;
     private Context mContext;
     private IManagerCallback<ICustomCursorWrapper<ICommentary>> mCommenataryManagerCallback;
-    private FlickrApiCommentaryClient mFlickrApiCommentaryClient;
+    @Inject
+    FlickrApiCommentaryClient mFlickrApiCommentaryClient;
     private CommentDataService mCommentDataService;
 
     public static CommentsManager getInstance(@NonNull Context context) {
@@ -48,7 +53,8 @@ public class CommentsManager {
     private CommentsManager(Context pContext) {
         mContext = pContext.getApplicationContext();
         mCommentDataService = new CommentDataService(pContext);
-        mFlickrApiCommentaryClient = new FlickrApiCommentaryClient();
+        ApiComponent component = DaggerApiComponent.builder().build();
+        component.inject(this);
     }
 
     public void registerCallback(IManagerCallback<ICustomCursorWrapper<ICommentary>> pCommentaryManagerCallback) {

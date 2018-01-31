@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FLICKR_API_BASE_URL;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_PARAM;
 import static com.github.dimanolog.flickr.api.FlickrApiConstants.FORMAT_VALUE;
@@ -45,7 +48,9 @@ public class FlickrApiAuthorizationClient implements IFlickrApiAuthorizationClie
     static final String VERSION_VALUE = "1.0";
     static final String OAUTH_SIGNATURE_PARAM = "oauth_signature";
 
-
+    @Inject
+    public FlickrApiAuthorizationClient() {
+    }
 
     @Override
     @WorkerThread
@@ -79,6 +84,7 @@ public class FlickrApiAuthorizationClient implements IFlickrApiAuthorizationClie
             return new Response<>(pE);
         }
     }
+
     @Override
     @WorkerThread
     public IResponse<IResponseStatus> checkToken(@NonNull UserSession pUserSession) {

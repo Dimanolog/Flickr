@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient;
 import com.github.dimanolog.flickr.api.Response;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
+import com.github.dimanolog.flickr.depencyInjection.component.ApiComponent;
+import com.github.dimanolog.flickr.depencyInjection.component.DaggerApiComponent;
 import com.github.dimanolog.flickr.model.flickr.interfaces.IResponseStatus;
 import com.github.dimanolog.flickr.datamanagers.IManagerCallback;
 import com.github.dimanolog.flickr.datamanagers.IRequest;
@@ -17,6 +19,9 @@ import com.github.dimanolog.flickr.threading.RequestExecutor;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+
 /**
  * Created by Dimanolog on 08.01.2018.
  */
@@ -26,7 +31,8 @@ public class AuthorizationManager {
 
     private UserSession mUserSession;
     private Context mContext;
-    private FlickrApiAuthorizationClient mFlickrApiAuthorizationClient;
+    @Inject
+    FlickrApiAuthorizationClient mFlickrApiAuthorizationClient;
 
     public static AuthorizationManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
@@ -42,7 +48,8 @@ public class AuthorizationManager {
     private AuthorizationManager(@NonNull Context pContext) {
         mContext = pContext.getApplicationContext();
         mUserSession = AuthorizationPreferences.getStoredUserSession(mContext);
-        mFlickrApiAuthorizationClient = new FlickrApiAuthorizationClient();
+        ApiComponent component = DaggerApiComponent.builder().build();
+        component.inject(this);
     }
 
     public void onFlickrCallback(Uri pUri, IManagerCallback<Void> pResponseStatusCallback) {

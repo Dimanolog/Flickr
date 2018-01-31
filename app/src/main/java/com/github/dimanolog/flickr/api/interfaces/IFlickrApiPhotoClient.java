@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Dimanolog on 04.11.2017.
  */
 
-public interface IFlickrApiClient {
+public interface IFlickrApiPhotoClient {
    IResponse<List<IPhoto>> getRecent(int page);
    IResponse<List<IPhoto>> searchPhotos(int page, String search);
 }

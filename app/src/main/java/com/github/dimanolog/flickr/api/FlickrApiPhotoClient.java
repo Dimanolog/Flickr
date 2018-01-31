@@ -3,7 +3,7 @@ package com.github.dimanolog.flickr.api;
 import android.net.Uri;
 import android.support.annotation.WorkerThread;
 
-import com.github.dimanolog.flickr.api.interfaces.IFlickrApiClient;
+import com.github.dimanolog.flickr.api.interfaces.IFlickrApiPhotoClient;
 import com.github.dimanolog.flickr.api.interfaces.IResponse;
 import com.github.dimanolog.flickr.http.HttpClient;
 import com.github.dimanolog.flickr.http.interfaces.IHttpClient;
@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class FlickrApiPhotoClient implements IFlickrApiClient {
+import javax.inject.Inject;
+
+public class FlickrApiPhotoClient implements IFlickrApiPhotoClient {
     private static final String GET_RECENT_METHOD = "flickr.photos.getRecent";
     private static final String SEARCH_METHOD = "flickr.photos.search";
     private static final String PAGE = "page";
@@ -25,6 +27,9 @@ public class FlickrApiPhotoClient implements IFlickrApiClient {
             .appendQueryParameter("extras", "date_upload,url_z,url_o,count_faves, count_comments")
             .build();
 
+    @Inject
+    public FlickrApiPhotoClient() {
+    }
 
     @WorkerThread
     @Override

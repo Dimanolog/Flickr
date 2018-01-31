@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import static com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient.OAUTH_CONSUMER_KEY;
 import static com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient.OAUTH_NONCE;
 import static com.github.dimanolog.flickr.api.FlickrApiAuthorizationClient.OAUTH_SIGNATURE_METHOD;
@@ -45,6 +47,10 @@ public class FlickrApiCommentaryClient implements IFlickrApiCommentaryClient {
     private static final String COMMENTS_ADD_COMMENT_METHOD = "flickr.photos.comments.addComment";
     private static final String COMMENT_TEXT_PARAM = "comment_text";
     private static final String PHOTO_ID_PARAM = "photo_id";
+
+    @Inject
+    public FlickrApiCommentaryClient() {
+    }
 
     @Override
     @WorkerThread
@@ -88,7 +94,6 @@ public class FlickrApiCommentaryClient implements IFlickrApiCommentaryClient {
                 .appendQueryParameter(PHOTO_ID_PARAM, String.valueOf(pPhotoId))
 
                 .build();
-
 
 
         String oAuthSignature = SecureUtil.getAuthSignature(addcommenatUri, pUserSession.getOAuthTokenSecret().trim());
