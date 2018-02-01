@@ -140,9 +140,9 @@ public class VanGogh extends HandlerThread {
                 handleResponse(bitmap, target);
 
             } catch (IOException pE) {
+                LogUtil.e(TAG, "Error downloading image", pE);
                 VanGoghCallback callback = target.getCallback();
                 if (callback != null) {
-                    LogUtil.e(TAG, "Error downloading image", pE);
                     callback.onError(pE);
                 }
             }

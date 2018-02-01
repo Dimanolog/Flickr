@@ -110,7 +110,7 @@ public class PhotoDataManager {
         public void runRequest() {
             mResponse = mIFlickrApiPhotoClient.getRecent(mPage);
             if (!mResponse.isError()) {
-                mAllPhotosFromDb = mPhotoDataService.getRecent();
+                mAllPhotosFromDb = mPhotoDataService.addRecentAndGetCursor(mResponse.getResult());
             }
         }
 

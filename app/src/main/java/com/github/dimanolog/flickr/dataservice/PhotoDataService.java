@@ -38,7 +38,7 @@ public class PhotoDataService {
         return getSearchQueryResult(id);
     }
 
-    public ICustomCursorWrapper<IPhoto> addRecent(List<IPhoto> pPhotoList) {
+    public ICustomCursorWrapper<IPhoto> addRecentAndGetCursor(List<IPhoto> pPhotoList) {
         mPhotoDAO.bulkInsert(pPhotoList);
         return getRecent();
     }
